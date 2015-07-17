@@ -16,6 +16,8 @@
 #include <sys/socket.h> /*socket(),*/
 #include <sys/types.h> /* size_t int8_t int16_t*/
 
+#include <arpa/inet.h> /*inet_pton*/
+
 #include <errno.h> /*strerror()*/
 
 /*
@@ -46,7 +48,7 @@ struct sockaddr_in client4_address;
  *	Prototype of our own functions
  *
  */
-int argc_length(int argc);
+void argc_length(int argc);
 
 /* Wrapper base proto */
 int	Socket(int , int , int );

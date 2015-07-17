@@ -14,7 +14,6 @@ main(int argc, char *argv[])
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_port = PORT;
 
-	//Inet_pton(AF_INET,argv[1],&server4_address.sin_addr);
-	printf("Nu mai merge aici");
+	Inet_pton(AF_INET,argv[1],&server4_address.sin_addr);
 
 }

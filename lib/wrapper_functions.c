@@ -19,7 +19,7 @@ int Socket(int domain, int type, int protocol)
 int Inet_pton(int af,const char *src, void *dst)
 {
 
-	int inet = Inet_pton(af,src,&dst);
+	int inet = inet_pton(af,src,dst);
 
 	if(inet == -1)
 	{
