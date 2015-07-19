@@ -2,7 +2,6 @@
 /*
  * Our own standard I/O wrapper functions
  */
-
 char *
 Fgets(char *pointer,int n, FILE *stream)
 {
@@ -10,8 +9,10 @@ Fgets(char *pointer,int n, FILE *stream)
 	int file_error = ferror(stream);
 
 	if( (fpointer== NULL) && (file_error) )
-		error_exit("Can't read line from stdin\n");
-
+	{
+			printf("Can't read line from stdin\n");
+			return NULL;
+	}
 	return fpointer;
 }
 

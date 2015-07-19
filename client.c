@@ -27,8 +27,7 @@ main(int argc, char *argv[])
 		Fgets(send_line,MAXLINE,stdin);
 				
 		if(byte_size == NULL) break;
-		
-	
+			
 	}
 
 }

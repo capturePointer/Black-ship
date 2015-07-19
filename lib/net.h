@@ -11,7 +11,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-
 #include <netinet/in.h> /*sockaddr_in{},in_addr{} etc..*/
 #include <sys/socket.h> /*socket(),*/
 #include <sys/types.h> /* size_t int8_t int16_t*/
@@ -41,7 +40,6 @@ struct sockaddr_in client4_address;
 	#define EXIT_FAILURE -1
 #endif
 
-
 #define SA struct sockaddr
 
 /*Custom user based settings*/
@@ -55,15 +53,14 @@ struct sockaddr_in client4_address;
  *
  */
 void argc_length(int ,int);
-void error_exit(const char*);
-void *error_system_exit(const char *message,void*);
+
 /* Wrapper base proto */
 int	Socket(int , int , int );
 int Connect(int, const SA*,socklen_t);
 void Inet_pton(int , const char*, void*);
 char *Fgets(char* ,int,FILE*);
 size_t Write(int, const void*,size_t);
-
-
+ssize_t writen(int,const void*,size_t);
+ssize_t readn(int,const void*,size_t);
 
 #endif /* NET_H */
