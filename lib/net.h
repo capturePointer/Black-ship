@@ -26,11 +26,20 @@
 struct sockaddr_in server4_address;
 struct sockaddr_in client4_address;
 
-
-
 /*
  *	Define constant var
  */
+
+//Colors
+#define KNRM  "\x1B[0m" //red
+#define KRED  "\x1B[31m" //gree
+#define KGRN  "\x1B[32m" //yello
+#define KYEL  "\x1B[33m" //blue
+#define KBLU  "\x1B[34m" //magenta
+#define KMAG  "\x1B[35m" //cyan
+#define KCYN  "\x1B[36m" //white
+#define KWHT  "\x1B[37m" //normal
+#define RESET "\033[0m" //reset flag
 
 #ifndef EXIT_SUCCESS
 	#define EXIT_SUCCESS 0 
@@ -40,6 +49,7 @@ struct sockaddr_in client4_address;
 	#define EXIT_FAILURE -1
 #endif
 
+
 #define SA struct sockaddr
 
 /*Custom user based settings*/
@@ -47,20 +57,25 @@ struct sockaddr_in client4_address;
 #define MAXLINE 4096
 #define BUFFSIZE 8192
 
-
 /*
  *	Prototype of our own functions
  *
  */
 void argc_length(int ,int);
+void echo_error(const char*,bool,int);
+void prog_error(const char*,bool,int);
+
 
 /* Wrapper base proto */
 int	Socket(int , int , int );
 int Connect(int, const SA*,socklen_t);
 void Inet_pton(int , const char*, void*);
 char *Fgets(char* ,int,FILE*);
+/**/
 size_t Write(int, const void*,size_t);
 ssize_t writen(int,const void*,size_t);
 ssize_t readn(int,const void*,size_t);
+
+
 
 #endif /* NET_H */

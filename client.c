@@ -17,17 +17,14 @@ main(int argc, char *argv[])
 	server4_address.sin_port = PORT;
 
 	Inet_pton(AF_INET,argv[1],&server4_address.sin_addr);
-	
-	connection_socket = Connect(main_socket,(SA *)&server4_address, sizeof(server4_address));
 
+	connection_socket = Connect(main_socket,(SA *)&server4_address, sizeof(server4_address));
+	
 	while(true)
 	{
 		char send_line[MAXLINE],recive_line[MAXLINE];		
-		
 		Fgets(send_line,MAXLINE,stdin);
 				
-		if(byte_size == NULL) break;
-			
 	}
 
 }
