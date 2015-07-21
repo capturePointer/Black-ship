@@ -57,25 +57,28 @@ struct sockaddr_in client4_address;
 #define MAXLINE 4096
 #define BUFFSIZE 8192
 
+#ifndef LISTENQ
+	#define LISTENQ 1024
+#endif
 /*
  *	Prototype of our own functions
  *
  */
-void argc_length(int ,int);
-void echo_error(const char*,bool,int);
-void prog_error(const char*,bool,int);
+void argc_length(int, int);
+void echo_error(const char*, bool, int);
+void prog_error(const char*, bool, int);
 
 
 /* Wrapper base proto */
 int	Socket(int , int , int );
-int Connect(int, const SA*,socklen_t);
-void Inet_pton(int , const char*, void*);
-char *Fgets(char* ,int,FILE*);
-/**/
-size_t Write(int, const void*,size_t);
-ssize_t writen(int,const void*,size_t);
-ssize_t readn(int,const void*,size_t);
+void Connect(int, const struct sockaddr*, socklen_t);
+void Inet_pton(int, const char*, void*);
+char *Fgets(char*, int, FILE*);
+size_t Write(int, const void*, size_t);
+size_t Read(int, void*,size_t);
 
+ssize_t s_write(int, const void*, size_t, bool);
+ssize_t s_read(int, void*, size_t, bool);
 
 
 #endif /* NET_H */

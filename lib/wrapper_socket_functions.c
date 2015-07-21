@@ -10,12 +10,11 @@ int Socket(int domain, int type, int protocol)
 	return sockfd;
 }
 
-int Connect(int socket, const struct sockaddr *address,socklen_t address_len)
+void
+Connect(int socket, const struct sockaddr *address, socklen_t address_len)
 {
 	int connection = connect(socket, address, address_len);
 
 	if(connection == -1)
 		prog_error("Connect error",true,errno);
-	
-	return connection;
 }

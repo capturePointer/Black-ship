@@ -1,58 +1,46 @@
-#include <stdio.h>
-/*sockaddr_in*/
-#include <netinet/in.h>
-#include <time.h>
-#include <string.h>
-/*sock types*/
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <arpa/inet.h>
-/*close*/
-#include <unistd.h>
-#define MAXLINE 255
-#define PORT 13
-int client_socket,server_socket;
-socklen_t client_len_struct;
-struct sockaddr_in server,client;
-char buffer[MAXLINE];
-time_t ticks;
+#include "lib/net.h"
 
-int 
-main()
+int main(void)
 {
-	server_socket = socket(AF_INET,SOCK_STREAM,0);
+	int ret_bind,ret_listen;
+	int main_socket;
+	int connection_socket;
+	pid_t childpid;
+	socklen_t connection_length;
+	int n;
+	char buf[MAXLINE];
 
-	if(server_socket < 0){printf("Nu am putut creasocketul");}
+	main_socket = Socket(AF_INET,SOCK_STREAM,0);
+	memset(&server4_address,0,sizeof(server4_address));
 
-	memset(&server,0,sizeof(server));
+	server4_address.sin_family = AF_INET;
+	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	server4_address.sin_port = htons(PORT);
 
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = htonl(INADDR_ANY);
-	server.sin_port = htons(PORT);
+	ret_bind = bind(main_socket,(SA*)&server4_address,sizeof(server4_address));
 
-	int ret_bind = bind(server_socket,(struct sockaddr*)&server,sizeof(server));
-	if(ret_bind < 0){printf("Nu am putut face bindu-ul corect");}
+	ret_listen = listen(main_socket,LISTENQ);
 
-	int ret_listen = listen(server_socket,5);
-	if(ret_listen <0){printf("Nu putem face socketul sa asculte");}
-	
-	for(;;){
-	
-		client_len_struct = sizeof(client);
+	while(true)
+	{
+		connection_length = sizeof(client4_address);
+		connection_socket = accept(main_socket,(SA*)&client4_address, &connection_length);
+		childpid = fork();
 		
-	    client_socket = accept(server_socket,(struct sockaddr*)&client,&client_len_struct);
-		
-		printf("Connection from %s port %d\n",
-				inet_ntop(AF_INET,&client.sin_addr,buffer,sizeof(buffer)),
-				ntohs(client.sin_port));
-
-		ticks = time(NULL);
-		snprintf(buffer,sizeof(buffer),"%.24s\r\n",ctime(&ticks));
-		int ret_write = write(client_socket,buffer,strlen(buffer));
-		if(ret_write < 0){printf("Am belito");}
-		close(client_socket);
-
-	
+		if(childpid == 0)
+		{
+			close(main_socket);
+			while(true)
+			{
+				n = read(connection_socket,buf,MAXLINE);
+				if(n < 0){ printf("Error read"); break;}
+				
+				int ret_write = write(connection_socket,buf,n);
+				if(ret_write < 0){printf("Error write"); break;}
+				else break;
+			}
+			exit(EXIT_FAILURE);
+		}
+		close(connection_socket);
 	}
-
 }
