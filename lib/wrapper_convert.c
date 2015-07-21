@@ -11,5 +11,4 @@ void Inet_pton(int af, const char *src, void *dst)
 	else 
 		if(inet == 0) 
 			prog_error("Invalid ip address",false,errno);
-	
 }

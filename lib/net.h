@@ -16,7 +16,6 @@
 #include <sys/types.h> /* size_t int8_t int16_t*/
 #include <unistd.h>
 #include <arpa/inet.h> /*inet_pton*/
-
 #include <errno.h> /*strerror()*/
 
 /*
@@ -31,15 +30,15 @@ struct sockaddr_in client4_address;
  */
 
 //Colors
-#define KNRM  "\x1B[0m" //red
-#define KRED  "\x1B[31m" //gree
-#define KGRN  "\x1B[32m" //yello
-#define KYEL  "\x1B[33m" //blue
-#define KBLU  "\x1B[34m" //magenta
-#define KMAG  "\x1B[35m" //cyan
-#define KCYN  "\x1B[36m" //white
-#define KWHT  "\x1B[37m" //normal
-#define RESET "\033[0m" //reset flag
+#define KNRM  "\x1B[0m" 
+#define KRED  "\x1B[31m" 
+#define KGRN  "\x1B[32m" 
+#define KYEL  "\x1B[33m" 
+#define KBLU  "\x1B[34m" 
+#define KMAG  "\x1B[35m" 
+#define KCYN  "\x1B[36m" 
+#define KWHT  "\x1B[37m" 
+#define RESET "\033[0m" 
 
 #ifndef EXIT_SUCCESS
 	#define EXIT_SUCCESS 0 
@@ -68,7 +67,6 @@ void argc_length(int, int);
 void echo_error(const char*, bool, int);
 void prog_error(const char*, bool, int);
 
-
 /* Wrapper base proto */
 int	Socket(int , int , int );
 void Connect(int, const struct sockaddr*, socklen_t);
@@ -76,7 +74,8 @@ void Inet_pton(int, const char*, void*);
 char *Fgets(char*, int, FILE*);
 size_t Write(int, const void*, size_t);
 size_t Read(int, void*,size_t);
-
+Bind(int, const struct*, socklen_t);
+Listen(int, int);
 ssize_t s_write(int, const void*, size_t, bool);
 ssize_t s_read(int, void*, size_t, bool);
 

@@ -14,6 +14,8 @@ main(int argc, char *argv[])
 	Inet_pton(AF_INET,argv[1],&server4_address.sin_addr);
 
 	Connect(main_socket, (SA *)&server4_address, sizeof(server4_address));
+
+	//int ret_connect = connect(main_socket, (struct sockaddr*)&server4_address ,sizeof(server4_address));
 	char sendline[MAXLINE], recvline[MAXLINE];
 	
 	while(Fgets(sendline,MAXLINE,stdin) != NULL)

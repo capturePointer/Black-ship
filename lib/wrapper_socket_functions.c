@@ -15,6 +15,33 @@ Connect(int socket, const struct sockaddr *address, socklen_t address_len)
 {
 	int connection = connect(socket, address, address_len);
 
-	if(connection == -1)
+	if(connection < 0)
 		prog_error("Connect error",true,errno);
 }
+
+void 
+Bind(int socket,const struct sockaddr *address,socklen_t address_len)
+{
+	int rbind = bind(socket,(struct sockaddr *)&address ,socklen_t address_len);
+	if(rbind == -1)
+		prog_error("Bind error",true,errno);
+}
+void
+Listen(int socket, int backlog)
+{
+	int rlisten = liste(socket,backlog);
+	if(rlisten == -1)
+		prot_error("Listen error",true,errno);
+}
+int
+Accept(int socket, struct sockaddr *address, socklen_t *address_len)
+{
+	int raccept;
+
+	raccept = accept(socket,address,address_len);
+		if(raccept == -1)
+			prot_error("Accept error",true,errno);
+
+	return raccept;
+}
+
