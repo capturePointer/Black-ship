@@ -3,7 +3,7 @@ CFLAGS = -c -std=c99 -g -Wall -o
 LIB_PATH = lib/
 BIN_PATH = bin/
 
-OBJECTS_LIBRARY = bin/error.o bin/io_socket.o bin/wrapper_socket_functions.o bin/wrapper_stdio.o bin/wrapper_convert.o bin/wrapper_io_socket.o
+OBJECTS_LIBRARY = bin/error.o bin/io_socket.o bin/wrapper_socket_functions.o bin/wrapper_stdio.o bin/wrapper_convert.o bin/wrapper_io_socket.o bin/wrapper_unix.o
 CLIENT_FILES = bin/client.o
 SERVER_FILES = bin/server.o
 
@@ -22,6 +22,7 @@ all:
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_convert.o $(LIB_PATH)wrapper_convert.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_io_socket.o $(LIB_PATH)wrapper_io_socket.c
 	$(CC) $(CFLAGS) $(BIN_PATH)io_socket.o $(LIB_PATH)io_socket.c
+	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_unix.o $(LIB_PATH)wrapper_unix.c
 	#
 	#Link CLIENT
 	#

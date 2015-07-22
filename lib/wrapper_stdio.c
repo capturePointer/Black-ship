@@ -16,7 +16,11 @@ Fgets(char *pointer,int n, FILE *stream)
 	
 	return fpointer;
 }
-
-
+void
+Fputs(const char *pointer, FILE *stream)
+{
+	if(fputs(pointer,stream) == EOF )
+	 	prog_error("Can't output line from buffer given",true,errno);
+}
 
 

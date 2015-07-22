@@ -22,26 +22,25 @@ Connect(int socket, const struct sockaddr *address, socklen_t address_len)
 void 
 Bind(int socket,const struct sockaddr *address,socklen_t address_len)
 {
-	int rbind = bind(socket,(struct sockaddr *)&address ,socklen_t address_len);
+	int rbind = bind(socket,address ,address_len);
 	if(rbind == -1)
 		prog_error("Bind error",true,errno);
 }
 void
 Listen(int socket, int backlog)
 {
-	int rlisten = liste(socket,backlog);
+	int rlisten = listen(socket,backlog);
 	if(rlisten == -1)
-		prot_error("Listen error",true,errno);
+		prog_error("Listen error",true,errno);
 }
 int
-Accept(int socket, struct sockaddr *address, socklen_t *address_len)
+Accept(int socket, struct sockaddr  *restrict address, socklen_t  *restrict address_len)
 {
 	int raccept;
 
 	raccept = accept(socket,address,address_len);
 		if(raccept == -1)
-			prot_error("Accept error",true,errno);
+			prog_error("Accept error",true,errno);
 
 	return raccept;
 }
-

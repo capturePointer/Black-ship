@@ -22,21 +22,22 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 		{
 			if(isInterupt(number_of_bytes_written))
 				number_of_bytes_written = 0;
-			else /*error*/
-			{
-				echo_error("Write error",true,errno);
-				return -1; 
-			}
+			else
+				// and if it's not interupted maybe it's something else
+				if(number_of_bytes_written == -1)/*error*/
+				{
+					echo_error("Write error",true,errno);
+					return -1; 
+				}
 		}
 		else
 			/*without permission*/
-			if( number_of_bytes_left == -1)
+			if( number_of_bytes_written == -1)
 			{
 				echo_error("Write error",true,errno);
 				return -1;
 			}
 		/*if message was interupt continue sending the message */
-			
 		number_of_bytes_left = number_of_bytes_left - number_of_bytes_written;
 		buffer = buffer - number_of_bytes_written;
 	}
@@ -60,27 +61,28 @@ s_read(int fd, void *point, size_t len_buffer, bool level)
 		{
 			if(isInterupt(number_of_bytes_readed))
 				number_of_bytes_readed = 0;
-			else /*error*/
-			{
-				echo_error("Read error",true,errno);
-				return -1; 
-			}
+			// and if it's not interupted maybe it's something else
+			else 
+				if(number_of_bytes_readed == -1) 
+				{
+					echo_error("Read error",true,errno);
+					return -1; 
+				}
 		}
 		else
 			/*without permission*/
-			if( number_of_bytes_left == -1)
+			//clasic test error mode
+			if( number_of_bytes_readed == -1)
 			{
 				echo_error("Read error",true,errno);
 				return -1;
 			}
 		/*if message was interupt continue reading the message */
-			
 		number_of_bytes_left = number_of_bytes_left - number_of_bytes_readed;
 		buffer = buffer - number_of_bytes_readed;
 	}
 	/*if everything is ok we should return the size that has been readed from the fd*/
 	return len_buffer - number_of_bytes_readed;
-
 }
 static 
 bool isInterupt(ssize_t nbytes)

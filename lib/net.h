@@ -52,9 +52,10 @@ struct sockaddr_in client4_address;
 #define SA struct sockaddr
 
 /*Custom user based settings*/
-#define PORT 9987
+#define PORT 9877
 #define MAXLINE 4096
 #define BUFFSIZE 8192
+/**/
 
 #ifndef LISTENQ
 	#define LISTENQ 1024
@@ -72,12 +73,15 @@ int	Socket(int , int , int );
 void Connect(int, const struct sockaddr*, socklen_t);
 void Inet_pton(int, const char*, void*);
 char *Fgets(char*, int, FILE*);
+void Fputs(const char*, FILE*);
 size_t Write(int, const void*, size_t);
 size_t Read(int, void*,size_t);
-Bind(int, const struct*, socklen_t);
-Listen(int, int);
+void Bind(int, const struct sockaddr*, socklen_t);
+void Listen(int, int);
+int Accept(int, struct sockaddr *restrict , socklen_t *restrict);
 ssize_t s_write(int, const void*, size_t, bool);
 ssize_t s_read(int, void*, size_t, bool);
-
+void Close(int);
+pid_t Fork(void);
 
 #endif /* NET_H */
