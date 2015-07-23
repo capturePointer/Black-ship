@@ -21,7 +21,6 @@ main(int argc, char *argv[])
 		// scanf("%s",sendline);
 		byte_size = Fgets(sendline,MAXLINE,stdin);
 		if(byte_size == NULL) break;
-
 		s_write(main_socket,sendline,MAXLINE,true);
 		s_read(main_socket,recvline,MAXLINE,true);
 		Fputs(recvline,stdout);		

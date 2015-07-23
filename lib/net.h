@@ -17,7 +17,8 @@
 #include <unistd.h>
 #include <arpa/inet.h> /*inet_pton*/
 #include <errno.h> /*strerror()*/
-
+#include <signal.h> /*catch signals*/
+#include <sys/wait.h>
 /*
  * Define simple variables
  */
@@ -55,6 +56,13 @@ struct sockaddr_in client4_address;
 #define PORT 9877
 #define MAXLINE 4096
 #define BUFFSIZE 8192
+ /* we will replace this :
+ 		void (* signal (int signo, void(*func) (int))) ) (int);
+ 	with this :
+ 		Sigfunc *signal(int signo, Sigfunc *func);
+	in order to do this we must typedef smth
+ */
+typedef void Sigfunc(int);
 /**/
 
 #ifndef LISTENQ
@@ -83,5 +91,5 @@ ssize_t s_write(int, const void*, size_t, bool);
 ssize_t s_read(int, void*, size_t, bool);
 void Close(int);
 pid_t Fork(void);
-
+Sigfunc *signal (int, Sigfunc*);
 #endif /* NET_H */
