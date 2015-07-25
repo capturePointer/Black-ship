@@ -1,5 +1,5 @@
 #ifndef NET_H
-	#define NET_H
+#define NET_H
 /*
  * My own custom barkeley C socket api header
  *
@@ -22,6 +22,7 @@
 /*
  * Define simple variables
  */
+
 //IPV4 structure adress
 struct sockaddr_in server4_address;
 struct sockaddr_in client4_address;
@@ -41,6 +42,7 @@ struct sockaddr_in client4_address;
 #define KWHT  "\x1B[37m" 
 #define RESET "\033[0m" 
 
+
 #ifndef EXIT_SUCCESS
 	#define EXIT_SUCCESS 0 
 #endif
@@ -49,13 +51,17 @@ struct sockaddr_in client4_address;
 	#define EXIT_FAILURE -1
 #endif
 
+#ifndef LISTENQ
+	#define LISTENQ 1024
+#endif
 
 #define SA struct sockaddr
-
 /*Custom user based settings*/
 #define PORT 9877
 #define MAXLINE 4096
 #define BUFFSIZE 8192
+
+
  /* we will replace this :
  		void (* signal (int signo, void(*func) (int))) ) (int);
  	with this :
@@ -63,33 +69,37 @@ struct sockaddr_in client4_address;
 	in order to do this we must typedef smth
  */
 typedef void Sigfunc(int);
-/**/
+typedef struct sigaction sigaction;
 
-#ifndef LISTENQ
-	#define LISTENQ 1024
-#endif
 /*
  *	Prototype of our own functions
  *
  */
-void argc_length(int, int);
-void echo_error(const char*, bool, int);
-void prog_error(const char*, bool, int);
+void 	argc_length(int, int);
+void 	echo_error(const char*, bool, int);
+void 	prog_error(const char*, bool, int);
 
-/* Wrapper base proto */
-int	Socket(int , int , int );
-void Connect(int, const struct sockaddr*, socklen_t);
-void Inet_pton(int, const char*, void*);
-char *Fgets(char*, int, FILE*);
-void Fputs(const char*, FILE*);
-size_t Write(int, const void*, size_t);
-size_t Read(int, void*,size_t);
-void Bind(int, const struct sockaddr*, socklen_t);
-void Listen(int, int);
-int Accept(int, struct sockaddr *restrict , socklen_t *restrict);
 ssize_t s_write(int, const void*, size_t, bool);
 ssize_t s_read(int, void*, size_t, bool);
-void Close(int);
-pid_t Fork(void);
-Sigfunc *signal (int, Sigfunc*);
+
+/* Wrapper base proto */
+int		Socket(int , int , int );
+void 	Connect(int, const struct sockaddr*, socklen_t);
+void 	Inet_pton(int, const char*, void*);
+char   *Fgets(char*, int, FILE*);
+void 	Fputs(const char*, FILE*);
+size_t  Write(int, const void*, size_t);
+size_t  Read(int, void*,size_t);
+void    Bind(int, const struct sockaddr*, socklen_t);
+void    Listen(int, int);
+int 	Accept(int, struct sockaddr *restrict , socklen_t *restrict);
+void 	Close(int);
+pid_t 	Fork(void);
+// Sigfunc *signal (int, Sigfunc*);
+Sigfunc *Signal(int,Sigfunc*);
+void sig_h_child(int);
+
+
+
 #endif /* NET_H */
+

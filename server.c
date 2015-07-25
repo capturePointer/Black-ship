@@ -1,52 +1,59 @@
 #include "lib/net.h"
 
-void str_echo(int connection_socket);
 
-int main_socket;
-int connection_socket;
-socklen_t connection_length;
-char buf[MAXLINE];
-pid_t childpid;
+void
+str_echo(int sockfd)
+{
+	ssize_t 	n;
+	char 		buf[MAXLINE];
 
+	while (true)
+	{
+		n = s_read(sockfd,buf,MAXLINE,true);
+		s_write(sockfd,buf,n,true);
 
-
+		if(n < 0 && errno == EINTR)
+			continue;
+		else
+			if(n < 0)
+				prog_error("read error",true,errno);
+		
+	}
+}
 int
 main(void)
 {
-	main_socket = Socket(AF_INET,SOCK_STREAM,0);
+	int 		listenfd,connfd;
+	pid_t    	childpid;
+	socklen_t 	client_length;
+
+
+	listenfd = Socket(AF_INET,SOCK_STREAM,0);
+
 	memset(&server4_address,0,sizeof(server4_address));
-
-	server4_address.sin_family = AF_INET;
+	server4_address.sin_family		= AF_INET;
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	server4_address.sin_port = htons(PORT);
-	
-	Bind(main_socket,(SA*)&server4_address,sizeof(server4_address));
-	Listen(main_socket,LISTENQ);
-	
-	connection_length = sizeof(client4_address);
-
-	while(true)
+	server4_address.sin_port 		= htons(PORT);
+	Bind(listenfd,(SA*) &server4_address ,sizeof(server4_address));
+	Listen(listenfd,LISTENQ);
+	Signal(SIGCHLD,sig_h_child);
+	for(;;)
 	{
-		connection_socket = Accept(main_socket,(SA*)&client4_address, &connection_length);
-		
-		childpid = Fork();
-
-		if(childpid == 0)
+		client_length = sizeof(client4_address);
+		if( (connfd = accept(listenfd,(SA*) &client4_address, &client_length)) < 0 )
 		{
-			Close(main_socket);
-			str_echo(connection_socket);
-			exit(0);
+			if( errno == EINTR)
+				continue;
+			else
+				prog_error("accept error", true,errno);
 		}
-		Close(connection_socket);
-	}
-}
-void str_echo(int connection_socket)
-{
-	while(true)
-	{
-		s_read(connection_socket,buf,MAXLINE,true);	
-		s_write(connection_socket,buf,MAXLINE,true);				
-		
-		if(strncmp(buf,"exit\n\0",strlen(buf)) == 0) break;
+
+		if( (childpid == Fork()) == 0) //child process
+		{
+			Close(listenfd); // close listen socket
+			str_echo(connfd); //process request
+			exit(EXIT_SUCCESS);
+		}
+		Close(connfd); // parrent
 	}
 }

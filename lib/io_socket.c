@@ -9,8 +9,8 @@ signal non-interup process*/
 ssize_t
 s_write(int fd, const void *point, size_t len_buffer, bool level)
 {
-	size_t number_of_bytes_left = len_buffer;
-	ssize_t number_of_bytes_written;
+	size_t 		number_of_bytes_left = len_buffer;
+	ssize_t 	number_of_bytes_written;
 	const char* buffer = point;
 
 	while(number_of_bytes_left > 0)
@@ -48,9 +48,9 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 ssize_t 
 s_read(int fd, void *point, size_t len_buffer, bool level)
 {
-	size_t number_of_bytes_left = len_buffer;
-	ssize_t number_of_bytes_readed;
-	char* buffer = point;
+	size_t 		number_of_bytes_left = len_buffer;
+	ssize_t 	number_of_bytes_readed;
+	char* 		buffer = point;
 
 	while(number_of_bytes_left > 0)
 	{
