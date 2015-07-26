@@ -91,3 +91,37 @@ bool isInterupt(ssize_t nbytes)
 		return true;
 	else return false;
 }
+
+
+// deprecated
+ssize_t
+readline(int fd, void *ptr,size_t maxlen)
+{
+	ssize_t number_of_bytes,return_char;
+	char c, *pointer;
+
+	pointer = ptr;
+	for (number_of_bytes = 0; number_of_bytes < maxlen; number_of_bytes++)
+	{
+		again:
+			if ( (return_char = read(fd,&c,1)) == 1)
+			{
+				 *pointer++ = c;
+				 if(c == '\n') break; /* new line is stored like fgets() */
+			}
+			else
+			 	if(return_char == 0)
+			 	{
+			 		*pointer = 0;
+			 		return (number_of_bytes - 1); /* EOF, n - 1 bytes were read */
+			 	}
+			 	else
+			 	{
+			 		if(errno == EINTR)
+			 			goto again;
+			 		return -1;
+			 	}
+	}
+	*pointer = 0;
+	return number_of_bytes;
+}

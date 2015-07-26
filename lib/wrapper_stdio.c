@@ -10,7 +10,7 @@ Fgets(char *pointer,int n, FILE *stream)
 
 	if( (fpointer== NULL) && (file_error) )
 	{
-		echo_error("Can't read line from stdin",true,errno);
+        echo_error("Can't read line from stdin",true,errno);
 		return NULL;
 	}
 	

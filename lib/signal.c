@@ -1,4 +1,7 @@
 #include "net.h"
+/**
+ * Wrapper signal functions
+ */
 Sigfunc *
 Signal(int signo, Sigfunc *func)
 {
@@ -17,12 +20,8 @@ sig_h_child(int singo)
 	pid_t 	pid;
 	int 	stat;
 
-	while(true)
-	{
-		pid = waitpid(-1,&stat,WNOHANG);
-		if(pid <0) 
-			prog_error("waipid error",true,errno);
-		
+	while( ( pid = waitpid(-1,&stat,WNOHANG)) > 0)
+	{		
 		/*for debugging reasons*/
 		printf("child %d terminated\n",pid);
 	}

@@ -99,7 +99,7 @@ pid_t 	Fork(void);
 Sigfunc *Signal(int,Sigfunc*);
 void sig_h_child(int);
 
-
+ssize_t readline(int ,void*,size_t);
 
 #endif /* NET_H */
 
