@@ -1,28 +1,76 @@
 #include "net.h"
 /**
- * Wrapper signal functions
+ * While a signal handler is executing, the signal being delivered is blocked
+ * Furthermore,any additional signals that were specified in the @sa_mask sign
+ * set passed to sigaction when the handler was installed are also blocked.We
+ * set @sa_mask to the empty set, meaning no additional signals are blocked
+ * other than the signal being caugh.
+ *
  */
+
+static Sigfunc *child_signal(int signo, Sigfunc *func);
+
+
+//Classic wrapper signal function
 Sigfunc *
 Signal(int signo, Sigfunc *func)
 {
-	Sigfunc	*rsig;
+	Sigfunc		*rsig;
 	rsig = signal(signo, func);
 	/*check if it fails*/
 	if(rsig == SIG_ERR)
-		prog_error("signal error",true,errno);
-	
-	//else return the signal
-	return(rsig);
-}
-void
-sig_h_child(int singo)
-{
-	pid_t 	pid;
-	int 	stat;
+		prog_error("Signal error",true,errno);
 
-	while( ( pid = waitpid(-1,&stat,WNOHANG)) > 0)
-	{		
-		/*for debugging reasons*/
-		printf("child %d terminated\n",pid);
+	//else return the signal
+	return rsig;
+}
+
+//Custom signal couch
+Sigfunc *
+c_signal(int signo,Sigfunc *func)
+{
+	Sigfunc *rsig;
+
+	switch(signo)
+	{
+		case SIGCHLD:
+		{
+			rsig = child_signal(SIGCHLD,func);
+			break;
+		}
+		default:
+		{
+			prog_error("Wrong signal arguments",true,errno);
+			break;
+		}
+
+		//..
+		//*future updates will contain more handlers
 	}
+
+	if(rsig == SIG_ERR)
+		prog_error("Signal error",true,errno);
+
+	return rsig;
+}
+
+
+// Private methods
+
+static Sigfunc *
+child_signal(int signo, Sigfunc *func)
+{
+	//node: sig => struct stigaction
+	sig action,consequence;
+
+	action.sa_handler = func;
+	// set sa_mask to be emptyset
+	sigemptyset(&action.sa_mask);
+	// reset function if is  is interupted in the middle of the proccess
+	action.sa_flags = SA_RESTART;
+
+	if(sigaction(signo,&action,&consequence) == -1)
+		return SIG_ERR;
+
+	return consequence.sa_handler;
 }

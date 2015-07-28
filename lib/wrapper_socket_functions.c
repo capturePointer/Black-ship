@@ -6,7 +6,7 @@ int Socket(int domain, int type, int protocol)
 
 	if(sockfd == -1)
 		prog_error("Socket error",true,errno);
-	
+
 	return sockfd;
 }
 
@@ -19,7 +19,7 @@ Connect(int socket, const struct sockaddr *address, socklen_t address_len)
 		prog_error("Connect error",true,errno);
 }
 
-void 
+void
 Bind(int socket,const struct sockaddr *address,socklen_t address_len)
 {
 	int rbind = bind(socket,address ,address_len);

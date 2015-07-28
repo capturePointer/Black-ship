@@ -4,7 +4,7 @@ static bool isInterupt(ssize_t nbytes);
  * Our own I/O socket functions
  */
 
-/*Write that supports 
+/*Write that supports
 signal non-interup process*/
 ssize_t
 s_write(int fd, const void *point, size_t len_buffer, bool level)
@@ -27,7 +27,7 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 				if(number_of_bytes_written == -1)/*error*/
 				{
 					echo_error("Write error",true,errno);
-					return -1; 
+					return -1;
 				}
 		}
 		else
@@ -45,7 +45,7 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 	return len_buffer;
 }
 
-ssize_t 
+ssize_t
 s_read(int fd, void *point, size_t len_buffer, bool level)
 {
 	size_t 		number_of_bytes_left = len_buffer;
@@ -62,11 +62,11 @@ s_read(int fd, void *point, size_t len_buffer, bool level)
 			if(isInterupt(number_of_bytes_readed))
 				number_of_bytes_readed = 0;
 			// and if it's not interupted maybe it's something else
-			else 
-				if(number_of_bytes_readed == -1) 
+			else
+				if(number_of_bytes_readed == -1)
 				{
 					echo_error("Read error",true,errno);
-					return -1; 
+					return -1;
 				}
 		}
 		else
@@ -84,7 +84,7 @@ s_read(int fd, void *point, size_t len_buffer, bool level)
 	/*if everything is ok we should return the size that has been readed from the fd*/
 	return len_buffer - number_of_bytes_readed;
 }
-static 
+static
 bool isInterupt(ssize_t nbytes)
 {
 	if( (nbytes < 0) && (errno == EINTR) )

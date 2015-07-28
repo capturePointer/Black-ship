@@ -13,7 +13,7 @@ Fgets(char *pointer,int n, FILE *stream)
         echo_error("Can't read line from stdin",true,errno);
 		return NULL;
 	}
-	
+
 	return fpointer;
 }
 void

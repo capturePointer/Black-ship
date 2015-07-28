@@ -1,9 +1,9 @@
 CC = gcc
-CFLAGS = -c -std=c99 -g -Wall -o
+CFLAGS = -c -std=gnu99 -g -Wall  -o
 LIB_PATH = lib/
 BIN_PATH = bin/
 
-OBJECTS_LIBRARY = bin/error.o bin/io_socket.o bin/wrapper_socket_functions.o bin/wrapper_stdio.o bin/wrapper_convert.o bin/wrapper_io_socket.o bin/wrapper_unix.o bin/signal.o
+OBJECTS_LIBRARY = bin/error.o bin/signal.o bin/io_socket.o bin/wrapper_socket_functions.o bin/wrapper_stdio.o bin/wrapper_convert.o bin/wrapper_io_socket.o bin/wrapper_unix.o bin/handlers.o
 CLIENT_FILES = bin/client.o
 SERVER_FILES = bin/server.o
 
@@ -16,14 +16,15 @@ all:
 	#
 	#Compile LIB_FILES
 	#
-	$(CC) $(CFLAGS) $(BIN_PATH)error.o $(LIB_PATH)error.c 
+	$(CC) $(CFLAGS) $(BIN_PATH)handlers.o $(LIB_PATH)handlers.c
+	$(CC) $(CFLAGS) $(BIN_PATH)signal.o $(LIB_PATH)signal.c
+	$(CC) $(CFLAGS) $(BIN_PATH)error.o $(LIB_PATH)error.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_socket_functions.o $(LIB_PATH)wrapper_socket_functions.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_stdio.o $(LIB_PATH)wrapper_stdio.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_convert.o $(LIB_PATH)wrapper_convert.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_io_socket.o $(LIB_PATH)wrapper_io_socket.c
 	$(CC) $(CFLAGS) $(BIN_PATH)io_socket.o $(LIB_PATH)io_socket.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_unix.o $(LIB_PATH)wrapper_unix.c
-	$(CC) $(CFLAGS) $(BIN_PATH)signal.o $(LIB_PATH)signal.c
 	#
 	#Link CLIENT
 	#

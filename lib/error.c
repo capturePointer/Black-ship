@@ -1,6 +1,6 @@
 #include "net.h"
 
-void 
+void
 argc_length(int argc,int expect)
 {
 	if(argc < expect)
