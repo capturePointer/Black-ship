@@ -41,11 +41,11 @@ main(void)
 			stream_message(client_socket);
 			exit(0);
 		}
-		// if(pid > 0) // parrent process
-		// {
+		if(pid > 0) // parrent process
+		 {
 			printf("Process parinte %d\n",getppid());
 			Close(client_socket);
-		// }
+		 }
 
 	}
 }
