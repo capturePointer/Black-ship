@@ -5,7 +5,21 @@ socklen_t client_length;
 pid_t pid;
 
 
+
+
 void stream_message(int sockfd);
+
+
+typedef struct args{
+	long arg1;
+	long arg2;
+}args;
+
+typedef struct result{
+	long sum;
+}result;
+
+
 
 int
 main(void)
@@ -52,21 +66,16 @@ main(void)
 
 void stream_message(int sockfd)
 {
-	char recvline[MAXLINE];
-	ssize_t n;
+        ssize_t     n;
+        args        args;
+        result      result;
 
-	again:
-	while( (n = read(sockfd,recvline,MAXLINE)) >0)
-	{
-		s_write(sockfd,recvline,n,false);
+        for( ; ; ){
+            if( (n = read(sockfd, &args, sizeof(args))) == 0 )
+                    return; // connection closed by other end
+        
+            result.sum = args.arg1+args.arg2;
+            write(sockfd,&result,sizeof(result));
 
-		if(n<0 && errno == EINTR)
-		{
-			goto again;
-		}
-		else if (n < 0)
-		{
-			prog_error("stream_message_read error",false,errno);
-		}
-	}
+        }
 }

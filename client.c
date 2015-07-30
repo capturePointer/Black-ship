@@ -4,6 +4,17 @@ int client_socket;
 
 void stream_message(FILE *stream,int sockfd);
 
+
+typedef struct args{
+	long arg1;
+	long arg2;
+}args;
+
+typedef struct result{
+	long sum;
+}result;
+
+
 int
 main(int argc, char *argv[])
 {
@@ -28,14 +39,24 @@ main(int argc, char *argv[])
 }
 void stream_message(FILE *stream,int sockfd)
 {
-	char *n;
-	char sendline[MAXLINE];
-	char recvline[MAXLINE];
+    char        sendline[MAXLINE];
+    args        args;
+    result      result;
 
-	while( (n = Fgets(sendline,MAXLINE,stream)) != NULL)
-	{
-		s_write(sockfd,sendline,MAXLINE,true);
-		s_read(sockfd,recvline,MAXLINE,true);
-		Fputs(recvline,stdout);
-	}
+
+    while(Fgets(sendline,MAXLINE,stream) != NULL)
+    {
+    
+        if(sscanf(sendline,"%ld%ld",&args.arg1,&args.arg2) != 2){
+            printf("invalid input: %s", sendline);
+            continue;
+        }
+        write(sockfd,&args,sizeof(args));
+        if(readline(sockfd,&result,sizeof(result)) == 0){
+            prog_error("str_cli: server termianted prematurely",true,errno);
+        }
+
+        printf("%ld\n",result.sum);
+    }
+
 }

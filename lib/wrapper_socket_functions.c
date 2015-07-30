@@ -44,3 +44,11 @@ Accept(int socket, struct sockaddr  *restrict address, socklen_t  *restrict addr
 
 	return raccept;
 }
+int
+Select(int nfd,fd_set *readfd, fd_set *writefd, fd_set *exceptfd, cont time *timeout)
+{
+    int number_of_ready_fds; 
+    if( (number_of_ready_fds = select(nfd,readfd,writefd,exceptfd, timeout)) < 0)
+        prog_error("Select error",true,errno);
+    return number_of_ready_fds;
+}
