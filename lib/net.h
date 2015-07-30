@@ -74,7 +74,6 @@ struct sockaddr_in client4_address;
  */
 typedef void Sigfunc(int);
 typedef struct sigaction sig;
-typedef struct timeval time;
 /*
  *  Prototype of our own functions
  *
@@ -100,7 +99,7 @@ int      Accept(int, struct sockaddr *restrict , socklen_t *restrict);
 void     Close(int);
 pid_t    Fork(void);
 Sigfunc *Signal(int,Sigfunc*);
-int      Select(int nfds, fd_set*, fd_set*, fd_set*,const time timeval);
+int      Select(int nfds, fd_set*, fd_set*, fd_set*, struct timeval*);
 Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void     handler_child_waitpid(int);
