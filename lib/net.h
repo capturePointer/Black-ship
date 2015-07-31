@@ -81,6 +81,10 @@ typedef struct sigaction sig;
 void     argc_length(int, int);
 void     echo_error(const char*, bool, int);
 void     prog_error(const char*, bool, int);
+/**
+ * Miscellaneous
+ */
+int      max(int,int);
 
 ssize_t  s_write(int, const void*, size_t, bool);
 ssize_t  s_read(int, void*, size_t, bool);
@@ -98,8 +102,11 @@ void     Listen(int, int);
 int      Accept(int, struct sockaddr *restrict , socklen_t *restrict);
 void     Close(int);
 pid_t    Fork(void);
+pid_t    Wait(int*);
+pid_t    Waitpid(pid_t,int*,int);
 Sigfunc *Signal(int,Sigfunc*);
 int      Select(int nfds, fd_set*, fd_set*, fd_set*, struct timeval*);
+void     Shutdown(int,int);
 Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void     handler_child_waitpid(int);

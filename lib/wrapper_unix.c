@@ -15,3 +15,26 @@ Fork(void)
 
 	return pid;
 }
+
+pid_t
+Waitpid(pid_t pid,int *ptr,int mode)
+{
+    pid_t rpid;
+    rpid = waitpid(pid,ptr,mode);
+
+    if(rpid == -1)
+        prog_error("Waidpid error",true,errno);
+
+    return rpid;
+}
+
+pid_t
+Wait(int *status)
+{
+    pid_t rpid;
+
+    rpid = wait(status);
+    if(rpid == -1)
+        prog_error("Wait error",true,errno);
+    return rpid;
+}

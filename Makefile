@@ -3,7 +3,7 @@ CFLAGS = -c -std=gnu11 -g -Wall  -o
 LIB_PATH = lib/
 BIN_PATH = bin/
 
-OBJECTS_LIBRARY = bin/error.o bin/signal.o bin/io_socket.o bin/wrapper_socket_functions.o bin/wrapper_stdio.o bin/wrapper_convert.o bin/wrapper_io_socket.o bin/wrapper_unix.o bin/handlers.o
+OBJECTS_LIBRARY = bin/error.o bin/signal.o bin/io_socket.o bin/wrapper_socket_functions.o bin/wrapper_stdio.o bin/wrapper_convert.o bin/wrapper_io_socket.o bin/wrapper_unix.o bin/handlers.o bin/miscellaneous.o
 CLIENT_FILES = bin/client.o
 SERVER_FILES = bin/server.o
 
@@ -25,7 +25,7 @@ all:
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_io_socket.o $(LIB_PATH)wrapper_io_socket.c
 	$(CC) $(CFLAGS) $(BIN_PATH)io_socket.o $(LIB_PATH)io_socket.c
 	$(CC) $(CFLAGS) $(BIN_PATH)wrapper_unix.o $(LIB_PATH)wrapper_unix.c
-
+	$(CC) $(CFLAGS) $(BIN_PATH)miscellaneous.o $(LIB_PATH)miscellaneous.c
 	#Link CLIENT
 
 	$(CC) -o $(BIN_PATH)client $(OBJECTS_LIBRARY) $(CLIENT_FILES)

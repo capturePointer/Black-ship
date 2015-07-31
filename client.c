@@ -14,7 +14,6 @@ typedef struct result{
 	long sum;
 }result;
 
-
 int
 main(int argc, char *argv[])
 {
@@ -39,24 +38,43 @@ main(int argc, char *argv[])
 }
 void stream_message(FILE *stream,int sockfd)
 {
-    char        sendline[MAXLINE];
-    args        args;
-    result      result;
+    int     maxfdp1,stdineof;
+    fd_set  rset;
+    char    buf[MAXLINE];
+    int     n;
 
+    stdineof = 0;
+    FD_ZERO(&rset);
 
-    while(Fgets(sendline,MAXLINE,stream) != NULL)
+    for( ; ; )
     {
-    
-        if(sscanf(sendline,"%ld%ld",&args.arg1,&args.arg2) != 2){
-            printf("invalid input: %s", sendline);
-            continue;
+        if(stdineof == 0)      
+            FD_SET(fileno(stream), &rset);
+        
+        FD_SET(sockfd, &rset);
+        maxfdp1 = max(fileno(stream), sockfd) + 1;
+        Select(maxfdp1, &rset, NULL, NULL, NULL);
+        
+        if(FD_ISSET(sockfd, &rset)) /*socket is readble*/ 
+        { 
+            if( (n=readline(sockfd,buf,MAXLINE)) == 0)
+            {
+               if(stdineof == 1)
+                   return;
+                else
+                    prog_error("Readline error",true,errno);
+             s_write(fileno(stdout),buf,n,true);
+            }         
         }
-        write(sockfd,&args,sizeof(args));
-        if(readline(sockfd,&result,sizeof(result)) == 0){
-            prog_error("str_cli: server termianted prematurely",true,errno);
-        }
-
-        printf("%ld\n",result.sum);
+       
+        if(FD_ISSET(fileno(stream),&rset)) /*input is readdble*/
+            if( (n = readline(fileno(stream),buf,MAXLINE)) == 0)
+            {
+                stdineof = 1;
+                Shutdown(sockfd,SHUT_WR); /*sends a fin*/
+                FD_CLR(fileno(stream),&rset);
+                continue;
+            }
+        s_write(sockfd,buf,n,true);
     }
-
 }

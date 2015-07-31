@@ -93,7 +93,15 @@ bool isInterupt(ssize_t nbytes)
 }
 
 
-// deprecated
+/**
+ * Read from the fd char per char 
+ * =============================
+ * This method tends to be very very slow due to the
+ * verbose read char per char way.
+ * Also the func test if we cought a signal of type EINTR
+ * and if we cought just we restart the process again until we
+ * fully read everything.
+ */
 ssize_t
 readline(int fd, void *ptr,size_t maxlen)
 {
@@ -125,3 +133,27 @@ readline(int fd, void *ptr,size_t maxlen)
 	*pointer = 0;
 	return number_of_bytes;
 }
+/**
+ * Readline per line much more faster than char by char
+ * Also we keep it save signal prone saftey to cache the signal
+ * of type EINTR and restart the process again until we have readed
+ * all the lines. Note that the line must not be more than our buffer.
+ */
+ssize_t
+Readline(int fd,void *ptr,size_t maxlen)
+{
+    ssize_t n, retrn_char;
+    char c, *pointer;
+
+    int read_count;
+
+
+    pointer = ptr;
+
+    for(n=1; n<maxlen; n++)
+    {
+            
+        //Still thinking... 
+    }
+}
+
