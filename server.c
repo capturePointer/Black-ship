@@ -66,16 +66,16 @@ main(void)
 
 void stream_message(int sockfd)
 {
-        ssize_t     n;
-        args        args;
-        result      result;
+		ssize_t     n;
+		args        args;
+		result      result;
 
-        for( ; ; ){
-            if( (n = read(sockfd, &args, sizeof(args))) == 0 )
-                    return; // connection closed by other end
-        
-            result.sum = args.arg1+args.arg2;
-            write(sockfd,&result,sizeof(result));
+		for( ; ; ){
+			if( (n = read(sockfd, &args, sizeof(args))) == 0 )
+					return; // connection closed by other end
+            
+			result.sum = args.arg1+args.arg2;
+			write(sockfd,&result,sizeof(result));
 
-        }
+			}
 }
