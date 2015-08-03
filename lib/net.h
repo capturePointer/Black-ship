@@ -112,6 +112,6 @@ Sigfunc* c_signal(int,Sigfunc*);
 void     handler_child_waitpid(int);
 void     handler_child_wait(int);
 
-ssize_t  readline(int ,void*,size_t);
+//ssize_t  readline(int ,void*,size_t);
 
 #endif /* NET_H */

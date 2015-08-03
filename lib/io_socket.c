@@ -4,11 +4,6 @@
  */
 
 
-static int byte_count;
-static char *container;
-static char buffer[MAXLINE]; 
-static ssize_t read_buffer_new_line(int fd, void *ptr, size_t maxlen, bool level);
-static ssize_t sig_read(int fd, char *ptr, bool level);
 /*Write that supports
 signal non-interup process*/
 static bool isInterupt(ssize_t nbytes);
@@ -98,126 +93,21 @@ bool isInterupt(ssize_t nbytes)
 		return true;
 	else return false;
 }
-
-
 /**
- * Read from the fd char per char 
- * =============================
- * This method tends to be very very slow due to the
- * verbose read char per char way.
- * Also the func test if we cought a signal of type EINTR
- * and if we cought just we restart the process again until we
- * fully read everything.
+ * Hey, my name is Jin and i like cupckaes.\n 
+ * Thins is justg a demo about how i feelEOF\.
  */
-ssize_t
+
 readline(int fd, void *ptr,size_t maxlen)
 {
-	ssize_t number_of_bytes,return_char;
-	char c, *pointer;
 
-	pointer = ptr;
-	for (number_of_bytes = 0; number_of_bytes < maxlen; number_of_bytes++)
-	{
-		again:
-			if ( (return_char = read(fd,&c,1)) == 1)
-			{
-				 *pointer++ = c;
-				 if(c == '\n') break; /* new line is stored like fgets() */
-			}
-			else
-				if(return_char == 0)
-				{
-					*pointer = 0;
-					return (number_of_bytes - 1); /* EOF, n - 1 bytes were read */
-				}
-				else
-				{
-					if(errno == EINTR)
-						goto again;
-					return -1;
-				}
-	}
-	*pointer = 0;
-	return number_of_bytes;
-}
+	int n;
+	char *buffer;
 
-
-
-/**
- * 
- */
-ssize_t
-sig_read(int fd, char *ptr, bool level)
-{
-		if( byte_count <= 0 )
-		{
-again:
-				if((byte_count = read(fd,buffer,sizeof(buffer))) < 0)
-				{
-					if(level)
-						if(isInterupt(byte_count))
-							goto again;
-					return -1;
-				}
-				else
-					if(byte_count == 0)
-						return 0;
-			container = buffer;
-		}
-
-		byte_count--;
-		*ptr++ = *container++;
-		
-		return 1;
+	buffer = ptr;
+//	n = read(fd,buffer,sizeof(buffer));
 
 }
-
-ssize_t
-read_buffer_new_line(int fd, void *ptr, size_t maxlen, bool level)
-{
-	ssize_t			n, rc;
-	char			c, *pint;
-
-	pint = ptr;
-
-	for(n = 0; n<maxlen; n++)
-	{
-		if( (rc = sig_read(fd,&c,level)) <=0 )
-		{
-				*pint++ = c;
-				if(c == '\n')
-					break;
-		}
-		else
-			if(rc == 0)
-			{
-				*pint = 0;
-				return n-1;
-			}
-			else
-				return -1;
-	}//for
-	
-	*pint = 0;
-	return n;
-}
-
-/**
- * Readline per line much more faster than char by char
- * Also we keep it save signal prone saftey to cache the signal
- * of type EINTR and restart the process again until we have readed
- * all the lines. Note that the line must not be more than our buffer.
- */
-ssize_t
-s_readline(int fd, void *ptr, size_t maxlen,bool level)
-{
-	ssize_t nbyte;
-	nbyte = read_buffer_new_line(fd,ptr,maxlen,level);
-	if(nbyte < 0)
-		prog_error("New line buffer read error",true,errno);
-	return nbyte;
-}
-
 
 
 
