@@ -41,12 +41,19 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 			}
 		/*if message was interupt continue sending the message */
 		number_of_bytes_left = number_of_bytes_left - number_of_bytes_written;
-		buffer = buffer - number_of_bytes_written;
+		buffer = buffer + number_of_bytes_written;
 	}
 	/*if everything is ok we should return the size that has been writen to the fd*/
 	return len_buffer;
 }
-
+/**
+ * ssize_t s_read 
+ * reades until we hit the maximum len_buffer
+ * if in the fd we had writed 255 bits and our len_buffer is 2000 bis length
+ * we will read 255 bits and we will stay in blocking mode
+ * because the input is way to small of the length output we've expected
+ * the s_read expects that you written in the fd  exact the len_buffer of our func
+ */
 ssize_t
 s_read(int fd, void *point, size_t len_buffer, bool level)
 {
@@ -84,7 +91,7 @@ s_read(int fd, void *point, size_t len_buffer, bool level)
 		buffer = buffer - number_of_bytes_readed;
 	}
 	/*if everything is ok we should return the size that has been readed from the fd*/
-	return len_buffer - number_of_bytes_readed;
+	return len_buffer - number_of_bytes_left;
 }
 static
 bool isInterupt(ssize_t nbytes)
@@ -93,25 +100,3 @@ bool isInterupt(ssize_t nbytes)
 		return true;
 	else return false;
 }
-/**
- * Hey, my name is Jin and i like cupckaes.\n 
- * Thins is justg a demo about how i feelEOF\.
- */
-
-readline(int fd, void *ptr,size_t maxlen)
-{
-
-	int n;
-	char *buffer;
-
-	buffer = ptr;
-//	n = read(fd,buffer,sizeof(buffer));
-
-}
-
-
-
-
-
-
-

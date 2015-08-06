@@ -72,8 +72,8 @@ struct sockaddr_in client4_address;
         Sigfunc *signal(int signo, Sigfunc *func);
     in order to do this we must typedef smth
  */
-typedef void Sigfunc(int);
-typedef struct sigaction sig;
+typedef void	Sigfunc(int);
+typedef struct  sigaction sig;
 /*
  *  Prototype of our own functions
  *
@@ -85,9 +85,12 @@ void     prog_error(const char*, bool, int);
  * Miscellaneous
  */
 int      max(int,int);
+void    *Malloc(size_t);
+
 
 ssize_t  s_write(int, const void*, size_t, bool);
 ssize_t  s_read(int, void*, size_t, bool);
+ssize_t	 readline(int,void*,size_t,bool);
 
 /* Wrapper base proto */
 int      Socket(int , int , int );
@@ -112,6 +115,5 @@ Sigfunc* c_signal(int,Sigfunc*);
 void     handler_child_waitpid(int);
 void     handler_child_wait(int);
 
-//ssize_t  readline(int ,void*,size_t);
 
 #endif /* NET_H */
