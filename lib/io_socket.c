@@ -100,3 +100,75 @@ bool isInterupt(ssize_t nbytes)
 		return true;
 	else return false;
 }
+
+
+static int		read_byte_count;
+static char		*read_ptr;
+static char		read_buf[MAXLINE];
+/**
+ * Read one char
+ * with safe signal handleing
+ */
+static ssize_t
+char_read(int fd, char *ptr,bool level)
+{
+	if(read_byte_count <= 0)
+	{
+		again:
+		read_byte_count = read(fd,read_buf,MAXLINE);
+		if(level)
+		{
+			if(isInterupt(read_byte_count))
+				goto again;
+			else
+				if(read_byte_count == -1)
+					return -1;
+		}
+		else
+			if(read_byte_count == 0)
+			{
+				return 0;
+			}
+			else
+				if(read_byte_count == -1)
+					return -1;
+		read_ptr = read_buf;
+	}
+	read_byte_count -- ;
+	*ptr = *read_ptr++;
+	
+	return 1;
+}
+/**
+ *
+ */
+ssize_t
+readline(int fd, void *point, size_t len_buffer)
+{
+	ssize_t n, rc;
+	char c, *ptr;
+
+	ptr = point;
+
+	for(n = 0; n<len_buffer; n++)
+	{
+		if( (rc= char_read(fd,&c,true)) == 1)
+		{
+			*ptr++ = c;
+				if(c == '\n')
+					break;
+		}
+		else
+			if( rc == 0 )
+			{
+				*ptr = 0;
+				return n-1;
+			}
+			else
+				return -1;
+	}
+
+	*ptr = 0;
+	return n;
+}
+

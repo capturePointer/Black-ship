@@ -90,7 +90,7 @@ void    *Malloc(size_t);
 
 ssize_t  s_write(int, const void*, size_t, bool);
 ssize_t  s_read(int, void*, size_t, bool);
-ssize_t	 readline(int,void*,size_t,bool);
+ssize_t	 readline(int,void*,size_t);
 
 /* Wrapper base proto */
 int      Socket(int , int , int );

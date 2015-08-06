@@ -24,8 +24,7 @@ Signal(int signo, Sigfunc *func)
 	//else return the signal
 	return rsig;
 }
-
-//Custom signal couch
+//Custom signal cache
 Sigfunc *
 c_signal(int signo,Sigfunc *func)
 {
