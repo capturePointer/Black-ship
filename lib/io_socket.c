@@ -104,7 +104,7 @@ bool isInterupt(ssize_t nbytes)
 
 static int		read_byte_count;
 static char		*read_ptr;
-static char		read_buf[MAXLINE];
+static char		read_buff[MAXLINE];
 /**
  * Read one char
  * with safe signal handleing
@@ -112,10 +112,12 @@ static char		read_buf[MAXLINE];
 static ssize_t
 char_read(int fd, char *ptr,bool level)
 {
+	// check if we have space to read more chars
 	if(read_byte_count <= 0)
 	{
 		again:
-		read_byte_count = read(fd,read_buf,MAXLINE);
+		read_byte_count = read(fd,read_buff,MAXLINE);
+		//check for perrmision sign handling
 		if(level)
 		{
 			if(isInterupt(read_byte_count))
@@ -124,7 +126,7 @@ char_read(int fd, char *ptr,bool level)
 				if(read_byte_count == -1)
 					return -1;
 		}
-		else
+		else//EOF
 			if(read_byte_count == 0)
 			{
 				return 0;
@@ -132,9 +134,9 @@ char_read(int fd, char *ptr,bool level)
 			else
 				if(read_byte_count == -1)
 					return -1;
-		read_ptr = read_buf;
+		read_ptr = read_buff;
 	}
-	read_byte_count -- ;
+	read_byte_count--;
 	*ptr = *read_ptr++;
 	
 	return 1;
@@ -147,28 +149,37 @@ readline(int fd, void *point, size_t len_buffer)
 {
 	ssize_t n, rc;
 	char	c, *ptr;
-
+	//pass pointer to char pointer
 	ptr = point;
-
+	// for every byte of data
 	for(n = 0; n<len_buffer; n++)
 	{
+		// if we return successfull a char 
 		if( (rc= char_read(fd,&c,true)) == 1)
 		{
+			//our char pointer point to that char
 			*ptr++ = c;
 			if(c == '\n') // we found a new line
 				break;
 		}
 		else
+			//EOF
 			if( rc == 0 )
 			{
-				*ptr = 0;
+				//return the the numebr of bytes that were readed.
+				*ptr = 0; // make our pointer point to null
 				return(n - 1);
 			}
 			else
 				return -1;
 	}
 
+	//point to null
 	*ptr = 0;
+	//reset read_byte_count if we perform the readline in a while/do/for loop
+	//we must reset the byte_count in order to read other lines consecutive from stdin
+	read_byte_count = 0;
+
 	return n;
 }
 
