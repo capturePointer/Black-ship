@@ -15,7 +15,7 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 	ssize_t 	number_of_bytes_written;
 	const char	*buffer = point;
 
-	while(number_of_bytes_written > 0)
+	while(number_of_bytes_left > 0)
 	{
 		//atempt to write the data to the fd
 		number_of_bytes_written = write(fd,buffer,number_of_bytes_left);
@@ -146,7 +146,7 @@ ssize_t
 readline(int fd, void *point, size_t len_buffer)
 {
 	ssize_t n, rc;
-	char c, *ptr;
+	char	c, *ptr;
 
 	ptr = point;
 
@@ -155,14 +155,14 @@ readline(int fd, void *point, size_t len_buffer)
 		if( (rc= char_read(fd,&c,true)) == 1)
 		{
 			*ptr++ = c;
-				if(c == '\n')
-					break;
+			if(c == '\n') // we found a new line
+				break;
 		}
 		else
 			if( rc == 0 )
 			{
 				*ptr = 0;
-				return n-1;
+				return(n - 1);
 			}
 			else
 				return -1;
