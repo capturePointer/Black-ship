@@ -142,7 +142,10 @@ char_read(int fd, char *ptr,bool level)
 	return 1;
 }
 /**
- *
+ * readline function reads using his own self buffer types
+ * these buffers are static because we need to save them for every
+ * execution , if we need them we can simply gem them with a method like void* _get()
+ * Note that this function is not treath safety
  */
 ssize_t
 readline(int fd, void *point, size_t len_buffer)

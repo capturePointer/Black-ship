@@ -1,6 +1,7 @@
 #include "net.h"
 
-int Socket(int domain, int type, int protocol)
+int
+Socket(int domain, int type, int protocol)
 {
 	int sockfd = socket(domain,type,protocol);
 	if(sockfd == -1)
@@ -54,5 +55,5 @@ Shutdown(int fd, int mode)
     int rshutdown;
     rshutdown = shutdown(fd,mode);
     if(rshutdown < 0)
-        prog_error("Shutdown error",true,errno);       
+        prog_error("Shutdown error",true,errno);
 }
