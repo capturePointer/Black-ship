@@ -57,3 +57,13 @@ Shutdown(int fd, int mode)
     if(rshutdown < 0)
         prog_error("Shutdown error",true,errno);
 }
+int
+Poll(struct pollfd fds[], nfds_t nfds, int timeout)
+{
+	int rpoll;
+	rpoll = poll(fds,nfds,timeout);
+	if(rpoll == -1)
+		prog_error("Poll error",true,errno);
+	
+	return rpoll;
+}

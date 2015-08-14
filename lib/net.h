@@ -117,6 +117,7 @@ pid_t    Wait(int*);
 pid_t    Waitpid(pid_t,int*,int);
 Sigfunc *Signal(int,Sigfunc*);
 int      Select(int nfds, fd_set*, fd_set*, fd_set*, struct timeval*);
+int		 Poll(struct pollfd[],nfds_t,int);
 void     Shutdown(int,int);
 Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
