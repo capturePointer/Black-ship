@@ -7,6 +7,7 @@ socklen_t client_len;
 int i;
 int sockfd;
 char buf[MAXLINE];
+
 int main()
 {
 
@@ -72,7 +73,7 @@ int main()
 				continue;
 			if( FD_ISSET(sockfd, &rset))
 			{
-				if( (n = Read(sockfd, buf, MAXLINE)) ==0 )
+				if( (n = Read(sockfd, buf, MAXLINE)) == 0 )
 				{
 					Close(sockfd);
 					FD_CLR(sockfd, &allset);

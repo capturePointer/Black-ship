@@ -22,6 +22,14 @@
 #include <signal.h>/*catch signals*/
 #include <sys/wait.h>
 #include <sys/select.h> /*IO multiplexing*/
+#include <poll.h>
+#include <limits.h> // for OPEN_MAX
+//INFTIM timeout value for pool , wait forever
+#ifndef INFTIM
+#include <sys/stropts.h>
+#endif
+
+
 
 /*
  * Define simple variables

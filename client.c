@@ -48,7 +48,7 @@ void stream_message(FILE *stream, int sockfd)
 
 		if(FD_ISSET(sockfd, &rset))
 		{
-			if((n = Read(sockfd, buf, MAXLINE)) ==0 )
+			if((n = readline(sockfd, buf, MAXLINE)) ==0 )
 			{	if(stdineof == 1)
 					return; /*normal termination*/
 				else
