@@ -1,7 +1,7 @@
 #include "lib/net.h"
 int main_socket;
 
-void stream_message(FILE *stream, int sockfd);
+void stream_message(int sockfd);
 
 int main(int argc, char *argv[])
 {
@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
 
 	Connect(main_socket,(SA *)& server4_address, sizeof(server4_address));
 
-	stream_message(stdin,main_socket);
+	stream_message(main_socket);
 	
 	exit(EXIT_SUCCESS);
 }
@@ -26,48 +26,21 @@ int main(int argc, char *argv[])
  * 2,7 are ready for writing
  * 1,4 have an exception condition pending
  */
-void stream_message(FILE *stream, int sockfd)
+void stream_message(int sockfd)
 {
-	int		maxfdp1, stdineof;
-	fd_set	rset;
-	char	buf[MAXLINE];
-	int		n;
-	//we note that end of file is 0
-	stdineof = 0;
-	// we set all bytes in rset to be 0
-	FD_ZERO(&rset);
+	char sendline[MAXLINE];
+	char recvline[MAXLINE];
+	
 
-	for( ; ; )
+	while(Fgets(sendline,MAXLINE,stdin) != NULL)
 	{
-		if(stdineof == 0)
-			FD_SET(fileno(stream), &rset);
-		FD_SET(sockfd,&rset);
-		maxfdp1 = max(fileno(stream), sockfd) + 1;
-		//readfds,writefd,timeval to null
-		Select(maxfdp1, &rset, NULL, NULL, NULL);
-
-		if(FD_ISSET(sockfd, &rset))
-		{
-			if((n = readline(sockfd, buf, MAXLINE)) ==0 )
-			{	if(stdineof == 1)
-					return; /*normal termination*/
-				else
-					prog_error("stream_message: server terminated prematurely",true,errno);
-			}
-			//write to the standard output like Fputs(buf,stdout);
-			Write(fileno(stdout), buf, n);
-		}	 
+		s_write(sockfd,sendline,strlen(sendline),true);
 		
-		if(FD_ISSET(fileno(stream), &rset))
-		{
-			if((n = Read(fileno(stream),buf,MAXLINE)) == 0)/*input is readble*/
-			{
-				stdineof = 1;
-				Shutdown(sockfd, SHUT_WR); /*send fin */
-				FD_CLR(fileno(stream), &rset);
-				continue;
-			}
-			s_write(fileno(stream),buf,n,true);
-		}
+		int n = readline(sockfd,recvline,MAXLINE);
+
+		if(n == 0)
+			printf("Serverul a terminat prematur");
+		
+		Fputs(recvline,stdout);
 	}
 }

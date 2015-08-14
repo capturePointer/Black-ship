@@ -23,10 +23,10 @@
 #include <sys/wait.h>
 #include <sys/select.h> /*IO multiplexing*/
 #include <poll.h>
-#include <limits.h> // for OPEN_MAX
+#include <limits.h>
 //INFTIM timeout value for pool , wait forever
 #ifndef INFTIM
-#include <sys/stropts.h>
+	#include <bsd/sys/poll.h>
 #endif
 
 
@@ -66,8 +66,32 @@ struct sockaddr_in client4_address;
 #ifndef LISTENQ
     #define LISTENQ 1024
 #endif
+/**
+ * We define a reasonable limit like in the X11/Xos.h form Xorg
+ * It appears that OPEN_MAX is deprecated, at least on Linux systems.
+ * The reason appears to be that the maximum number of file that 
+ * can be opened simultaneously is not fixed, so a macro 
+ * that expands to an integer literal is not a good way
+ * to get that information.
+ *
+ *
+ * If you want the current maximum number of files that can be opened,
+ * take a look at the sysconf() function; on my system, sysconf(_SC_OPEN_MAX)
+ * returns 1024.(The sysconf() man page refers to a symbol OPEN_MAX. 
+ * This is not a count, but a value recognized by sysconf().
+ * And it's not defined on my system.)
+ */
+#ifndef OPEN_MAX
+	#define OPEN_MAX 256
+#endif
 
+
+/**
+ * for a better readability 
+ */
 #define SA struct sockaddr
+
+
 /*Custom user based settings*/
 #define PORT 9877
 #define MAXLINE 4096
