@@ -5,7 +5,7 @@ int			nready;
 ssize_t		n;
 char		buf[MAXLINE];
 socklen_t	client_length;
-int i=0;
+int			i;
 
 
 /**for poll
@@ -31,24 +31,21 @@ int main()
 	
 	client[0].fd = main_socket;
 	client[0].events = POLLRDNORM;
-
 	for(i = 1; i < OPEN_MAX; i++)
-	{
 		client[i].fd = -1;
-	}
 	maxi = 0;
 
 	for(;;)
 	{
 		nready = Poll(client, maxi+1, INFTIM);
 
-		if(client[0].revents & POLLRDNORM)
+		if(client[0].revents & POLLRDNORM) //and byte
 		{
 			client_length = sizeof(client4_address);
 			client_socket = Accept(main_socket, (SA *)&client4_address, &client_length);
-
+			
 			for(i = 1; i<OPEN_MAX; i++)
-					if(client[i].fd == 0)
+					if(client[i].fd < 0)
 					{
 						client[i].fd = client_socket;
 						break;
@@ -74,21 +71,24 @@ int main()
 				{
 					if(errno == ECONNRESET)
 					{
+						printf("Client aborded connection\n");
 						Close(sockfd);
 						client[i].fd = 1;
 					}
 					else
-						if (n == 0) // connection close by client
-						{
-							Close(sockfd);
-							client[i].fd = -1;
-						}
-						else
-							s_write(sockfd,buf,n,false);
-						if( --nready <=0 )
-							break;
-			
+						printf("read error");
 				}
+				else
+					if (n == 0) // connection close by client
+					{
+						Close(sockfd);
+						client[i].fd = -1;
+					}
+					else
+						s_write(sockfd,buf,n,false);
+					
+					if( --nready <=0 )
+						break;
 			}
 		}
 	}
