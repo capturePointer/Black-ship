@@ -30,7 +30,7 @@ int main()
 	Listen(main_socket,LISTENQ);
 	
 	client[0].fd = main_socket;
-	client[0].events = POLLRDNORM;
+	client[0].events = POLLRDNORM;// 64 1000000
 	for(i = 1; i < OPEN_MAX; i++)
 		client[i].fd = -1;
 	maxi = 0;

@@ -67,3 +67,21 @@ Poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	
 	return rpoll;
 }
+void
+Getsockopt(int fd, int level, int optname, void *optval, socklen_t *optlenptr)
+{
+	if(getsockopt(fd, level, optname, optval, optlenptr) == -1)
+		prog_error("Getsockopt error",true,errno);
+}
+void
+Setsockopt(int fd, int level, int optname, const void *optval, socklen_t optlen)
+{
+	if(setsockopt(fd, level, optname, optval, optlen) == -1)
+		prog_error("Setsockoopt error",true,errno);
+}
+void
+Getpeername(int fd, struct sockaddr *sa, socklen_t *salenptr)
+{
+	if(getpeername(fd, sa, salenptr) == -1)
+		prog_error("Getpeername error",true,errno);
+}

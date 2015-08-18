@@ -143,6 +143,9 @@ Sigfunc *Signal(int,Sigfunc*);
 int      Select(int nfds, fd_set*, fd_set*, fd_set*, struct timeval*);
 int		 Poll(struct pollfd[],nfds_t,int);
 void     Shutdown(int,int);
+void	 Setsockopt(int, int, int, const void*, socklen_t);
+void	 Getsockopt(int, int, int, void*, socklen_t*);
+void	 Getpeername(int, struct sockaddr*, socklen_t*);
 Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void     handler_child_waitpid(int);
