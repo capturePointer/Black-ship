@@ -15,6 +15,7 @@
 
 #include <netinet/in.h> /*sockaddr_in{},in_addr{} etc..*/
 #include <sys/socket.h> /*socket(),*/
+#include <sys/un.h>
 #include <sys/types.h> /* size_t int8_t int16_t*/
 #include <unistd.h> /* unxi standard library */
 #include <arpa/inet.h> /*inet_pton*/
