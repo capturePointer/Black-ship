@@ -152,6 +152,6 @@ Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void     handler_child_waitpid(int);
 void     handler_child_wait(int);
-
+char	 *proto_ntop(const struct sockaddr*, socklen_t);
 
 #endif /* NET_H */

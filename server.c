@@ -27,7 +27,7 @@ void dg_echo(int sockfd, SA *client, socklen_t clilen)
 	for(; ;)
 	{
 		len = clilen;
-		n = Recvfrom(sockfd, sendbuffer, MAXLINE, 0,NULL, NULL);
+		n = Recvfrom(sockfd, sendbuffer, MAXLINE, 0,client,&len);
 
 		Sendto(sockfd, sendbuffer, n, 0,client, len);
 	}
