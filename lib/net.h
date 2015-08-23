@@ -12,7 +12,6 @@
 #include <string.h>
 #include <sys/time.h> /*time stamp*/
 
-
 #include <netinet/in.h> /*sockaddr_in{},in_addr{} etc..*/
 #include <sys/socket.h> /*socket(),*/
 #include <sys/un.h>
@@ -135,7 +134,8 @@ void     Fputs(const char*, FILE*);
 size_t   Write(int, const void*, size_t);
 size_t   Read(int, void*,size_t);
 ssize_t  Sendto(int,const void*, size_t, int, const struct sockaddr*, socklen_t);
-ssize_t  Recvfrom(int, void *restrict , size_t, int, struct sockaddr *restrict, socklen_t *restrict);
+ssize_t  Recvfrom(int, void *restrict , size_t, int, 
+				 struct sockaddr *restrict, socklen_t *restrict);
 void     Bind(int, const struct sockaddr*, socklen_t);
 void     Listen(int, int);
 int      Accept(int, struct sockaddr *restrict , socklen_t *restrict);

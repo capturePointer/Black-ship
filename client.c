@@ -34,11 +34,11 @@ void dg_cli(FILE *stream, int sockfd, const SA *server, socklen_t servlen)
 
 		len = servlen;
 		n = Recvfrom(sockfd, recvline, MAXLINE, 0, preply_addr,&len);
-		//if( len!=servlen || memcmp(server,preply_addr,len) !=0 )
-		//{
+		if( len!=servlen || memcmp(server,preply_addr,len) !=0 )
+		{
 			printf("reply from %s (ignored) \n",proto_ntop(preply_addr,len));
-		//	continue;
-		//}
+			continue;
+		}
 
 		recvline[n] = 0; /* null termiante*/
 		Fputs(recvline, stdout);

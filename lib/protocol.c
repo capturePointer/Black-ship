@@ -6,6 +6,9 @@ proto_ntop(const struct sockaddr *sa, socklen_t len)
 	char			port[8];
 	static char		message[128];
 
+	//adding getsockopt( fd, SOL_SOCKET, SO_TYPE, &type, &length );
+	// to get the socket type of the protocol...
+
 	switch(sa->sa_family)
 	{
 		case AF_INET:
@@ -43,6 +46,14 @@ proto_ntop(const struct sockaddr *sa, socklen_t len)
 			else
 				snprintf(message,sizeof(message),"%s",unl->sun_path);
 			return message;
+		}
+		case AF_ROUTE:
+		{
+		}
+		case AF_KEY:
+		{
+		
+		
 		}
 		default:
 		{
