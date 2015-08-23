@@ -129,6 +129,7 @@ ssize_t	 readline(int,void*,size_t);
 int      Socket(int , int , int );
 void     Connect(int, const struct sockaddr*, socklen_t);
 void     Inet_pton(int, const char*, void*);
+void	 Inet_ntop(int,const void*,char*,socklen_t);
 char    *Fgets(char*, int, FILE*);
 void     Fputs(const char*, FILE*);
 size_t   Write(int, const void*, size_t);
