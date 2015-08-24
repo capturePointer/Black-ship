@@ -1,26 +1,47 @@
 #include "net.h"
-
-char *
-proto_ntop(const struct sockaddr *sa, socklen_t len)
+static char rtype(int type)
 {
+		int			types[9][2] = { {SOCK_STREAM,"TCP"}, 
+									{SOCK_RAW, "RAW"},
+									{SOCK_RDM, "RDM"},
+									{SOCK_SEQPACKET, "D-LINK"},
+									{SOCK_DCCP, "DCCP"},
+									{SOCK_PACKET, "PACKET"},
+									{SOCK_NONBLOCK, "NONBLOCK"},
+									{SOCK_CLOEXEC, "EXEC"},
+									{SOCK_DGRAM , "UDP"} };
+		//hmm..
+		//	for(int i=0;i<9;)
+
+	return 'c';
+}
+char *
+proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
+{
+	int				type;
 	char			port[8];
 	static char		message[128];
-
-	//adding getsockopt( fd, SOL_SOCKET, SO_TYPE, &type, &length );
-	// to get the socket type of the protocol...
 
 	switch(sa->sa_family)
 	{
 		case AF_INET:
 		{
 			struct sockaddr_in *ipv4 = (struct sockaddr_in*)sa;
+			//adding address to "message"
 			Inet_ntop(AF_INET, &ipv4->sin_addr,message,sizeof(message));
+			
+			//adding port to message
 			//convers uint16_t from network byte order to host byte order
 			if(ntohs(ipv4->sin_port)!=0) // if succeeds
 			{
 				snprintf(port,sizeof(port), ":%d",ntohs(ipv4->sin_port));
 				strncat(message,port,sizeof(port));
 			}
+			
+			Getsockopt(sockfd, SOL_SOCKET, SO_TYPE, &type, &len);
+			//add type to message	
+			//strncat(message,type,sizeof(type));
+
 			return message;
 		}
 		case AF_INET6:
