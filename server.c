@@ -5,18 +5,18 @@ void dg_echo(int sockfd, SA *client, socklen_t clilen);
 
 int main(void)
 {
-	sockfd = Socket(AF_INET6, SOCK_DGRAM, 0);
+	sockfd = Socket(AF_INET, SOCK_DGRAM, 0);
 
-	memset(&server6_address,0,sizeof(server4_address));
+	memset(&server4_address,0,sizeof(server4_address));
 
-	server6_address.sin6_family = AF_INET6;
-	server6_address.sin6_addr = in6addr_any;
-	server6_address.sin6_port = htons(PORT);
+	server4_address.sin_family = AF_INET;
+	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	server4_address.sin_port = htons(PORT);
 
 
-	Bind(sockfd, (SA*)&server6_address,sizeof(server6_address));
+	Bind(sockfd, (SA*)&server4_address,sizeof(server4_address));
 
-	dg_echo(sockfd, (SA*)&client6_address,sizeof(client6_address));
+	dg_echo(sockfd, (SA*)&client4_address,sizeof(client4_address));
 
 }
 void dg_echo(int sockfd, SA *client, socklen_t clilen)

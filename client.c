@@ -6,15 +6,15 @@ int main(int argc, char *argv[])
 {
 	argc_length(argc,2);
 	
-	sockfd = Socket(AF_INET6,SOCK_DGRAM,0);
+	sockfd = Socket(AF_INET,SOCK_DGRAM,0);
 
-	memset(&server6_address, 0, sizeof(server6_address));
+	memset(&server4_address, 0, sizeof(server4_address));
 
-	server6_address.sin6_family = AF_INET6;
-	server6_address.sin6_port = htons(PORT);
-	Inet_pton(AF_INET6, argv[1], &server6_address.sin6_addr);
+	server4_address.sin_family = AF_INET;
+	server4_address.sin_port = htons(PORT);
+	Inet_pton(AF_INET, argv[1], &server4_address.sin_addr);
 
-	dg_cli(stdin, sockfd, (SA*)&server6_address, sizeof(server6_address));
+	dg_cli(stdin, sockfd, (SA*)&server4_address, sizeof(server4_address));
 
 	exit(EXIT_SUCCESS);
 }
