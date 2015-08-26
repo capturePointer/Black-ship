@@ -38,7 +38,9 @@
 //IPV4 structure adress
 struct sockaddr_in server4_address;
 struct sockaddr_in client4_address;
-
+//IPV6 structe address
+struct sockaddr_in6 server6_address;
+struct sockaddr_in6 client6_address;
 /*
  *  Define constant var
  */
