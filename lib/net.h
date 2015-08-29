@@ -152,6 +152,7 @@ void     Shutdown(int,int);
 void	 Setsockopt(int, int, int, const void*, socklen_t);
 void	 Getsockopt(int, int, int, void*, socklen_t*);
 void	 Getpeername(int, struct sockaddr*, socklen_t*);
+void     Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
 Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void     handler_child_waitpid(int);

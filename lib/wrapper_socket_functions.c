@@ -85,3 +85,9 @@ Getpeername(int fd, struct sockaddr *sa, socklen_t *salenptr)
 	if(getpeername(fd, sa, salenptr) == -1)
 		prog_error("Getpeername error",true,errno);
 }
+void
+Getsockname(int fd, struct sockaddr *restrict sa, socklen_t *restrict len)
+{
+	if(getsockname(fd,sa,len) == -1 )
+		prog_error("Getsockname error",true,errno);
+}

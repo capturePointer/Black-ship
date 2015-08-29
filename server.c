@@ -1,6 +1,7 @@
 #include "lib/net.h"
 int sockfd;
-
+static void recvfrom_int(int);
+static int count;
 void dg_echo(int sockfd, SA *client, socklen_t clilen);
 
 int main(void)
@@ -14,22 +15,37 @@ int main(void)
 	server4_address.sin_port = htons(PORT);
 
 
-	Bind(sockfd, (SA*)&server4_address,sizeof(server4_address));
+	Bind(sockfd, (struct sockaddr *)&server4_address,sizeof(server4_address));
 
 	dg_echo(sockfd, (SA*)&client4_address,sizeof(client4_address));
 
 }
+
+
 void dg_echo(int sockfd, SA *client, socklen_t clilen)
 {
-	int n;
-	socklen_t len;
-	char sendbuffer[MAXLINE];
+	socklen_t		len;
+	char			mesg[MAXLINE];
+	int				n;
 
-	for(; ;)
+
+	Signal(SIGINT, recvfrom_int);
+
+	n = 220 * 1024;
+	Setsockopt(sockfd, SOL_SOCKET,SO_RCVBUF, &n, sizeof(n));
+
+
+	for(;;)
 	{
 		len = clilen;
-		n = Recvfrom(sockfd, sendbuffer, MAXLINE, 0,client,&len);
-
-		Sendto(sockfd, sendbuffer, n, 0,client, len);
+		Recvfrom(sockfd, mesg, MAXLINE, 0,client, &len);
+		count ++;
 	}
+}
+
+static void
+recvfrom_int(int signo)
+{
+	printf("\nrecived %d datagrams\n",count);
+	exit(EXIT_SUCCESS);
 }
