@@ -28,6 +28,8 @@
 #ifndef INFTIM
 	#include <bsd/sys/poll.h>
 #endif
+#include <netinet/sctp.h>
+
 
 
 
@@ -71,15 +73,15 @@ struct sockaddr_in6 client6_address;
 /**
  * We define a reasonable limit like in the X11/Xos.h form Xorg
  * It appears that OPEN_MAX is deprecated, at least on Linux systems.
- * The reason appears to be that the maximum number of file that 
- * can be opened simultaneously is not fixed, so a macro 
+ * The reason appears to be that the maximum number of file that
+ * can be opened simultaneously is not fixed, so a macro
  * that expands to an integer literal is not a good way
  * to get that information.
  *
  *
  * If you want the current maximum number of files that can be opened,
  * take a look at the sysconf() function; on my system, sysconf(_SC_OPEN_MAX)
- * returns 1024.(The sysconf() man page refers to a symbol OPEN_MAX. 
+ * returns 1024.(The sysconf() man page refers to a symbol OPEN_MAX.
  * This is not a count, but a value recognized by sysconf().
  * And it's not defined on my system.)
  */
@@ -89,7 +91,7 @@ struct sockaddr_in6 client6_address;
 
 
 /**
- * for a better readability 
+ * for a better readability
  */
 #define SA struct sockaddr
 
@@ -136,7 +138,7 @@ void     Fputs(const char*, FILE*);
 size_t   Write(int, const void*, size_t);
 size_t   Read(int, void*,size_t);
 ssize_t  Sendto(int,const void*, size_t, int, const struct sockaddr*, socklen_t);
-ssize_t  Recvfrom(int, void *restrict , size_t, int, 
+ssize_t  Recvfrom(int, void *restrict , size_t, int,
 				 struct sockaddr *restrict, socklen_t *restrict);
 void     Bind(int, const struct sockaddr*, socklen_t);
 void     Listen(int, int);
@@ -153,6 +155,25 @@ void	 Setsockopt(int, int, int, const void*, socklen_t);
 void	 Getsockopt(int, int, int, void*, socklen_t*);
 void	 Getpeername(int, struct sockaddr*, socklen_t*);
 void     Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
+/*SCTP* wrapper based func*/
+void     Sctp_bindx(int, const struct sockaddr*, int, int,);
+int      Sctp_connectx(int, const struct sockaddr*,int);
+void     Sctp_getpaddrs(int, sctp_assoc_t, struct sockaddr **);
+void     Sctp_freepaddrs(struct sockaddr *);
+
+void     Sctp_getladdrs(int, sctp_assoc_t, struct sockaddr **);
+void     Sctp_freeladdrs(struct sockaddr *);
+
+ssize_t  Sctp_sendmsg(int, const void *, size_t msgsz, const struct sockaddr *,
+                      socklen_t, uint_32_t, uint_32_t, unint_16_t, uint_32_t,
+                      uint_32_t);
+ssize_t  Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t,
+                      struct sctp_sndrcvinfo *,int);
+
+void     Sctp_opt_info(int, sctp_assoc_t, int, socklen_t *);
+void     Sctp_paleoff(int, sctp_assoc_t);
+
+
 Sigfunc* c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void     handler_child_waitpid(int);
