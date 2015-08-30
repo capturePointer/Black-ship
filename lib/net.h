@@ -11,10 +11,10 @@
 #include <stdbool.h>
 #include <string.h>
 #include <sys/time.h> /*time stamp*/
-
-#include <netinet/in.h> /*sockaddr_in{},in_addr{} etc..*/
+#include <stdint.h> /*unsinged uint32_t uint16_t types*/
 #include <sys/socket.h> /*socket(),*/
-#include <sys/un.h>
+#include <netinet/in.h> /*sockaddr_in{},in_addr{} etc..*/
+#include <sys/un.h> /**/
 #include <sys/types.h> /* size_t int8_t int16_t*/
 #include <unistd.h> /* unxi standard library */
 #include <arpa/inet.h> /*inet_pton*/
@@ -28,9 +28,7 @@
 #ifndef INFTIM
 	#include <bsd/sys/poll.h>
 #endif
-#include <netinet/sctp.h>
-
-
+#include <netinet/sctp.h> /*you must install lksctp_tools in order to have this library*/
 
 
 /*
@@ -155,9 +153,10 @@ void	 Setsockopt(int, int, int, const void*, socklen_t);
 void	 Getsockopt(int, int, int, void*, socklen_t*);
 void	 Getpeername(int, struct sockaddr*, socklen_t*);
 void     Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
+
 /*SCTP* wrapper based func*/
-void     Sctp_bindx(int, const struct sockaddr*, int, int,);
-int      Sctp_connectx(int, const struct sockaddr*,int);
+void     Sctp_bindx(int, struct sockaddr*, int, int);
+void     Sctp_connectx(int, struct sockaddr*,int, sctp_assoc_t*);
 void     Sctp_getpaddrs(int, sctp_assoc_t, struct sockaddr **);
 void     Sctp_freepaddrs(struct sockaddr *);
 
@@ -165,13 +164,13 @@ void     Sctp_getladdrs(int, sctp_assoc_t, struct sockaddr **);
 void     Sctp_freeladdrs(struct sockaddr *);
 
 ssize_t  Sctp_sendmsg(int, const void *, size_t msgsz, const struct sockaddr *,
-                      socklen_t, uint_32_t, uint_32_t, unint_16_t, uint_32_t,
-                      uint_32_t);
+                      socklen_t, uint32_t, uint32_t, uint16_t, uint32_t,
+                      uint32_t);
 ssize_t  Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t,
                       struct sctp_sndrcvinfo *,int);
 
 void     Sctp_opt_info(int, sctp_assoc_t, int, socklen_t *);
-void     Sctp_paleoff(int, sctp_assoc_t);
+int      Sctp_peeloff(int, sctp_assoc_t);
 
 
 Sigfunc* c_signal(int,Sigfunc*);

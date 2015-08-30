@@ -22,5 +22,3 @@ Fputs(const char *pointer, FILE *stream)
 	if(fputs(pointer,stream) == EOF )
 	 	prog_error("Can't output line from buffer given",true,errno);
 }
-
-

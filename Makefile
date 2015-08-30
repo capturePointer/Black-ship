@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -std=gnu11 -g -Wall  -o
+CFLAGS = -lsctp -c -std=gnu11 -g -Wall -o
 LIB_PATH = lib/
 BIN_PATH = bin/
 

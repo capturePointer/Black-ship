@@ -44,7 +44,7 @@ Accept(int socket, struct sockaddr  *restrict address, socklen_t  *restrict addr
 int
 Select(int nfd,fd_set *readfd, fd_set *writefd, fd_set *exceptfd, struct timeval *timeout)
 {
-    int number_of_ready_fds; 
+    int number_of_ready_fds;
     if( (number_of_ready_fds = select(nfd, readfd, writefd, exceptfd, timeout)) < 0)
         prog_error("Select error",true,errno);
     return number_of_ready_fds;
@@ -64,7 +64,7 @@ Poll(struct pollfd fds[], nfds_t nfds, int timeout)
 	rpoll = poll(fds,nfds,timeout);
 	if(rpoll == -1)
 		prog_error("Poll error",true,errno);
-	
+
 	return rpoll;
 }
 void
@@ -90,4 +90,27 @@ Getsockname(int fd, struct sockaddr *restrict sa, socklen_t *restrict len)
 {
 	if(getsockname(fd,sa,len) == -1 )
 		prog_error("Getsockname error",true,errno);
+}
+/*SCTP WRAPPER */
+void
+Sctp_bindx(int sd, struct sockaddr *addrs, int addrcnt, int flags)
+{
+	int rbindx = sctp_bindx(sd, addrs, addrcnt, flags);
+	if(rbindx == -1)
+		prog_error("Sctp_bindx error",true,errno);
+}
+void
+Sctp_connectx(int sd, struct sockaddr *addrs, int addrcnt, sctp_assoc_t *id)
+{
+	int rconnectx = sctp_connectx(sd, addrs, addrcnt, id);
+	if(rconnectx == -1)
+		prog_error("Sctp_connectx error",true,errno);
+}
+int
+Sctp_peeloff(int sd, sctp_assoc_t assoc_id)
+{
+	int rpeeloff = sctp_peeloff(sd, assoc_id);
+	if(rpeeloff == -1)
+		prog_error("Sctp_paleof error",true,errno);
+	return rpeeloff;
 }
