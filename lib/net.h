@@ -163,13 +163,13 @@ void     Sctp_freepaddrs(struct sockaddr *);
 void     Sctp_getladdrs(int, sctp_assoc_t, struct sockaddr **);
 void     Sctp_freeladdrs(struct sockaddr *);
 
-ssize_t  Sctp_sendmsg(int, const void *, size_t msgsz, const struct sockaddr *,
+void     Sctp_sendmsg(int, const void *, size_t , struct sockaddr *,
                       socklen_t, uint32_t, uint32_t, uint16_t, uint32_t,
                       uint32_t);
-ssize_t  Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t,
-                      struct sctp_sndrcvinfo *,int);
+void     Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t *,
+                      struct sctp_sndrcvinfo *,int *);
 
-void     Sctp_opt_info(int, sctp_assoc_t, int, socklen_t *);
+void     Sctp_opt_info(int, sctp_assoc_t, int, void *arg, socklen_t *);
 int      Sctp_peeloff(int, sctp_assoc_t);
 
 

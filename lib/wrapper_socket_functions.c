@@ -114,3 +114,57 @@ Sctp_peeloff(int sd, sctp_assoc_t assoc_id)
 		prog_error("Sctp_paleof error",true,errno);
 	return rpeeloff;
 }
+void
+Sctp_getpaddrs(int sd, sctp_assoc_t id, struct sockaddr **addrs)
+{
+	int rgetpaddrs = sctp_getpaddrs(sd, id, addrs);
+	if(rgetpaddrs == -1)
+		prog_error("Sctp_getpaddrs error",true,errno);
+}
+void
+Sctp_freepaddrs(struct sockaddr *addrs)
+{
+	sctp_freepaddrs(addrs);
+}
+void
+Sctp_getladdrs(int sd, sctp_assoc_t id, struct sockaddr **addrs)
+{
+	int rgetladdrs = sctp_getladdrs(sd, id, addrs);
+	if(rgetladdrs == -1)
+		prog_error("Sctp_getladdrs error",true,errno);
+}
+void
+Sctp_freeladdrs(struct sockaddr *addrs)
+{
+	sctp_freeladdrs(addrs);
+}
+
+void
+Sctp_sendmsg(int s, const void *msg, size_t len, struct sockaddr *to,
+            socklen_t tolen, uint32_t ppid, uint32_t flags,
+            uint16_t stream_no, uint32_t timetolive,uint32_t context)
+
+{
+	int r = sctp_sendmsg(s,msg,len,to,tolen,ppid,flags,stream_no,
+						 timetolive,context);
+	if(r == -1)
+		prog_error("Sctp_sendmsg error",true,errno);
+}
+
+void
+Sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
+			 socklen_t *fromlen, struct sctp_sndrcvinfo *sinfo,int *msg_flags)
+
+{
+	int r = sctp_recvmsg(s,msg,len,from,fromlen,sinfo,msg_flags);
+	if(r == -1)
+		prog_error("Sctp_recvmsg error",true,errno);
+}
+
+void
+Sctp_opt_info(int sd, sctp_assoc_t id, int opt, void *arg, socklen_t *size)
+{
+	int ropt = sctp_opt_info(sd, id, opt, arg, size);
+	if(ropt == -1)
+		prog_error("Sctp_opt_info error",true,errno);
+}
