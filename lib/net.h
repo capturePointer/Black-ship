@@ -98,7 +98,11 @@ struct sockaddr_in6 client6_address;
 #define PORT 9877
 #define MAXLINE 4096
 #define BUFFSIZE 8192
-
+/* SCTP FLAGS*/
+#define SCTP_PDAPI_INCR_SZ 65535 //increment size of pdapi  when adding buf space 
+#define SCTP_PDAPI_NEED_MORE_THRESHOLD 1024
+#define SERV_MAX_SCTP_STRM 10 //normal maxium streams
+#define SERV_MORE_STRMS_SCTP 20 //larger number of streams
 
  /* we will replace this :
         void (* signal (int signo, void(*func) (int))) ) (int);
