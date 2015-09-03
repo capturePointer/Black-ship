@@ -127,56 +127,58 @@ ssize_t  s_read(int, void*, size_t, bool);
 ssize_t	 readline(int,void*,size_t);
 
 /* Wrapper base proto */
-int      Socket(int , int , int );
-void     Connect(int, const struct sockaddr*, socklen_t);
-void     Inet_pton(int, const char*, void*);
-void	 Inet_ntop(int,const void*,char*,socklen_t);
-char    *Fgets(char*, int, FILE*);
-void     Fputs(const char*, FILE*);
-size_t   Write(int, const void*, size_t);
-size_t   Read(int, void*,size_t);
-ssize_t  Sendto(int,const void*, size_t, int, const struct sockaddr*, socklen_t);
-ssize_t  Recvfrom(int, void *restrict , size_t, int,
+int			Socket(int , int , int );
+void		Connect(int, const struct sockaddr*, socklen_t);
+void		Inet_pton(int, const char*, void*);
+void		Inet_ntop(int,const void*,char*,socklen_t);
+char		*Fgets(char*, int, FILE*);
+void		Fputs(const char*, FILE*);
+size_t		Write(int, const void*, size_t);
+size_t		Read(int, void*,size_t);
+ssize_t		Sendto(int,const void*, size_t, int, const struct sockaddr*, socklen_t);
+ssize_t		Recvfrom(int, void *restrict , size_t, int,
 				 struct sockaddr *restrict, socklen_t *restrict);
-void     Bind(int, const struct sockaddr*, socklen_t);
-void     Listen(int, int);
-int      Accept(int, struct sockaddr *restrict , socklen_t *restrict);
-void     Close(int);
-pid_t    Fork(void);
-pid_t    Wait(int*);
-pid_t    Waitpid(pid_t,int*,int);
-Sigfunc *Signal(int,Sigfunc*);
-int      Select(int nfds, fd_set*, fd_set*, fd_set*, struct timeval*);
-int		 Poll(struct pollfd[],nfds_t,int);
-void     Shutdown(int,int);
-void	 Setsockopt(int, int, int, const void*, socklen_t);
-void	 Getsockopt(int, int, int, void*, socklen_t*);
-void	 Getpeername(int, struct sockaddr*, socklen_t*);
-void     Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
+void		Bind(int, const struct sockaddr*, socklen_t);
+void		Listen(int, int);
+int			Accept(int, struct sockaddr *restrict , socklen_t *restrict);
+void		Close(int);
+pid_t		Fork(void);
+pid_t		Wait(int*);
+pid_t		Waitpid(pid_t,int*,int);
+Sigfunc		*Signal(int,Sigfunc*);
+int			Select(int nfds, fd_set*, fd_set*, fd_set*, struct timeval*);
+int			Poll(struct pollfd[],nfds_t,int);
+void		Shutdown(int,int);
+void		Setsockopt(int, int, int, const void*, socklen_t);
+void		Getsockopt(int, int, int, void*, socklen_t*);
+void		Getpeername(int, struct sockaddr*, socklen_t*);
+void		Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
 
 /*SCTP* wrapper based func*/
-void     Sctp_bindx(int, struct sockaddr*, int, int);
-void     Sctp_connectx(int, struct sockaddr*,int, sctp_assoc_t*);
-void     Sctp_getpaddrs(int, sctp_assoc_t, struct sockaddr **);
-void     Sctp_freepaddrs(struct sockaddr *);
+void		Sctp_bindx(int, struct sockaddr*, int, int);
+void		Sctp_connectx(int, struct sockaddr*,int, sctp_assoc_t*);
+void		Sctp_getpaddrs(int, sctp_assoc_t, struct sockaddr **);
+void		Sctp_freepaddrs(struct sockaddr *);
 
-void     Sctp_getladdrs(int, sctp_assoc_t, struct sockaddr **);
-void     Sctp_freeladdrs(struct sockaddr *);
+void		Sctp_getladdrs(int, sctp_assoc_t, struct sockaddr **);
+void		Sctp_freeladdrs(struct sockaddr *);
 
-void     Sctp_sendmsg(int, const void *, size_t , struct sockaddr *,
+int			Sctp_sendmsg(int, const void *, size_t , struct sockaddr *,
                       socklen_t, uint32_t, uint32_t, uint16_t, uint32_t,
                       uint32_t);
-void     Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t *,
+int			Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t *,
                       struct sctp_sndrcvinfo *,int *);
 
-void     Sctp_opt_info(int, sctp_assoc_t, int, void *arg, socklen_t *);
-int      Sctp_peeloff(int, sctp_assoc_t);
+void		Sctp_opt_info(int, sctp_assoc_t, int, void *arg, socklen_t *);
+int			Sctp_peeloff(int, sctp_assoc_t);
+/*SCTP handle functions*/
+sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
+int			sctp_get_number_streams(int, struct sockaddr *, socklen_t);
 
-
-Sigfunc* c_signal(int,Sigfunc*);
+Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
-void     handler_child_waitpid(int);
-void     handler_child_wait(int);
-char	 *proto_ntop(int, const struct sockaddr*, socklen_t);
+void		handler_child_waitpid(int);
+void		handler_child_wait(int);
+char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 
 #endif /* NET_H */

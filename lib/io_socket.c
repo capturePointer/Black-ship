@@ -3,7 +3,6 @@
  * Our own I/O socket functions
  */
 
-
 /*Write that supports
 signal non-interup process*/
 static bool isInterupt(ssize_t nbytes);
