@@ -177,7 +177,7 @@ void		Sctp_opt_info(int, sctp_assoc_t, int, void *arg, socklen_t *);
 int			Sctp_peeloff(int, sctp_assoc_t);
 /*SCTP handle functions*/
 sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
-int			sctp_get_number_streams(int, struct sockaddr *, socklen_t);
+int			sctp_get_number_streams(int, struct sockaddr *, socklen_t, struct sctp_sndrcvinfo *);
 
 Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
