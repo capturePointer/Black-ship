@@ -1,10 +1,10 @@
 # Sailfish 
-##### Also known as **Sailfish C** ,It's a  Network C library, the implementation  based on Barkeley Socket API.
+##### Also known as Sailfish C ,It's a Network C library, the implementation based on Berkeley Socket API.
 #
 ##### Note
 #    
 #
-    This project is still in development.. Plase don't expect to be bug free and also feel free to test it on your own risk.
+    This project is still in development.. Please don't expect to be bug free and also feel free to test it on your own risk.
 ![SailFish C](http://www.xtremesignandgraphic.com/assets/images/sailfish.jpg)
 #
 #
