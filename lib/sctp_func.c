@@ -1,5 +1,9 @@
 #include "net.h"
 // LEGAGY CODE works for BSD
+
+//The SCTP_PEER_ADDR_PARAMS 
+//socket option in the sctp_address_to_associd() 
+//function cannot be used to learn the association id, at least not on linux.
 sctp_assoc_t
 sctp_address_to_associd(int sockfd, struct sockaddr *sa, socklen_t salen)
 {

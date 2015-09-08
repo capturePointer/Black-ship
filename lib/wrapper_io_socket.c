@@ -23,7 +23,8 @@ Read(int fd, void *buffer, size_t len_buffer)
 	return len_buffer;
 }
 ssize_t
-Sendto(int fd, const void *buffer, size_t len_buffer, int flags, const struct sockaddr  *client, socklen_t clilen)
+Sendto(int fd, const void *buffer, size_t len_buffer, int flags,
+	   const struct sockaddr  *client, socklen_t clilen)
 {
 	ssize_t nbytes_sended_to = sendto(fd,buffer,len_buffer,flags,client,clilen);
 	if(nbytes_sended_to == -1)
@@ -32,11 +33,38 @@ Sendto(int fd, const void *buffer, size_t len_buffer, int flags, const struct so
 	return len_buffer;
 }
 ssize_t
-Recvfrom(int fd, void *restrict buffer, size_t len_buffer, int flags, struct sockaddr *restrict client, socklen_t *restrict clilen)
+Recvfrom(int fd, void *restrict buffer, size_t len_buffer, int flags,
+	     struct sockaddr *restrict client, socklen_t *restrict clilen)
 {
-	ssize_t nbytes_recived_from = recvfrom(fd,buffer,len_buffer,flags,client,clilen);
+	ssize_t nbytes_recived_from = recvfrom(fd,buffer,len_buffer,flags,
+		                                   client,clilen);
+
 	if(nbytes_recived_from == -1)
 		prog_error("Recvfrom error",true,errno);
 
 	return len_buffer;
+}
+
+int
+Sctp_sendmsg(int s, const void *msg, size_t len, struct sockaddr *to,
+            socklen_t tolen, uint32_t ppid, uint32_t flags,
+            uint16_t stream_no, uint32_t timetolive,uint32_t context)
+
+{
+	int r = sctp_sendmsg(s,msg,len,to,tolen,ppid,flags,stream_no,
+						 timetolive,context);
+	if(r == -1)
+		prog_error("Sctp_sendmsg error",true,errno);
+	return r;
+}
+
+int
+Sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
+			 socklen_t *fromlen, struct sctp_sndrcvinfo *sinfo,int *msg_flags)
+
+{
+	int r = sctp_recvmsg(s,msg,len,from,fromlen,sinfo,msg_flags);
+	if(r == -1)
+		prog_error("Sctp_recvmsg error",true,errno);
+	return r;
 }

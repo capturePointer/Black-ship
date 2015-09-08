@@ -139,30 +139,6 @@ Sctp_freeladdrs(struct sockaddr *addrs)
 	sctp_freeladdrs(addrs);
 }
 
-int
-Sctp_sendmsg(int s, const void *msg, size_t len, struct sockaddr *to,
-            socklen_t tolen, uint32_t ppid, uint32_t flags,
-            uint16_t stream_no, uint32_t timetolive,uint32_t context)
-
-{
-	int r = sctp_sendmsg(s,msg,len,to,tolen,ppid,flags,stream_no,
-						 timetolive,context);
-	if(r == -1)
-		prog_error("Sctp_sendmsg error",true,errno);
-	return r;
-}
-
-int
-Sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
-			 socklen_t *fromlen, struct sctp_sndrcvinfo *sinfo,int *msg_flags)
-
-{
-	int r = sctp_recvmsg(s,msg,len,from,fromlen,sinfo,msg_flags);
-	if(r == -1)
-		prog_error("Sctp_recvmsg error",true,errno);
-	return r;
-}
-
 void
 Sctp_opt_info(int sd, sctp_assoc_t id, int opt, void *arg, socklen_t *size)
 {
