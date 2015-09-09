@@ -101,6 +101,7 @@ struct sockaddr_in6 client6_address;
 /* SCTP FLAGS*/
 #define SCTP_PDAPI_INCR_SZ 65535 //increment size of pdapi  when adding buf space 
 #define SCTP_PDAPI_NEED_MORE_THRESHOLD 1024
+/*For  the free bsd KAME implementation of SCTP this default is set to 10 streams*/
 #define SERV_MAX_SCTP_STRM 10 //normal maxium streams
 #define SERV_MORE_STRMS_SCTP 20 //larger number of streams
 
@@ -179,7 +180,7 @@ int			Sctp_peeloff(int, sctp_assoc_t);
 sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
 int			sctp_get_number_streams_bsd(int, struct sockaddr *, socklen_t);
 int			sctp_get_number_streams(int, struct sockaddr *, socklen_t, struct sctp_sndrcvinfo *);
-
+void        sctp_set_number_streams(int , struct sctp_initmsg ,int);
 Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void		handler_child_waitpid(int);

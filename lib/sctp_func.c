@@ -19,7 +19,8 @@ sctp_address_to_associd(int sockfd, struct sockaddr *sa, socklen_t salen)
 }
 //function updated to work with linux
 
-int sctp_get_number_streams_bsd(int sockfd, struct sockaddr *to, 
+int 
+sctp_get_number_streams_bsd(int sockfd, struct sockaddr *to, 
 								socklen_t tolen)
 {
 	 socklen_t stlen;
@@ -47,4 +48,23 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
 	 Getsockopt(sockfd, IPPROTO_SCTP, SCTP_STATUS, &status, &stlen);
 
 	 return status.sstat_outstrms;
+}
+/**
+ * The function first zeros out the sctp_initmsg structure
+ * This change assures tgat tge setsockopt call will not unintentionally change
+ * any other values.The function also sets nstrs filed to the number of streams
+ * it would like to request.Next it sets the socket option with the initial
+ * message parameters
+ *
+ * An alternative to setting a socket option would be to use the sendmsg 
+ * function and provice ancillary data to request different stream
+ * parameters from the default.This type of ancillary data is only
+ * effective on the one-to-many socket interface
+ */
+void
+sctp_set_number_streams(int sockfd, struct sctp_initmsg initm, int nstrs)
+{
+	 memset(&initm, 0, sizeof(initm));
+	 initm.sinit_num_ostreams = nstrs;
+	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }

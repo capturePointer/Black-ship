@@ -9,7 +9,8 @@
 	int stream_increment=1;
 	socklen_t len;
 	size_t rd_sz;
-
+	struct sctp_initmsg initm;
+    
 
 
 
@@ -23,7 +24,7 @@ main(int argc, char **argv)
 	/*Sctp socket one to many created*/ 
     sock_fd = Socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
 	/*Fill the server struct with 0*/
-	memset(&server4_address, 0,sizeof(server4_address));
+	memset(&server4_address, 0, sizeof(server4_address));
 	/* Fill the addres struct with specific protocol dependent info*/
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -40,8 +41,9 @@ main(int argc, char **argv)
 	 * the server to see the number_sctp_sndrcvinfo structure.From this structure 
 	 * the server can determine the stream number on with the messsage arrived.
 	 */
+	sctp_set_number_streams(sock_fd,initm,SERV_MORE_STRMS_SCTP);
 	evnts.sctp_data_io_event = 1;
-	Setsockopt(sock_fd, IPPROTO_SCTP, SCTP_EVENTS,&evnts, sizeof(evnts));
+	Setsockopt(sock_fd, IPPROTO_SCTP, SCTP_EVENTS, &evnts, sizeof(evnts));
 
 	/*Make the socket listen and specify our queue*/
 	Listen(sock_fd, LISTENQ);
@@ -58,8 +60,8 @@ main(int argc, char **argv)
 		 */
 		len = sizeof(struct sockaddr_in);
 		rd_sz = Sctp_recvmsg(sock_fd, readbuf, sizeof(readbuf),
-			     (SA *)&client4_address, &len,
-			     &sri,&msg_flags);
+			     (SA *) &client4_address, &len,
+			     &sri, &msg_flags);
 		/*
 		 * Whem a message arrives, the server checks the stream_increment flag
 		 * to see if it should increment the stream number.If the flag is set
@@ -86,11 +88,7 @@ main(int argc, char **argv)
 		 * and the returned address found in client4_address to locate the peer
 		 * association and return the echo.
 		 */
-		Sctp_sendmsg(sock_fd, readbuf, rd_sz, 
-			     (SA *)&client4_address, len,
-			     sri.sinfo_ppid,
-			     sri.sinfo_flags,
-			     sri.sinfo_stream,
-			     0, 0);
+		Sctp_sendmsg(sock_fd, readbuf, rd_sz, (SA *)&client4_address, len,
+					sri.sinfo_ppid, sri.sinfo_flags, sri.sinfo_stream,0, 0);
 	}
 }

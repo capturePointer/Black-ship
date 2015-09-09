@@ -14,7 +14,8 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 	struct sctp_sndrcvinfo sri;
 	char sendline[SCTP_MAXLINE], recvline[SCTP_MAXLINE];
 	socklen_t len;
-	int rd_sz,i,strsz;
+	int rd_sz, strsz;
+	size_t i;
 	int msg_flags;
 
 
@@ -55,10 +56,17 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 		for(i=0;i<SERV_MAX_SCTP_STRM;i++) 
 		{
 			snprintf(sendline + strsz, sizeof(sendline) - strsz,
-				".message.%d", i);
+				".message.%lu 1", i);
 
 			Sctp_sendmsg(sock_fd, sendline, sizeof(sendline), 
 						to, tolen, 0, 0,i,0, 0);
+
+			snprintf(sendline + strsz, sizeof(sendline) - strsz,
+					".message.%lu 2", i);
+			
+			Sctp_sendmsg(sock_fd, sendline, sizeof(sendline), 
+						to, tolen, 0, 0,i,0, 0);
+ 
 		}
 	    //SECOND FOR
 	    /**
@@ -87,6 +95,16 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 				sri.sinfo_stream,sri.sinfo_ssn,
 				(u_int)sri.sinfo_assoc_id);
 			printf("%.*s\n",rd_sz, recvline);
+			
+			rd_sz = Sctp_recvmsg(sock_fd, recvline, sizeof(recvline),
+				     (SA *)&peeraddr, &len,
+				     &sri,&msg_flags);
+			
+			printf("From stream:%d seq:%d (assoc:0x%x):",
+				sri.sinfo_stream,sri.sinfo_ssn,
+				(u_int)sri.sinfo_assoc_id);
+			printf("%.*s\n",rd_sz, recvline);
+ 
 		}
 	}
 }
@@ -104,11 +122,11 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 
 	/**
 	 * The clients starts by clearing the sctp_sndrcvinfo structure,
-	 * sri. The client then enters a loop that reads from the fp passed by our caller
-	 * with a blocking call to fgets.The main program passes stdin to this func
-	 * so user input is read and processed in the loop until the terminal
-	 * EOF character(CONTROL+D) is typed by the user.the user action ends
-	 * the function and causes a return to the caller.
+	 * sri. The client then enters a loop that reads from the fp passed 
+	 * by our caller with a blocking call to fgets.The main program passes
+	 * stdin to this func  so user input is read and processed in the loop 
+	 * until the terminal EOF character(CONTROL+D) is typed by the user.
+	 * The user action ends the function and causes a return to the caller.
 	 */
 	memset(&sri, 0, sizeof(sri));
 	while (fgets(sendline, MAXLINE, fp) != NULL) 
@@ -197,9 +215,11 @@ main(int argc, char **argv)
 	 * sctpstr_cli_echoall function.
 	 */
 	if(echo_to_all == 0)
-		sctpstr_cli(stdin,sock_fd,(SA *)&server4_address,sizeof(server4_address));
+		sctpstr_cli(stdin,sock_fd,(SA *)&server4_address,
+					sizeof(server4_address));
 	else
-		sctpstr_cli_echoall(stdin,sock_fd,(SA *)&server4_address,sizeof(server4_address));
+		sctpstr_cli_echoall(stdin,sock_fd,(SA *)&server4_address,
+							sizeof(server4_address));
 	
 	/* close the socket*/
 	Close(sock_fd);
