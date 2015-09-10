@@ -62,9 +62,10 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
  * effective on the one-to-many socket interface
  */
 void
-sctp_set_number_streams(int sockfd, struct sctp_initmsg initm, int nstrs)
+sctp_set_number_streams(int *sockfd, struct sctp_initmsg *initm, int nstrs)
 {
-	 memset(&initm, 0, sizeof(initm));
-	 initm.sinit_num_ostreams = nstrs;
-	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
+	 
+	 //memset( initm, 0, sizeof(initm));
+	 initm->sinit_num_ostreams = nstrs;
+	 Setsockopt( (*sockfd), IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }

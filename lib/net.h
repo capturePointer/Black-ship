@@ -180,7 +180,7 @@ int			Sctp_peeloff(int, sctp_assoc_t);
 sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
 int			sctp_get_number_streams_bsd(int, struct sockaddr *, socklen_t);
 int			sctp_get_number_streams(int, struct sockaddr *, socklen_t, struct sctp_sndrcvinfo *);
-void        sctp_set_number_streams(int , struct sctp_initmsg ,int);
+void        sctp_set_number_streams(int * , struct sctp_initmsg * ,int);
 Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void		handler_child_waitpid(int);

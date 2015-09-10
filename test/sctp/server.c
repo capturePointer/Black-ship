@@ -10,7 +10,6 @@
 	socklen_t len;
 	size_t rd_sz;
 	struct sctp_initmsg initm;
-    
 
 
 
@@ -41,7 +40,7 @@ main(int argc, char **argv)
 	 * the server to see the number_sctp_sndrcvinfo structure.From this structure 
 	 * the server can determine the stream number on with the messsage arrived.
 	 */
-	sctp_set_number_streams(sock_fd,initm,SERV_MORE_STRMS_SCTP);
+	sctp_set_number_streams( &sock_fd, &initm,SERV_MORE_STRMS_SCTP);
 	evnts.sctp_data_io_event = 1;
 	Setsockopt(sock_fd, IPPROTO_SCTP, SCTP_EVENTS, &evnts, sizeof(evnts));
 
@@ -52,7 +51,7 @@ main(int argc, char **argv)
 	 * This program runs 4 ever until the user shuts it down
 	 * with an external signal like CTRL+D
 	 * */
-	for ( ; ; ) 
+	for ( ; ; )
 	{
 		/*
 		 * The server initializez the size of the client socket address struct
