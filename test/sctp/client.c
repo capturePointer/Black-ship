@@ -136,6 +136,7 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 			printf("Error, line must be of the form '[streamnum]text'\n");
 			continue;
 		}
+	    
 	    /**
 	     * The client translates the user request stream found in the input
 	     * into the sinfo_stream field in the sri structure
@@ -174,6 +175,7 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 }
 
 
+struct sctp_initmsg initm;
 
 int
 main(int argc, char **argv)
@@ -192,6 +194,9 @@ main(int argc, char **argv)
      * finally the client creates an SCTP one-to-many-style socket
      * */
 	sock_fd = Socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
+	
+	sctp_set_number_streams(&sock_fd, &initm, SERV_MAX_SCTP_STRM);
+
 	/* Fill the server4_addres struct with 0*/
 	memset(&server4_address,0 ,sizeof(server4_address));
     /* Complete the struct with the require protocol settings */
@@ -220,7 +225,9 @@ main(int argc, char **argv)
 	else
 		sctpstr_cli_echoall(stdin,sock_fd,(SA *)&server4_address,
 							sizeof(server4_address));
-	
+	char byemsg[7];
+	strcpy(byemsg,"goodbye");
+	Sctp_sendmsg(sock_fd, byemsg, strlen(byemsg),(SA *)&server4_address,sizeof(server4_address),0, SCTP_ABORT, 0, 0, 0);
 	/* close the socket*/
 	Close(sock_fd);
 

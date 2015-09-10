@@ -64,8 +64,7 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
 void
 sctp_set_number_streams(int *sockfd, struct sctp_initmsg *initm, int nstrs)
 {
-	 
-	 //memset( initm, 0, sizeof(initm));
+	 memset(initm, 0, sizeof(struct sctp_initmsg));
 	 initm->sinit_num_ostreams = nstrs;
 	 Setsockopt( (*sockfd), IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }
