@@ -17,7 +17,7 @@
 | UDP(SOCK_DGRAM)               	| x             	| x              	| x              	| -                	| -            	|
 | SCTP(one-one SOCK_STREAM)     	| x             	| ?              	| ?              	| -                	| -            	|
 | SCTP(one-many SOCK_SEQPACKET) 	| x             	| ?              	| ?              	| -                	| -            	|
-| Raw(SOCK_RAW)                 	| x             	| x              	| -              	| ?                 	| ?            	|
+| Raw(SOCK_RAW)                 	| x             	| x              	| -              	| ?                 | ?				|
 
 
 

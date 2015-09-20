@@ -19,4 +19,13 @@ compile:
 	mv *.o bin/
 	
 clean: 
-	rm -rf build/*.o 
+	rm -rf build/*.o
+
+
+#Dev testing options
+extract:
+	mv test/sctp/client.c ~/Work/Seilfish/
+	mv test/sctp/server.c ~/Work/Seilfish/
+reverse:
+	mv client.c test/sctp/
+	mv server.c test/sctp/
