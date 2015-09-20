@@ -62,9 +62,33 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
  * effective on the one-to-many socket interface
  */
 void
-sctp_set_number_streams(int *sockfd, struct sctp_initmsg *initm, int nstrs)
+sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs)
 {
-	 memset(initm, 0, sizeof(struct sctp_initmsg));
+     initz(initm, 0);
 	 initm->sinit_num_ostreams = nstrs;
-	 Setsockopt( (*sockfd), IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
+	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
+}
+
+void
+sct_set_hearbeat(int sock, struct sctp_paddrparams *heartbeat, int time, size_t pathmaxrxt)
+{
+	 size_t n = sizeof(*heartbeat);
+
+	 heartbeat->spp_flags = SPP_HB_ENABLE;
+	 heartbeat->spp_hbinterval = time;
+	 heartbeat->spp_pathmaxrxt = pathmaxrxt;
+
+	 // Set the socket options
+	 Setsockopt(sock,SOL_SCTP, SCTP_PEER_ADDR_PARAMS, heartbeat, (socklen_t)n);
+}
+int
+sctp_get_heartbeat(int sock, struct sctp_paddrparams *heartbeat)
+{
+	size_t n = sizeof(*heartbeat);
+
+	Getsockopt(sock, IPPROTO_SCTP, SCTP_PEER_ADDR_PARAMS, &heartbeat,(socklen_t *)&n);
+	/*For debugging reasons */
+	printf("Heart beat configured at %d\n",heartbeat->spp_hbinterval);
+	
+	return heartbeat->spp_hbinterval;
 }

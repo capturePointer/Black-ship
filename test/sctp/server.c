@@ -28,10 +28,10 @@ main(int argc, char **argv)
      * Note that SERV_MORE_STRMS_SCTP is just a macro, that macro you 
      * could change or create another one.
      */
-	sctp_set_number_streams( &sock_fd, &initm,SERV_MORE_STRMS_SCTP);
+	sctp_set_number_streams( sock_fd, &initm,SERV_MORE_STRMS_SCTP);
 	
 	/*Fill the server struct with 0*/
-	memset(&server4_address, 0, sizeof(server4_address));
+	initz(&server4_address, 0);
 	/* Fill the addres struct with specific protocol dependent info*/
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -41,8 +41,7 @@ main(int argc, char **argv)
 	Bind(sock_fd, (SA *) &server4_address, sizeof(server4_address));
 	
 	/*Fill sctp_event_subscribe struct with 0*/
-	memset(&evnts, 0, sizeof(evnts));
-	
+	initz(&evnts, 0);
 
 /* The server changes the subscription for the one-to-many SCTP sockets.
 	* The server subscribes to just the sctp_data_io_event,witch will allow 
@@ -96,7 +95,7 @@ for ( ; ; )
 		 * and the returned address found in client4_address to locate the peer
 		 * association and return the echo.
 		 */
-			uint32_t f = sri.sinfo_flags | SCTP_EOF;
+		uint32_t f = sri.sinfo_flags | SCTP_EOF;
 		Sctp_sendmsg(sock_fd, readbuf, rd_sz, (SA *)&client4_address, len,
 					sri.sinfo_ppid, f, sri.sinfo_stream,0, 0);
 	}

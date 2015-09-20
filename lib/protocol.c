@@ -30,7 +30,7 @@ get_socket_type_descr(const int opt_type)
 {
 	char *unknown_dscrp= "Uknown SOCK_XXX socket type";
 	struct socket_types *ptr;
-	for(ptr = socket_types;ptr->dscrp != NULL ; ptr++)
+	for(ptr = socket_types; ptr->dscrp != NULL ; ptr++)
 	{
 		if(opt_type == ptr->sock_type)
 			return ptr->dscrp;
@@ -62,13 +62,13 @@ proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
 			{
 				snprintf(port,sizeof(port), "] : %d,",ntohs(ipv4->sin_port));
 				//add port to message
-				strncat(message,port,sizeof(port));
+				strncat(message,port,sizeof(*port));
 			}
 			
 			Getsockopt(sockfd, SOL_SOCKET, SO_TYPE, &rtype, &len);
 			
 			snprintf(type,sizeof(type)," %s ",get_socket_type_descr(rtype));
-			strncat(message,type,sizeof(type));
+			strncat(message,type,sizeof(*type));
 			return message;
 		}
 		case AF_INET6:
@@ -82,11 +82,11 @@ proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
 			{
 				snprintf(port,sizeof(port), "] : %d", ntohs(ipv6->sin6_port));
 				//add port to message
-				strncat(message,port,sizeof(port));
+				strncat(message,port,sizeof(*port));
 			}
 			Getsockopt(sockfd,SOL_SOCKET,SO_TYPE,&rtype,&len);
 			snprintf(type,sizeof(type)," %s ",get_socket_type_descr(rtype));
-			strncat(message,type,sizeof(type));
+			strncat(message,type,sizeof(*type));
 			return message;
 		}
 		case AF_UNIX:

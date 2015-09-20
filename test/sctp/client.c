@@ -10,12 +10,19 @@
 void
 sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 {
+	// sockaddr_in peer address structure
 	struct sockaddr_in peeraddr;
+	// sctp information structure  (structure recive information)
 	struct sctp_sndrcvinfo sri;
+	// our buffers
 	char sendline[SCTP_MAXLINE], recvline[SCTP_MAXLINE];
+	//our variable that stores length of address structure
 	socklen_t len;
+	// rd_sz = read_size , strsz = string_size;
 	int rd_sz, strsz;
+	// i = index, count
 	size_t i;
+	// some flags for our sctp_sendmsg,sctp_recvmsg functions
 	int msg_flags;
 
 
@@ -26,17 +33,20 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 	 * collect user input. Then, the client enters the main loop, once again
 	 * blocking on user input
 	 */
-	memset(sendline, 0, sizeof(sendline));
-	memset(&sri, 0, sizeof(sri));	
+    initz(sendline, 0);
+    initz(&sri,0);
+
+
 	while (fgets(sendline, SCTP_MAXLINE - 9, fp) != NULL) 
 	{
 		/**
 		 * The client sets p the message size and the deletes the newline
 		 * character that is the end of the buffer(if andy).
 		 */
-		strsz = strlen(sendline);
-		if(sendline[strsz-1] == '\n') 
+		strsz = strlen(sendline);// exact our string size without the '\0'
+		if(sendline[strsz-1] == '\n')
 		{
+			// replace `Enter` with null
 			sendline[strsz-1] = '\0';
 			strsz--;
 		}
@@ -84,7 +94,7 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 		 * and displaying each as we did before.After the last
 		 * message is read, the client loops back for more user input.
 		 */
-		for(i=0;i<SERV_MAX_SCTP_STRM;i++) 
+		for(i=0;i<SERV_MAX_SCTP_STRM+1;i++) 
 		{
 			len = sizeof(peeraddr);
 			rd_sz = Sctp_recvmsg(sock_fd, recvline, sizeof(recvline),
@@ -104,7 +114,6 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 				sri.sinfo_stream,sri.sinfo_ssn,
 				(u_int)sri.sinfo_assoc_id);
 			printf("%.*s\n",rd_sz, recvline);
- 
 		}
 	}
 }
@@ -119,7 +128,6 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 	socklen_t len;
 	int out_sz,rd_sz;
 	int msg_flags;
-
 	/**
 	 * The clients starts by clearing the sctp_sndrcvinfo structure,
 	 * sri. The client then enters a loop that reads from the fp passed 
@@ -128,7 +136,8 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 	 * until the terminal EOF character(CONTROL+D) is typed by the user.
 	 * The user action ends the function and causes a return to the caller.
 	 */
-	memset(&sri, 0, sizeof(sri));
+	initz(&sri,0);
+	
 	while (fgets(sendline, MAXLINE, fp) != NULL) 
 	{
 		if(sendline[0] != '[') 
@@ -195,18 +204,18 @@ main(int argc, char **argv)
      * */
 	sock_fd = Socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
 	
-	sctp_set_number_streams(&sock_fd, &initm, SERV_MAX_SCTP_STRM);
+	sctp_set_number_streams(sock_fd, &initm, SERV_MAX_SCTP_STRM);
 
 	/* Fill the server4_addres struct with 0*/
-	memset(&server4_address,0 ,sizeof(server4_address));
+    initz(&server4_address,0);
     /* Complete the struct with the require protocol settings */
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_port = htons(PORT);
-	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
+	//server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	Inet_pton(AF_INET, argv[1], &server4_address.sin_addr);
 
 	/* Fill the evets struct with 0 */
-	memset(&evnts,0, sizeof(evnts));
+	initz(&evnts,0);
 	/**
 	 * Set the socket with the right options as the server
 	 */
@@ -227,7 +236,8 @@ main(int argc, char **argv)
 							sizeof(server4_address));
 	char byemsg[7];
 	strcpy(byemsg,"goodbye");
-	Sctp_sendmsg(sock_fd, byemsg, strlen(byemsg),(SA *)&server4_address,sizeof(server4_address),0, SCTP_ABORT, 0, 0, 0);
+	Sctp_sendmsg(sock_fd, byemsg, strlen(byemsg),
+			(SA *)&server4_address,sizeof(server4_address),0, SCTP_ABORT, 0, 0, 0);
 	/* close the socket*/
 	Close(sock_fd);
 
