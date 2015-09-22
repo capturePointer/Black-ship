@@ -1,4 +1,4 @@
-#include "net.h"
+#include "seilfish.h"
 
 void
 Close(int fd)

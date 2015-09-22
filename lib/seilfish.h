@@ -1,5 +1,5 @@
-#ifndef NET_H
-#define NET_H
+#ifndef SEILFISH_H
+#define SEILFISH_H
 /*
  * My own custom barkeley C socket api header
  *
@@ -143,6 +143,8 @@ size_t		Read(int, void*,size_t);
 ssize_t		Sendto(int,const void*, size_t, int, const struct sockaddr*, socklen_t);
 ssize_t		Recvfrom(int, void *restrict , size_t, int,
 				 struct sockaddr *restrict, socklen_t *restrict);
+ssize_t		Send(int, const void*, size_t, int);
+ssize_t		Recv(int, void*, size_t, int);
 void		Bind(int, const struct sockaddr*, socklen_t);
 void		Listen(int, int);
 int			Accept(int, struct sockaddr *restrict , socklen_t *restrict);
@@ -189,4 +191,4 @@ void		handler_child_waitpid(int);
 void		handler_child_wait(int);
 char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 
-#endif /* NET_H */
+#endif /* SEILFISH_H */

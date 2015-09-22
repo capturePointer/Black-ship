@@ -1,4 +1,4 @@
-#include	"lib/net.h"
+#include	"lib/seilfish.h"
 
 #define	SCTP_MAXLINE	800
 

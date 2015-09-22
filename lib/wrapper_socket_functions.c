@@ -1,4 +1,4 @@
-#include "net.h"
+#include "seilfish.h"
 
 int
 Socket(int domain, int type, int protocol)

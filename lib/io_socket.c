@@ -1,4 +1,4 @@
-#include "net.h"
+#include "seilfish.h"
 /*
  * Our own I/O socket functions
  */

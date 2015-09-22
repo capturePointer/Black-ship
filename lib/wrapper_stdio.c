@@ -1,4 +1,4 @@
-#include "net.h"
+#include "seilfish.h"
 /*
  * Our own standard I/O wrapper functions
  */

@@ -1,4 +1,4 @@
-#include "lib/net.h"
+#include "lib/seilfish.h"
 
 
 int main_socket, client_socket;
@@ -14,6 +14,7 @@ struct sctp_sndrcvinfo sndrcvinfo;
 char buffer[MAXLINE + 1];
 size_t len;
 int reuse;
+
 int main(void)
 {
 	/**
@@ -52,8 +53,9 @@ int main(void)
 	   len = sizeof(client4_address);
 	   client_socket = Accept(main_socket, (SA *)&client4_address, (socklen_t *)&len);
 
-	   rd_sz = Sctp_recvmsg(main_socket, buffer, sizeof(buffer), (SA *)&client4_address,
-							0, &sndrcvinfo, &flags);
+	   //rd_sz = Sctp_recvmsg(main_socket, buffer, sizeof(buffer), (SA *)&client4_address,
+	   // 					0, &sndrcvinfo, &flags);
+	   rd_sz = Recv(main_socket, buffer, sizeof(buffer), 0);
 	   printf("Data: %s\n",buffer);
 	   close(client_socket);
 	}
