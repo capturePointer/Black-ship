@@ -68,3 +68,23 @@ Sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
 		prog_error("Sctp_recvmsg error",true,errno);
 	return r;
 }
+/**
+ * Sctp_send is a wrapper library function 
+ * that can be used to send a message from a socket without 
+ * the use of the CMSG header structures. sd is the socket descriptor
+ * from which the message pointed to by msg of length len is sent. sinfo
+ * is a pointer to a sctp_sndrcvinfo structure. flags parameter is composed
+ * of a bitwise OR of the flags that can be be passed as the 3rd argument of
+ * a standard sendmsg() call.
+ *
+ */
+int 
+Sctp_send(int s, const void *msg, size_t len,
+			  const struct sctp_sndrcvinfo *sinfo ,uint32_t flags)
+{
+	 int r = sctp_send(s, msg, len, sinfo, flags);
+	 if( r == -1)
+	 	 prog_error("Sctp_send error", true, errno);
+	 return r;
+
+}

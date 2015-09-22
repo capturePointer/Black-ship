@@ -9,12 +9,13 @@ sctp_address_to_associd(int sockfd, struct sockaddr *sa, socklen_t salen)
 {
 	 struct sctp_paddrparams sp;
 	 socklen_t palen = sizeof(struct sctp_paddrparams);
-	 
+
 	 memset(&sp, 0 ,palen);
 	 memcpy(&sp.spp_address, sa, salen);
-	 
+
+     //sctp_opt_info like getsockopt
 	 Sctp_opt_info(sockfd, 0 , SCTP_PEER_ADDR_PARAMS, &sp, &palen);
-	 
+
 	 return sp.spp_assoc_id;
 }
 //function updated to work with linux
@@ -37,15 +38,21 @@ int
 sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen, 
 						struct sctp_sndrcvinfo *sri)
 {
-	 socklen_t stlen;
+	 size_t stlen;
+	 // sctp structure that holds our number of streams
 	 struct sctp_status status;
 	 stlen = sizeof(status);
-	 memset(&status, 0, stlen);
+	 initz(&status, 0);
      //for linux it works like this
 	 status.sstat_assoc_id = sri->sinfo_assoc_id;
-	 //for bsd it's something like this
-	    // status.stat_assoc_id = sctp_address_to_associd(sockfd, to, tolen);
-	 Getsockopt(sockfd, IPPROTO_SCTP, SCTP_STATUS, &status, &stlen);
+	
+		/**
+		*   for bsd it's something like this  
+		*	status.stat_assoc_id = sctp_address_to_associd(sockfd, to, tolen);
+		*
+		*/
+
+	 Getsockopt(sockfd, IPPROTO_SCTP, SCTP_STATUS, &status, (socklen_t*)&stlen);
 
 	 return status.sstat_outstrms;
 }
@@ -62,13 +69,22 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
  * effective on the one-to-many socket interface
  */
 void
-sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs)
+sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs,int maxatmts)
 {
      initz(initm, 0);
 	 initm->sinit_num_ostreams = nstrs;
+	 initm->sinit_max_instreams = nstrs;
+	 initm->sinit_max_attempts = maxatmts;
+
 	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }
 
+/**
+ * This code is under testing..
+ *
+ */
+
+/*
 void
 sct_set_hearbeat(int sock, struct sctp_paddrparams *heartbeat, int time, size_t pathmaxrxt)
 {
@@ -81,14 +97,20 @@ sct_set_hearbeat(int sock, struct sctp_paddrparams *heartbeat, int time, size_t 
 	 // Set the socket options
 	 Setsockopt(sock,SOL_SCTP, SCTP_PEER_ADDR_PARAMS, heartbeat, (socklen_t)n);
 }
+
+*/
+
+/*
 int
 sctp_get_heartbeat(int sock, struct sctp_paddrparams *heartbeat)
 {
 	size_t n = sizeof(*heartbeat);
 
 	Getsockopt(sock, IPPROTO_SCTP, SCTP_PEER_ADDR_PARAMS, &heartbeat,(socklen_t *)&n);
-	/*For debugging reasons */
-	printf("Heart beat configured at %d\n",heartbeat->spp_hbinterval);
+	 printf("Heart beat configured at %d\n",heartbeat->spp_hbinterval);
 	
 	return heartbeat->spp_hbinterval;
 }
+*/
+
+

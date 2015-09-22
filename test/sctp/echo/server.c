@@ -28,7 +28,7 @@ main(int argc, char **argv)
      * Note that SERV_MORE_STRMS_SCTP is just a macro, that macro you 
      * could change or create another one.
      */
-	sctp_set_number_streams( sock_fd, &initm,SERV_MORE_STRMS_SCTP);
+	//sctp_set_number_streams( sock_fd, &initm,SERV_MORE_STRMS_SCTP);
 	
 	/*Fill the server struct with 0*/
 	initz(&server4_address, 0);
@@ -43,7 +43,8 @@ main(int argc, char **argv)
 	/*Fill sctp_event_subscribe struct with 0*/
 	initz(&evnts, 0);
 
-/* The server changes the subscription for the one-to-many SCTP sockets.
+	/*
+	* The server changes the subscription for the one-to-many SCTP sockets.
 	* The server subscribes to just the sctp_data_io_event,witch will allow 
 	* the server to see the number_sctp_sndrcvinfo structure.From this structure 
 	* the server can determine the stream number on with the messsage arrived.
@@ -95,8 +96,7 @@ for ( ; ; )
 		 * and the returned address found in client4_address to locate the peer
 		 * association and return the echo.
 		 */
-		uint32_t f = sri.sinfo_flags | SCTP_EOF;
-		Sctp_sendmsg(sock_fd, readbuf, rd_sz, (SA *)&client4_address, len,
-					sri.sinfo_ppid, f, sri.sinfo_stream,0, 0);
+		 Sctp_sendmsg(sock_fd, readbuf, rd_sz, (SA *)&client4_address, len,
+					  sri.sinfo_ppid, sri.sinfo_flags, sri.sinfo_stream, 0, 0);
 	}
 }

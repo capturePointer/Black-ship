@@ -24,8 +24,8 @@ clean:
 
 #Dev testing options
 extract:
-	mv test/sctp/client.c ~/Work/Seilfish/
-	mv test/sctp/server.c ~/Work/Seilfish/
+	mv test/sctp/simple/client.c ~/Work/Seilfish/
+	mv test/sctp/simple/server.c ~/Work/Seilfish/
 reverse:
-	mv client.c test/sctp/
-	mv server.c test/sctp/
+	mv client.c test/sctp/simple/
+	mv server.c test/sctp/simple/

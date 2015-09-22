@@ -2,7 +2,7 @@
 
 #define	SCTP_MAXLINE	800
 
-
+    // the actual socket
 	int sock_fd;
 	struct sctp_event_subscribe evnts;
 	int echo_to_all=0;// By default the flag is not set
@@ -145,7 +145,6 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 			printf("Error, line must be of the form '[streamnum]text'\n");
 			continue;
 		}
-	    
 	    /**
 	     * The client translates the user request stream found in the input
 	     * into the sinfo_stream field in the sri structure
@@ -204,18 +203,20 @@ main(int argc, char **argv)
      * */
 	sock_fd = Socket(AF_INET, SOCK_SEQPACKET, IPPROTO_SCTP);
 	
-	sctp_set_number_streams(sock_fd, &initm, SERV_MAX_SCTP_STRM);
+   // sctp_set_number_streams(sock_fd, &initm, SERV_MAX_SCTP_STRM);
 
 	/* Fill the server4_addres struct with 0*/
     initz(&server4_address,0);
     /* Complete the struct with the require protocol settings */
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_port = htons(PORT);
+	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	//server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	Inet_pton(AF_INET, argv[1], &server4_address.sin_addr);
 
 	/* Fill the evets struct with 0 */
 	initz(&evnts,0);
+	
 	/**
 	 * Set the socket with the right options as the server
 	 */
@@ -234,11 +235,7 @@ main(int argc, char **argv)
 	else
 		sctpstr_cli_echoall(stdin,sock_fd,(SA *)&server4_address,
 							sizeof(server4_address));
-	char byemsg[7];
-	strcpy(byemsg,"goodbye");
-	Sctp_sendmsg(sock_fd, byemsg, strlen(byemsg),
-			(SA *)&server4_address,sizeof(server4_address),0, SCTP_ABORT, 0, 0, 0);
-	/* close the socket*/
+	
 	Close(sock_fd);
 
 }
