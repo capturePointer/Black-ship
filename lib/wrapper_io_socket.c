@@ -106,3 +106,20 @@ Recv(int fd, void *buffer, size_t len_buffer, int flags)
 	 	 prog_error("Recv error", true, errno);
 	 return r;
 }
+
+ssize_t
+Recvmsg(int fd, struct msghdr *message, int flags)
+{
+	 ssize_t r = recvmsg(fd, message, flags);
+	 if(r == -1)
+	 	 prog_error("Recvmsg error", true, errno);
+	 return r;
+}
+ssize_t
+Sendmsg(int fd, const struct msghdr *message,int flags)
+{
+	 ssize_t r = sendmsg(fd, message, flags);
+	 if(r == -1)
+	 	 prog_error("Sendmsg error", true, errno);
+	 return r;
+}

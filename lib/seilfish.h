@@ -145,6 +145,8 @@ ssize_t		Recvfrom(int, void *restrict , size_t, int,
 				 struct sockaddr *restrict, socklen_t *restrict);
 ssize_t		Send(int, const void*, size_t, int);
 ssize_t		Recv(int, void*, size_t, int);
+ssize_t		Sendmsg(int, const struct msghdr *, int);
+ssize_t		Recvmsg(int, struct msghdr *, int);
 void		Bind(int, const struct sockaddr*, socklen_t);
 void		Listen(int, int);
 int			Accept(int, struct sockaddr *restrict , socklen_t *restrict);
