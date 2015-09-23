@@ -18,9 +18,11 @@ int main(void)
 	Connect(sockfd, (SA*)&server4_address, sizeof(server4_address));
 	
 	printf("We are now connected to our server..\n");
+    echo_name_socket(sockfd);
 
 	wr_sz = write(sockfd, buf,sizeof(buf));
 
+	
 	close(sockfd);
 	printf("We are now disconected from the server..\n");
 

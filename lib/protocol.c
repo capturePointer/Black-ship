@@ -105,3 +105,42 @@ proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
 		}
 	}
 }
+
+
+void
+echo_name_socket(int sd)
+{
+	//we use sockaddr_storage because it can store both ipv4 or ipv6 
+	struct sockaddr_storage addr;
+	char ipstr[MAXLINE];
+	int port;
+	socklen_t len;
+    char echo[MAXLINE];
+	len = sizeof(addr);
+	
+	//echo = Malloc(MAXLINE *sizeof(char));
+	Getpeername(sd, (SA*)&addr, &len);
+
+	//deal with both ivp4, and ipv6
+	switch(addr.ss_family)
+	{
+		case AF_INET:
+		{
+			struct sockaddr_in *s =(struct sockaddr_in *)&addr;
+			port = htons(s->sin_port);
+			Inet_ntop(AF_INET, &s->sin_addr, ipstr, sizeof(ipstr));
+			break;
+		}
+		case AF_INET6:
+		{
+			struct sockaddr_in6 *s = (struct sockaddr_in6 *)&addr;
+			port = htons(s->sin6_port);
+			Inet_ntop(AF_INET6, &s->sin6_addr, ipstr, sizeof(ipstr));
+			break;
+		}
+	}
+    
+    snprintf(echo, sizeof(echo),"Peer IP:PORT address: %s : %d\n",ipstr,port);
+	printf("%s\n",echo);
+
+}

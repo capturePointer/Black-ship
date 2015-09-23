@@ -192,5 +192,5 @@ Sigfunc*	c_signal(int,Sigfunc*);
 void		handler_child_waitpid(int);
 void		handler_child_wait(int);
 char		*proto_ntop(int, const struct sockaddr*, socklen_t);
-
+void		echo_name_socket(int);
 #endif /* SEILFISH_H */
