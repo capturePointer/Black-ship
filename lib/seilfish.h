@@ -9,11 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdbool.h>
+#include <netinet/in.h>
+#include <netdb.h>
 #include <string.h>
 #include <sys/time.h> /*time stamp*/
 #include <stdint.h> /*unsinged uint32_t uint16_t types*/
 #include <sys/socket.h> /*socket(),*/
-#include <netinet/in.h> /*sockaddr_in{},in_addr{} etc..*/
 #include <sys/un.h> /**/
 #include <sys/types.h> /* size_t int8_t int16_t*/
 #include <unistd.h> /* unxi standard library */
@@ -92,8 +93,7 @@ struct sockaddr_in6 client6_address;
  * for a better readability
  */
 #define SA struct sockaddr
-
-
+typedef struct hostent hostent;
 /*Custom user based settings*/
 #define PORT 9877
 #define MAXLINE 4096
@@ -193,4 +193,5 @@ void		handler_child_waitpid(int);
 void		handler_child_wait(int);
 char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 void		echo_name_socket(int);
+void		tell_info_hosts(int, char **);
 #endif /* SEILFISH_H */

@@ -144,3 +144,35 @@ echo_name_socket(int sd)
 	printf("%s\n",echo);
 
 }
+
+void 
+tell_info_hosts(int n, char **host_names)
+{
+	char *ptr, **pptr;
+	char str[BUFFSIZE];
+	hostent *hptr;
+ 
+		for(int i = 0; i<n; i++)
+		{
+			ptr = *host_names;
+			host_names ++;
+			if( (hptr = gethostbyname(ptr)) == NULL) {
+				echo_error("Error gethostbyname\n",false,errno);
+				printf("%s \n",hstrerror(h_errno));
+				continue;
+			}
+
+            printf("Oficial hostname: %s\n",hptr->h_name);
+
+			for(pptr = hptr->h_aliases; *pptr!=NULL; pptr++) {
+                printf("\taliases: %s\n", *pptr);
+			}
+
+			for(pptr = hptr->h_addr_list ; *pptr!=NULL; pptr++) {
+				Inet_ntop(hptr->h_addrtype, *pptr, str, sizeof str);
+				printf("taddress: %s\n",str);
+			}
+			printf("\n\n");
+			
+		}
+}
