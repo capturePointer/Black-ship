@@ -163,7 +163,8 @@ void		Setsockopt(int, int, int, const void*, socklen_t);
 void		Getsockopt(int, int, int, void*, socklen_t*);
 void		Getpeername(int, struct sockaddr*, socklen_t*);
 void		Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
-
+void		Getaddrinfo(const char *, const char *, const struct addrinfo *,
+						struct addrinfo **);
 /*SCTP* wrapper based func*/
 void		Sctp_bindx(int, struct sockaddr*, int, int);
 void		Sctp_connectx(int, struct sockaddr*,int, sctp_assoc_t*);

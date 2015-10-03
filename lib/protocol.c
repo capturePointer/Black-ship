@@ -153,7 +153,7 @@ echo_name_socket(int sd)
  * Below i will develop a side func for it
  */
 void 
-tell_info_hosts(int n, char **host_names)
+tell_info_hosts(int n, char **host_names)      // only for ipv-4
 {
 	char *ptr, **pptr;
 	char str[BUFFSIZE];
@@ -183,3 +183,52 @@ tell_info_hosts(int n, char **host_names)
 			
 		}
 }
+
+
+/**
+ * get adress infomariton
+ * Getaddrinfo Wrapper
+ */
+
+/*
+ * struct addrinfo {
+ *   int		ai_flags;		// AI_PASSIVE AI_CANONNAME
+ *   int		ai_family;		//AF_XXX
+ *   int		ai_socktype;	//SOCK_XXX
+ *   int		ai_protocol;	// 0 or IPPROTO_XXX for ipv4 and ipv6
+ *   socklen_t	ai_addrlen;		//length of ai_addr
+ *   char		*ai_canonname;	// ptr to canonical name for host
+ *   struct sockaddr  *ai_addr;	// ptr to socket address structure
+ *   struct addrinfo  *ai_next;	 // ptr to next structure in liked list
+ * };
+ *
+ * Despite the fact that getaddrinfo is better than the gethostbyname 
+ * and getservbyname functions(it makes it easier to write protocol-independet
+ * code; one function handles both the hostname and service;
+ * and all the returned info is dynamically alocated, not
+ * statically alocated), it is still not as easy to use as it could be.
+ */
+		
+void 
+Getaddrinfo(const char *hostname, const char *service, 
+			const struct addrinfo *hints, struct addrinfo **result) {
+    int rgai = getaddrinfo(hostname, service, hints, result);
+    if(rgai != 0) {
+		printf("Getaddrinfo error : %s", gai_strerror(errno));
+		exit(EXIT_FAILURE);
+    }
+}
+/**
+ * *res should point to the structure returned by geaddrinfo
+ * All the strucres in the linked list are freed, along with the 
+ * dynamic storage pointed to by those structure(example socket addres struct
+ * and canonical hostnames).
+ */
+// keep it consistant
+void
+Freeaddrinfo(struct addrinfo *res)
+{
+	freeaddrinfo(res);
+}
+
+
