@@ -145,6 +145,13 @@ echo_name_socket(int sd)
 
 }
 
+
+/*
+ * I know that gethostbyname
+ * is deprecated and i should replace it
+ * with getaddrinfo.
+ * Below i will develop a side func for it
+ */
 void 
 tell_info_hosts(int n, char **host_names)
 {

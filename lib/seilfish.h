@@ -136,6 +136,7 @@ int			Socket(int , int , int );
 void		Connect(int, const struct sockaddr*, socklen_t);
 void		Inet_pton(int, const char*, void*);
 void		Inet_ntop(int,const void*,char*,socklen_t);
+void		Inet_aton(const char *, struct in_addr *);
 char		*Fgets(char*, int, FILE*);
 void		Fputs(const char*, FILE*);
 size_t		Write(int, const void*, size_t);
@@ -191,6 +192,7 @@ Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
 void		handler_child_waitpid(int);
 void		handler_child_wait(int);
+
 char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 void		echo_name_socket(int);
 void		tell_info_hosts(int, char **);
