@@ -12,6 +12,7 @@ link: compile
 	rm -rf bin/*.o
 
 compile: 
+	ctags -R
 	$(CC) $(CFLAGS) $(LIBS)
 	mv *.o build/
 	#compile client and server objects

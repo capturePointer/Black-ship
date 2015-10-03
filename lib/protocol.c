@@ -211,7 +211,8 @@ tell_info_hosts(int n, char **host_names)      // only for ipv-4
 		
 void 
 Getaddrinfo(const char *hostname, const char *service, 
-			const struct addrinfo *hints, struct addrinfo **result) {
+			const addrinfo *hints, addrinfo **result)
+{
     int rgai = getaddrinfo(hostname, service, hints, result);
     if(rgai != 0) {
 		printf("Getaddrinfo error : %s", gai_strerror(errno));
@@ -226,9 +227,26 @@ Getaddrinfo(const char *hostname, const char *service,
  */
 // keep it consistant
 void
-Freeaddrinfo(struct addrinfo *res)
+Freeaddrinfo(addrinfo *res)
 {
 	freeaddrinfo(res);
 }
 
+addrinfo *
+host_serv(const char *host, const char *serv, int family, int socktype)
+{
+	addrinfo hints, *res;
+    // The function initializes a hints structure
+    // calls wrapper Getaddrinfo and exit's if something is wrong
+	initz(&hints, 0);
+	// Setting this flag will always return the canon name
+	hints.ai_flags = AI_CANONNAME;
+	// Here we set the addr family, like AF_UNSPEC , AF_INET, AF_INET6 
+	hints.ai_family = family;
+    // We will set our protocol related socket like 0, SOCK_STREAM, SOCK_DRGRAM
+	hints.ai_socktype = socktype;
+
+	Getaddrinfo(host, serv, &hints, &res);
+    return (res);   // return our pointer to first on linked list
+}
 

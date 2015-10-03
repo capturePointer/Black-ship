@@ -94,6 +94,8 @@ struct sockaddr_in6 client6_address;
  */
 #define SA struct sockaddr
 typedef struct hostent hostent;
+typedef struct addrinfo addrinfo;
+
 /*Custom user based settings*/
 #define PORT 9877
 #define MAXLINE 4096
@@ -163,8 +165,9 @@ void		Setsockopt(int, int, int, const void*, socklen_t);
 void		Getsockopt(int, int, int, void*, socklen_t*);
 void		Getpeername(int, struct sockaddr*, socklen_t*);
 void		Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
-void		Getaddrinfo(const char *, const char *, const struct addrinfo *,
-						struct addrinfo **);
+void		Getaddrinfo(const char *, const char *, const addrinfo *, 
+						addrinfo **);
+void		Freeaddrinfo(addrinfo *);
 /*SCTP* wrapper based func*/
 void		Sctp_bindx(int, struct sockaddr*, int, int);
 void		Sctp_connectx(int, struct sockaddr*,int, sctp_assoc_t*);
@@ -197,4 +200,6 @@ void		handler_child_wait(int);
 char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 void		echo_name_socket(int);
 void		tell_info_hosts(int, char **);
+addrinfo	*host_serv(const char *, const char *,int, int );
+int			establish_tcp(const char *, const char *);
 #endif /* SEILFISH_H */
