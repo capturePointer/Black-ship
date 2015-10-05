@@ -32,3 +32,21 @@ prog_error(const char *message,bool display_errno,int errnoflag)
 		exit(EXIT_FAILURE);
 	}
 }
+
+/**
+ *  Error handler for addrinfo structure
+ *  gai_error(errnoflag);
+ *
+ */
+void
+error_addrinfo(const char *message, bool display_errno, int errnoflag)
+{
+   if(display_errno) {
+		printf(KBLU "::>" KRED ":%s :" RESET "%s.\n",message, gai_strerror(errnoflag));
+		exit(EXIT_FAILURE);
+   } else {
+		printf(KBLU "::> "KRED "%s.\n"  RESET, message);
+		exit(EXIT_FAILURE);
+   }
+
+}

@@ -20,6 +20,7 @@ main(void) {
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
     Bind(listensockfd, (SA*)&server4_address, sizeof(server4_address));
 	Listen(listensockfd, LISTENQ);
+
 	for(;;){
 		len = sizeof(client4_address);
 		connsockfd = Accept(listensockfd, (SA*)&client4_address, &len);

@@ -5,6 +5,7 @@ ssize_t wr_sz;
 char buf[]="This is a good day to be alive..";
 char *addr = "127.0.0.1";
 char buffer[MAXLINE];
+
 int main(void)
 {
 

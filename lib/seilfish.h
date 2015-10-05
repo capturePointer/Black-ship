@@ -119,9 +119,10 @@ typedef struct  sigaction sig;
  *  Prototype of our own functions
  *
  */
-void     argc_length(int, int);
-void     echo_error(const char*, bool, int);
-void     prog_error(const char*, bool, int);
+void    argc_length(int, int);
+void    echo_error(const char*, bool, int);
+void    prog_error(const char*, bool, int);
+void 	error_addrinfo(const char *, bool, int);
 /**
  * Miscellaneous
  */
@@ -132,6 +133,12 @@ void	 initz(void *,int);
 ssize_t  s_write(int, const void*, size_t, bool);
 ssize_t  s_read(int, void*, size_t, bool);
 ssize_t	 readline(int,void*,size_t);
+
+/**
+ * Keyboard buffer input
+ * functions
+ */
+void 	io_keyb(char *,int);
 
 /* Wrapper base proto */
 int			Socket(int , int , int );
