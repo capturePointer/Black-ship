@@ -13,6 +13,7 @@
 #include <netdb.h>
 #include <string.h>
 #include <sys/time.h> /*time stamp*/
+#include <time.h>
 #include <stdint.h> /*unsinged uint32_t uint16_t types*/
 #include <sys/socket.h> /*socket(),*/
 #include <sys/un.h> /**/
@@ -29,7 +30,8 @@
 #ifndef INFTIM
 	#include <bsd/sys/poll.h>
 #endif
-#include <netinet/sctp.h> /*you must install lksctp_tools in order to have this library*/
+#include <netinet/sctp.h> /*you must install lksctp_tools 
+							in order to have this library*/
 
 
 /*
@@ -101,9 +103,14 @@ typedef struct addrinfo addrinfo;
 #define MAXLINE 4096
 #define BUFFSIZE 8192
 /* SCTP FLAGS*/
-#define SCTP_PDAPI_INCR_SZ 65535 //increment size of pdapi  when adding buf space 
+
+//increment size of pdapi  when adding buf space  
+#define SCTP_PDAPI_INCR_SZ 65535 
 #define SCTP_PDAPI_NEED_MORE_THRESHOLD 1024
-/*For  the free bsd KAME implementation of SCTP this default is set to 10 streams*/
+/**
+ * For  the free bsd KAME implementation of SCTP 
+ * this default is set to 10 streams
+ */
 #define SERV_MAX_SCTP_STRM 10 //normal maxium streams
 #define SERV_MORE_STRMS_SCTP 20 //larger number of streams
 
@@ -148,9 +155,10 @@ void		Inet_ntop(int,const void*,char*,socklen_t);
 void		Inet_aton(const char *, struct in_addr *);
 char		*Fgets(char*, int, FILE*);
 void		Fputs(const char*, FILE*);
-size_t		Write(int, const void*, size_t);
-size_t		Read(int, void*,size_t);
-ssize_t		Sendto(int,const void*, size_t, int, const struct sockaddr*, socklen_t);
+ssize_t		Write(int, const void*, size_t);
+ssize_t		Read(int, void*,size_t);
+ssize_t		Sendto(int,const void*, size_t, int, const struct sockaddr*,
+				   socklen_t);
 ssize_t		Recvfrom(int, void *restrict , size_t, int,
 				 struct sockaddr *restrict, socklen_t *restrict);
 ssize_t		Send(int, const void*, size_t, int);
@@ -197,7 +205,8 @@ int			Sctp_send(int, const void *, size_t , const struct sctp_sndrcvinfo *
 /*SCTP handle functions*/
 sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
 int			sctp_get_number_streams_bsd(int, struct sockaddr *, socklen_t);
-int			sctp_get_number_streams(int, struct sockaddr *, socklen_t, struct sctp_sndrcvinfo *);
+int			sctp_get_number_streams(int, struct sockaddr *, socklen_t,
+									struct sctp_sndrcvinfo *);
 void        sctp_set_number_streams(int, struct sctp_initmsg * ,int,int);
 Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/
@@ -208,5 +217,9 @@ char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 void		echo_name_socket(int);
 void		tell_info_hosts(int, char **);
 addrinfo	*host_serv(const char *, const char *,int, int );
+/**
+ *TCP libray headers
+ */
+int			host_tcp(const char *, const char *, socklen_t *);
 int			establish_tcp(const char *, const char *);
 #endif /* SEILFISH_H */

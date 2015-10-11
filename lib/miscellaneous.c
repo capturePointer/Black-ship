@@ -13,7 +13,3 @@ void *Malloc(size_t size)
 		prog_error("Unable to allocate memory error",true,errno);
 	return ptr;
 }
-void initz(void *ptr, int n)
-{
-	memset(ptr,n,sizeof(*ptr));
-}

@@ -12,7 +12,6 @@ link: compile
 	rm -rf bin/*.o
 
 compile: 
-	ctags -R
 	$(CC) $(CFLAGS) $(LIBS)
 	mv *.o build/
 	#compile client and server objects
@@ -21,12 +20,3 @@ compile:
 	
 clean: 
 	rm -rf build/*.o
-
-
-#Dev testing options
-extract:
-	mv test/sctp/echo/one-to-one/client.c ~/Work/Seilfish/
-	mv test/sctp/echo/one-to-one/server.c ~/Work/Seilfish/
-reverse:
-	mv client.c test/sctp/echo/one-to-one/
-	mv server.c test/sctp/echo/one-to-one/

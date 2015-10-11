@@ -238,7 +238,7 @@ host_serv(const char *host, const char *serv, int family, int socktype)
 	addrinfo hints, *res;
     // The function initializes a hints structure
     // calls wrapper Getaddrinfo and exit's if something is wrong
-	initz(&hints, 0);
+	memset(&hints, 0, sizeof(hints));
 	// Setting this flag will always return the canon name
 	hints.ai_flags = AI_CANONNAME;
 	// Here we set the addr family, like AF_UNSPEC , AF_INET, AF_INET6 

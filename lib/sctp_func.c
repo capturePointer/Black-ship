@@ -42,7 +42,7 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
 	 // sctp structure that holds our number of streams
 	 struct sctp_status status;
 	 stlen = sizeof(status);
-	 initz(&status, 0);
+	 memset(&status, 0, sizeof(status));
      //for linux it works like this
 	 status.sstat_assoc_id = sri->sinfo_assoc_id;
 	
@@ -71,7 +71,7 @@ sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen,
 void
 sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs,int maxatmts)
 {
-     initz(initm, 0);
+     memset(&initm, 0, sizeof(initm));
 	 initm->sinit_num_ostreams = nstrs;
 	 initm->sinit_max_instreams = nstrs;
 	 initm->sinit_max_attempts = maxatmts;

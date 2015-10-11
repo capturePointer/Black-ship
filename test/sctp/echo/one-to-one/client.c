@@ -26,5 +26,4 @@ int main(void)
 	
 	close(sockfd);
 	printf("We are now disconected from the server..\n");
-
 }
