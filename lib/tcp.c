@@ -47,7 +47,7 @@ host_tcp(const char *hostname, const char *service, socklen_t *addrlenptr)
 	*/
 	do {
 		listenfd = socket(res->ai_family, res->ai_socktype, res->ai_protocol);
-		
+
 		if(listenfd < 0)
 			continue;
 
@@ -55,18 +55,16 @@ host_tcp(const char *hostname, const char *service, socklen_t *addrlenptr)
 
 		if(bind(listenfd, res->ai_addr, res->ai_addrlen) == 0)
 			 break;
-
+        //If it binds skip the close
 		Close(listenfd);
-	
+        //If somthing goes wrong , close the bad socket
 	}
-	while( (res = res->ai_next) != NULL);
+	while( (res = res->ai_next) != NULL); // to the next in the list
 	
 	if(res == NULL) {
 		printf("Can't host a tcp process server for %s %s\n",hostname, service);
 		flag_bind_error = true;
 	}
-	
-    Listen(listenfd, LISTENQ);
 	/**
 	*  If the addrlenp argument is non-null, we return the size of the protocol
 	*  addresses through this pointer.This allows the caller to allocate memory
@@ -83,6 +81,8 @@ host_tcp(const char *hostname, const char *service, socklen_t *addrlenptr)
 	if(flag_getaddr  || flag_bind_error) {
 	   exit(EXIT_FAILURE);
 	}
+
+    Listen(listenfd, LISTENQ);
 
 	return listenfd;
 }
