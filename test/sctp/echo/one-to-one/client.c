@@ -1,4 +1,4 @@
-#include "lib/seilfish.h"
+#include "lib/sailfish.h"
 
 int sockfd;
 ssize_t wr_sz;

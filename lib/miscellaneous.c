@@ -1,4 +1,4 @@
-#include "seilfish.h"
+#include "sailfish.h"
 
 int
 max(int a, int b)

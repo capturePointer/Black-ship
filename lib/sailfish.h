@@ -1,5 +1,5 @@
-#ifndef SEILFISH_H
-#define SEILFISH_H
+#ifndef SAILFISH_H
+#define SAILFISH_H
 /*
  * My own custom barkeley C socket api header
  *
@@ -222,4 +222,4 @@ addrinfo	*host_serv(const char *, const char *,int, int );
  */
 int			host_tcp(const char *, const char *, socklen_t *);
 int			establish_tcp(const char *, const char *);
-#endif /* SEILFISH_H */
+#endif /* SAILFISH_H */
