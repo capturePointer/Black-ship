@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -std=gnu11 -g -Wall 
+CFLAGS = -c -std=gnu11 -g -Wall
 LINK_FLAGS = -lsctp
 LIBS = $(wildcard lib/*.c)
 OBJECT = $(wildcard build/*.o)
@@ -10,13 +10,12 @@ link: compile
 	$(CC) $(LINK_FLAGS) $(OBJECT) bin/server.o  -o bin/server
 	$(CC) $(LINK_FLAGS) $(OBJECT) bin/client.o  -o bin/client
 	rm -rf bin/*.o
-
-compile: 
+compile:
 	$(CC) $(CFLAGS) $(LIBS)
-	mv *.o build/
+	mv *.o $(BUILD_PATH)
 	#compile client and server objects
 	$(CC) $(CFLAGS) server.c client.c
 	mv *.o bin/
-	
-clean: 
+clean:
 	rm -rf build/*.o
+	rm -rf bin/*

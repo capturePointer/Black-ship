@@ -4,7 +4,7 @@
  *  base functions
  */
 void
-handler_child_wait(int signo)
+handler_child_wait(int signum)
 {
 	pid_t 	pid;
 	int 	stat;
@@ -18,7 +18,7 @@ handler_child_wait(int signo)
 }
 
 void
-handler_child_waitpid(int singo)
+handler_child_waitpid(int signum)
 {
 	pid_t 	pid;
 	int 	stat;

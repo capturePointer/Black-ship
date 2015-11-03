@@ -30,7 +30,7 @@
 #ifndef INFTIM
 	#include <bsd/sys/poll.h>
 #endif
-#include <netinet/sctp.h> /*you must install lksctp_tools 
+#include <netinet/sctp.h> /*you must install lksctp_tools
 							in order to have this library*/
 
 
@@ -104,11 +104,11 @@ typedef struct addrinfo addrinfo;
 #define BUFFSIZE 8192
 /* SCTP FLAGS*/
 
-//increment size of pdapi  when adding buf space  
-#define SCTP_PDAPI_INCR_SZ 65535 
+//increment size of pdapi  when adding buf space
+#define SCTP_PDAPI_INCR_SZ 65535
 #define SCTP_PDAPI_NEED_MORE_THRESHOLD 1024
 /**
- * For  the free bsd KAME implementation of SCTP 
+ * For  the free bsd KAME implementation of SCTP
  * this default is set to 10 streams
  */
 #define SERV_MAX_SCTP_STRM 10 //normal maxium streams
@@ -122,30 +122,30 @@ typedef struct addrinfo addrinfo;
  */
 typedef void	Sigfunc(int);
 typedef struct  sigaction sig;
+
 /*
  *  Prototype of our own functions
- *
  */
-void    argc_length(int, int);
-void    echo_error(const char*, bool, int);
-void    prog_error(const char*, bool, int);
-void 	error_addrinfo(const char *, bool, int);
+void  		argc_length(int, int);
+void 		echo_error(const char*, bool, int);
+void 		prog_error(const char*, bool, int);
+void 		error_addrinfo(const char *, bool, int);
 /**
  * Miscellaneous
  */
-int      max(int,int);
-void    *Malloc(size_t);
-void	 initz(void *,int);
+int      	max(int,int);
+void    	*Malloc(size_t);
+void	 	initz(void *,int);
 
-ssize_t  s_write(int, const void*, size_t, bool);
-ssize_t  s_read(int, void*, size_t, bool);
-ssize_t	 readline(int,void*,size_t);
+ssize_t  	s_write(int, const void*, size_t, bool);
+ssize_t  	s_read(int, void*, size_t, bool);
+ssize_t	 	readline(int,void*,size_t);
 
 /**
  * Keyboard buffer input
  * functions
  */
-void 	io_keyb(char *,int);
+void 		io_keyb(char *,int);
 
 /* Wrapper base proto */
 int			Socket(int , int , int );
@@ -180,7 +180,7 @@ void		Setsockopt(int, int, int, const void*, socklen_t);
 void		Getsockopt(int, int, int, void*, socklen_t*);
 void		Getpeername(int, struct sockaddr*, socklen_t*);
 void		Getsockname(int, struct sockaddr *restrict, socklen_t *restrict);
-void		Getaddrinfo(const char *, const char *, const addrinfo *, 
+void		Getaddrinfo(const char *, const char *, const addrinfo *,
 						addrinfo **);
 void		Freeaddrinfo(addrinfo *);
 /*SCTP* wrapper based func*/
@@ -217,9 +217,11 @@ char		*proto_ntop(int, const struct sockaddr*, socklen_t);
 void		echo_name_socket(int);
 void		tell_info_hosts(int, char **);
 addrinfo	*host_serv(const char *, const char *,int, int );
+
 /**
  *TCP libray headers
  */
 int			host_tcp(const char *, const char *, socklen_t *);
 int			establish_tcp(const char *, const char *);
+
 #endif /* SAILFISH_H */
