@@ -1,4 +1,4 @@
-#include	"lib/sailfish.h"
+#include	"../../lib/sailfish.h"
 
 #define	SCTP_MAXLINE	800
 

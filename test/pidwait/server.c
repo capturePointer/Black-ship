@@ -1,61 +1,48 @@
 #include "lib/sailfish.h"
-
-int sockfd, clientfd;
+int listenfd, connfd;
+socklen_t clilen;
 pid_t childpid;
-socklen_t client_len;
 
-void
-str_echo(int sockfd)
-{
-	long 			arg1, arg2;
-	ssize_t 		n;
-	char			line[MAXLINE];
-
-	for( ; ; ) {
-		if(( n = readline(sockfd, line, MAXLINE)) == 0) {
-			return ; // connection close by other end
+void 
+str_echo(int sockfd) {
+	ssize_t n;
+	char buffer[MAXLINE];
+		while((n = read(sockfd, buffer, MAXLINE)) > 0){
+			s_write(sockfd,buffer,n,true);
 		}
-		if(sscanf(line, "%ld%ld", &arg1, &arg2) == 2) {
-			snprintf(line, sizeof(line), "%ld\n", arg1+arg2);
-		} else {
-			snprintf(line, sizeof(line), "input error\n");
-		}
-		n = strlen(line);
-		s_write(sockfd, line, n,true);
-	}
 }
-int main(void) {
 
-	sockfd = Socket(AF_INET, SOCK_STREAM, 0);
 
-	memset(&server4_address, 0 , sizeof(server4_address));
-
+int
+main(void)
+{
+	// Create liste socket
+	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
+	// Fill the struct addr with 0
+	memset(&server4_address, 0, sizeof(server4_address)); 
+	// Init the struct
+	server4_address.sin_port = htons(PORT);
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	server4_address.sin_port = htons(PORT);
-
-	Bind(sockfd, (SA*)&server4_address, sizeof(server4_address));
-
-	Listen(sockfd, LISTENQ);
-
+	// Bind the socket 
+	Bind(listenfd, (SA* )&server4_address, sizeof(server4_address));
+	// Make the sock listen
+	Listen(listenfd, LISTENQ);
+	// Catch the signal 
 	Signal(SIGCHLD, handler_child_wait);
 
 	for( ; ; ) {
-		client_len = (socklen_t)sizeof(client4_address);
-		if((clientfd = accept(sockfd, (SA*)&client4_address, &client_len) < 0)){
-			if(errno == EINTR) {
-				continue;
-			}
-			else
-				prog_error("Error accept",true,errno);
-		}
-		//child pid
-		if ((childpid = Fork()) == 0) {
-			Close(sockfd);
-			str_echo(clientfd);
-			exit(0);
-		}
-		Close(clientfd);
+		clilen = sizeof(client4_address);
+		connfd = Accept(listenfd, (SA *)&client4_address, &clilen);
 
+		if((childpid = Fork())== 0) {
+			// child will close the main connection
+			// and keed allive just the connection with the client 
+			Close(listenfd);
+			str_echo(connfd);
+			exit(EXIT_SUCCESS);
+		}
+		// Parrent should close the main connection with the client
+		Close(connfd);
 	}
 }

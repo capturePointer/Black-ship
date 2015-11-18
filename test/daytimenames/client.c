@@ -1,4 +1,4 @@
-#include "lib/sailfish.h"
+#include "../../lib/sailfish.h"
 
 int 				sockfd,n;
 char 				recvline[MAXLINE +1];

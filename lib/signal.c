@@ -28,7 +28,7 @@ Signal(int signo, Sigfunc *func)
 Sigfunc *
 c_signal(int signo,Sigfunc *func)
 {
-	Sigfunc *rsig;
+	Sigfunc *rsig = NULL;
 
 	switch(signo)
 	{

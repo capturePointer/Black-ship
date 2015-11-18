@@ -13,7 +13,7 @@ handler_child_wait(int signum)
 
 	if(pid < 0)
 		 prog_error("Wait error",true,errno);
-
+	// For debugging purpose
 	printf("Child terminated %d\n",pid);
 }
 
@@ -23,7 +23,7 @@ handler_child_waitpid(int signum)
 	pid_t 	pid;
 	int 	stat;
 
-	while( ( pid = waitpid(-1,&stat,WNOHANG)) > 0)
+	while( ( pid = waitpid(WAIT_ANY,&stat,WNOHANG)) > 0)
 	{
 		/*for debugging reasons*/
 		printf("child %d terminated\n",pid);

@@ -10,9 +10,8 @@ pid_t
 Fork(void)
 {
 	pid_t pid;
-	if( (pid = fork()) <0 )
+	if((pid = fork()) < 0)
 		prog_error("Fork error",true,errno);
-
 	return pid;
 }
 
@@ -24,7 +23,6 @@ Waitpid(pid_t pid,int *ptr,int mode)
 
     if(rpid == -1)
         prog_error("Waidpid error",true,errno);
-
     return rpid;
 }
 

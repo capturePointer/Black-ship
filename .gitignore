@@ -1,2 +1,6 @@
+# YCMD CONF
+.ycm_extra_conf.pyc
+# TAGS CONF
+.ctags
 cscope.out
 .tags
