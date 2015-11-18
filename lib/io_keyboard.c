@@ -9,7 +9,7 @@ io_keyb(char *buff,int size)
 {
 	char *rfget = fgets(buff, size, stdin);
 	int ferr = ferror(stdin);
-    int n;
+    size_t n;
 	if ((rfget == NULL ) && (ferr)) {
 	     printf("io_keyb error");
 	     exit(EXIT_FAILURE);

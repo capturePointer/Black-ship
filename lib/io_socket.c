@@ -3,8 +3,10 @@
  * Our own I/O socket functions
  */
 
-/*Write that supports
-signal non-interup process*/
+/**
+	Write that supports
+	signal non-interup process
+ */
 static bool isInterupt(ssize_t nbytes);
 
 ssize_t
@@ -16,7 +18,7 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 
 	while(number_of_bytes_left > 0)
 	{
-		//atempt to write the data to the fd
+		// atempt to write the data to the fd
 		number_of_bytes_written = write(fd,buffer,number_of_bytes_left);
 		// grant us perrmision to check
 		if(level)
@@ -38,11 +40,11 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 				echo_error("Write error",true,errno);
 				return -1;
 			}
-		/*if message was interupt continue sending the message */
+		/* if message was interupt continue sending the message */
 		number_of_bytes_left = number_of_bytes_left - number_of_bytes_written;
 		buffer = buffer + number_of_bytes_written;
 	}
-	/*if everything is ok we should return the size that has been writen to the fd*/
+	/* if everything is ok we should return the size that has been writen to the fd*/
 	return len_buffer;
 }
 /**
@@ -151,7 +153,7 @@ readline(int fd, void *point, size_t len_buffer)
 {
 	ssize_t n, rc;
 	char	c, *ptr;
-	//pass pointer to char pointer
+	// pass pointer to char pointer
 	ptr = point;
 	// for every byte of data
 	for(n = 0; n<len_buffer; n++)
@@ -159,7 +161,7 @@ readline(int fd, void *point, size_t len_buffer)
 		// if we return successfull a char 
 		if( (rc= char_read(fd,&c,true)) == 1)
 		{
-			//our char pointer point to that char
+			// our char pointer point to that char
 			*ptr++ = c;
 			if(c == '\n') // we found a new line
 				break;
@@ -168,7 +170,7 @@ readline(int fd, void *point, size_t len_buffer)
 			//EOF
 			if( rc == 0 )
 			{
-				//return the the numebr of bytes that were readed.
+				// return the the numebr of bytes that were readed.
 				*ptr = 0; // make our pointer point to null
 				return(n - 1);
 			}

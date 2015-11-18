@@ -92,7 +92,7 @@ Sctp_send(int s, const void *msg, size_t len,
 ssize_t 
 Send(int fd, const void *buffer, size_t len_buffer, int flags)
 {
-    ssize_t r = Send(fd, buffer, len_buffer, flags);
+    ssize_t r = send(fd, buffer, len_buffer, flags);
     if(r == -1)
     	prog_error("Send error", true, errno);
     return r;
@@ -101,7 +101,7 @@ Send(int fd, const void *buffer, size_t len_buffer, int flags)
 ssize_t
 Recv(int fd, void *buffer, size_t len_buffer, int flags)
 {
-	 ssize_t r = Recv(fd, buffer, len_buffer, flags);
+	 ssize_t r = recv(fd, buffer, len_buffer, flags);
 	 if(r == -1)
 	 	 prog_error("Recv error", true, errno);
 	 return r;

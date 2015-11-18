@@ -8,7 +8,7 @@ struct socket_types
 	//socket type
 	int sock_type;
 	//Description
-	char *dscrp;
+	const char *dscrp;
 }socket_types[] = {
 	{SOCK_STREAM,"TCP"}, 
 	{SOCK_RAW, "RAW"},
@@ -25,10 +25,10 @@ struct socket_types
  * Search the hole big struct socket_type to find
  * the right type and return it's description
  */
-static char*
+const static char*
 get_socket_type_descr(const int opt_type)
 {
-	char *unknown_dscrp= "Uknown SOCK_XXX socket type";
+	const char *unknown_dscrp = "Uknown SOCK_XXX socket type";
 	struct socket_types *ptr;
 	for(ptr = socket_types; ptr->dscrp != NULL ; ptr++)
 	{
@@ -44,8 +44,8 @@ get_socket_type_descr(const int opt_type)
 char *
 proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
 {
-	int				rtype;//getsockopt return type
-	char			type[10];//the actual human readble tyepe
+	int				rtype;// getsockopt return type
+	char			type[10];// the actual human readble tyepe
 	char			port[10];
 	static char		message[128];
 	
@@ -53,6 +53,7 @@ proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
 	{
 		case AF_INET:
 		{
+			
 			struct sockaddr_in *ipv4 = (struct sockaddr_in*)sa;
 			message[0] ='[';
 			//convert network to presentation and add address to "message"
@@ -106,7 +107,6 @@ proto_ntop(int sockfd, const struct sockaddr *sa, socklen_t len)
 	}
 }
 
-
 void
 echo_name_socket(int sd)
 {
@@ -139,13 +139,10 @@ echo_name_socket(int sd)
 			break;
 		}
 	}
-    
     snprintf(echo, sizeof(echo),"Peer IP:PORT address: %s : %d\n",ipstr,port);
 	printf("%s\n",echo);
 
 }
-
-
 /*
  * I know that gethostbyname
  * is deprecated and i should replace it
@@ -168,13 +165,10 @@ tell_info_hosts(int n, char **host_names)      // only for ipv-4
 				printf("%s \n",hstrerror(h_errno));
 				continue;
 			}
-
             printf("Oficial hostname: %s\n",hptr->h_name);
-
 			for(pptr = hptr->h_aliases; *pptr!=NULL; pptr++) {
                 printf("\taliases: %s\n", *pptr);
 			}
-
 			for(pptr = hptr->h_addr_list ; *pptr!=NULL; pptr++) {
 				Inet_ntop(hptr->h_addrtype, *pptr, str, sizeof str);
 				printf("taddress: %s\n",str);
@@ -249,4 +243,3 @@ host_serv(const char *host, const char *serv, int family, int socktype)
 	Getaddrinfo(host, serv, &hints, &res);
     return (res);   // return our pointer to first on linked list
 }
-
