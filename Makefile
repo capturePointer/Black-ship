@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -c -std=gnu11 -g -Wall
+CFLAGS = -c -std=gnu11 -g -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes -Wmissing-declarations -Winline -Wlong-long -Wuninitialized -Wconversion -Wstrict-prototypes -Werror -Wno-variadic-macros
 LINK_FLAGS = -lsctp
 LIBS = $(wildcard lib/*.c)
 OBJECT = $(wildcard build/*.o)

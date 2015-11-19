@@ -25,7 +25,7 @@ struct socket_types
  * Search the hole big struct socket_type to find
  * the right type and return it's description
  */
-const static char*
+static const char*
 get_socket_type_descr(const int opt_type)
 {
 	const char *unknown_dscrp = "Uknown SOCK_XXX socket type";

@@ -205,8 +205,8 @@ int			Sctp_send(int, const void *, size_t , const struct sctp_sndrcvinfo *
 /*SCTP handle functions*/
 sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
 int			sctp_get_number_streams_bsd(int, struct sockaddr *, socklen_t);
-int			sctp_get_number_streams(int, struct sockaddr *, socklen_t,
-									struct sctp_sndrcvinfo *);
+// Note: modyfi
+int			sctp_get_number_streams(int, struct sctp_sndrcvinfo *);
 void        sctp_set_number_streams(int, struct sctp_initmsg * ,int,int);
 Sigfunc*	c_signal(int,Sigfunc*);
 /* handler child signal base functions*/

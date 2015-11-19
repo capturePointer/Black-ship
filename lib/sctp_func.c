@@ -34,9 +34,12 @@ sctp_get_number_streams_bsd(int sockfd, struct sockaddr *to,
 	 return status.sstat_outstrms;
 }
 
+//int
+//sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen, 
+//						struct sctp_sndrcvinfo *sri)
+//{
 int
-sctp_get_number_streams(int sockfd, struct sockaddr *to, socklen_t tolen, 
-						struct sctp_sndrcvinfo *sri)
+sctp_get_number_streams(int sockfd, struct sctp_sndrcvinfo *sri)
 {
 	 size_t stlen;
 	 // sctp structure that holds our number of streams
@@ -72,9 +75,10 @@ void
 sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs,int maxatmts)
 {
      memset(&initm, 0, sizeof(initm));
-	 initm->sinit_num_ostreams = nstrs;
-	 initm->sinit_max_instreams = nstrs;
-	 initm->sinit_max_attempts = maxatmts;
+	 // we need to convert it to __u16 all the ints 
+	 initm->sinit_num_ostreams =(__u16)nstrs;
+	 initm->sinit_max_instreams =(__u16)nstrs;
+	 initm->sinit_max_attempts = (__u16)maxatmts;
 
 	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }

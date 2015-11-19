@@ -9,7 +9,7 @@ Write(int fd, const void *buffer,size_t len_buffer)
 	if(nbytes_writen == -1)
 		prog_error("Write error",true,errno);
 
-	return len_buffer;
+	return (ssize_t)len_buffer;
 }
 
 ssize_t
@@ -20,7 +20,7 @@ Read(int fd, void *buffer, size_t len_buffer)
 	if(nbytes_readed == -1)
 		prog_error("Read error",true,errno);
 
-	return len_buffer;
+	return (ssize_t)len_buffer;
 }
 ssize_t
 Sendto(int fd, const void *buffer, size_t len_buffer, int flags,
@@ -30,7 +30,7 @@ Sendto(int fd, const void *buffer, size_t len_buffer, int flags,
 	if(nbytes_sended_to == -1)
 		prog_error("Sendto error",true,errno);
 
-	return len_buffer;
+	return (ssize_t)len_buffer;
 }
 ssize_t
 Recvfrom(int fd, void *restrict buffer, size_t len_buffer, int flags,
@@ -42,7 +42,7 @@ Recvfrom(int fd, void *restrict buffer, size_t len_buffer, int flags,
 	if(nbytes_recived_from == -1)
 		prog_error("Recvfrom error",true,errno);
 
-	return len_buffer;
+	return (ssize_t)len_buffer;
 }
 
 int
@@ -78,7 +78,8 @@ Sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
  * a standard sendmsg() call.
  *
  */
-int 
+
+/*int 
 Sctp_send(int s, const void *msg, size_t len,
 			  const struct sctp_sndrcvinfo *sinfo ,uint32_t flags)
 {
@@ -87,7 +88,7 @@ Sctp_send(int s, const void *msg, size_t len,
 	 	 prog_error("Sctp_send error", true, errno);
 	 return r;
 
-}
+}*/
 
 ssize_t 
 Send(int fd, const void *buffer, size_t len_buffer, int flags)

@@ -41,11 +41,11 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 				return -1;
 			}
 		/* if message was interupt continue sending the message */
-		number_of_bytes_left = number_of_bytes_left - number_of_bytes_written;
+		number_of_bytes_left = number_of_bytes_left - (size_t)number_of_bytes_written;
 		buffer = buffer + number_of_bytes_written;
 	}
 	/* if everything is ok we should return the size that has been writen to the fd*/
-	return len_buffer;
+	return (ssize_t)len_buffer;
 }
 /**
  * ssize_t s_read 
@@ -88,11 +88,11 @@ s_read(int fd, void *point, size_t len_buffer, bool level)
 				return -1;
 			}
 		/*if message was interupt continue reading the message */
-		number_of_bytes_left = number_of_bytes_left - number_of_bytes_readed;
+		number_of_bytes_left = number_of_bytes_left - (size_t)number_of_bytes_readed;
 		buffer = buffer - number_of_bytes_readed;
 	}
 	/*if everything is ok we should return the size that has been readed from the fd*/
-	return len_buffer - number_of_bytes_left;
+	return (ssize_t)(len_buffer - number_of_bytes_left);
 }
 static
 bool isInterupt(ssize_t nbytes)
@@ -103,7 +103,7 @@ bool isInterupt(ssize_t nbytes)
 }
 
 
-static int		read_byte_count;
+static ssize_t		read_byte_count;
 static char		*read_ptr;
 static char		read_buff[MAXLINE];
 /**
@@ -156,7 +156,7 @@ readline(int fd, void *point, size_t len_buffer)
 	// pass pointer to char pointer
 	ptr = point;
 	// for every byte of data
-	for(n = 0; n<len_buffer; n++)
+	for(n = 0; n<(int)len_buffer; n++)
 	{
 		// if we return successfull a char 
 		if( (rc= char_read(fd,&c,true)) == 1)
