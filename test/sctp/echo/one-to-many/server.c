@@ -1,6 +1,4 @@
-#include	"lib/sailfish.h"
-
-
+#include	"../../../../lib/sailfish.h"
 
 	int sock_fd,msg_flags;
 	char readbuf[BUFFSIZE];

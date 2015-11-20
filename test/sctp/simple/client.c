@@ -1,4 +1,4 @@
-#include "lib/sailfish.h"
+#include "../../../lib/sailfish.h"
 
 int main_socket;
 ssize_t rd_sz;

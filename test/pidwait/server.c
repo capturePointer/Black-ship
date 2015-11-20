@@ -1,4 +1,5 @@
-#include "lib/sailfish.h"
+#include "pidwait.h"
+
 int listenfd, connfd;
 socklen_t clilen;
 pid_t childpid;
@@ -8,7 +9,7 @@ str_echo(int sockfd) {
 	ssize_t n;
 	char buffer[MAXLINE];
 		while((n = read(sockfd, buffer, MAXLINE)) > 0){
-			s_write(sockfd,buffer,n,true);
+			s_write(sockfd,buffer,MAXLINE,true);
 		}
 }
 
