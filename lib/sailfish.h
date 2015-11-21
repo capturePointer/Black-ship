@@ -151,7 +151,7 @@ void 		io_keyb(char *,int);
 int			Socket(int , int , int );
 void		Connect(int, const struct sockaddr*, socklen_t);
 void		Inet_pton(int, const char*, void*);
-void		Inet_ntop(int,const void*,char*,socklen_t);
+const char	*Inet_ntop(int,const void*,char*,socklen_t);
 void		Inet_aton(const char *, struct in_addr *);
 char		*Fgets(char*, int, FILE*);
 void		Fputs(const char*, FILE*);

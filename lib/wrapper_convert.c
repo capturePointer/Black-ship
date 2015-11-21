@@ -16,12 +16,13 @@ Inet_pton(int af, const char *src, void *dst)
 /**
  * Network to presentation
  */
-void
+const char *
 Inet_ntop(int af, const void *src, char *dst, socklen_t size)
 {
 	const char *inet = inet_ntop(af,src,dst,size);
 	if(inet == NULL)
 		prog_error("Network to presentaion converison error",true,errno);
+	return inet;
 }
 
 

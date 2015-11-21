@@ -4,7 +4,19 @@ int listenfd, connfd;
 pid_t childpid;
 socklen_t clilen;
 
-int main(void)
+void 
+str_echo(int sock)
+{
+	char buffer[MAXLINE];
+	ssize_t n;
+
+	while((n = read(sock, buffer, MAXLINE) > 0)){
+		s_write(sock, buffer,strlen(buffer), true);
+	}
+}
+
+int
+main(void)
 {
 	listenfd = Socket(AF_INET, SOCK_STREAM, 0);
 	memset(&server4_address, 0, sizeof(server4_address));
@@ -15,17 +27,19 @@ int main(void)
 	Bind(listenfd, (SA*)&server4_address, sizeof(server4_address));
 
 	Listen(listenfd, LISTENQ);
-
+	//Signal handler while(waitpid)
 	Signal(SIGCHLD, handler_child_waitpid);
 
 	for (;;) {
 		clilen = sizeof(client4_address);
+		connfd = accept(listenfd, (SA*)&client4_address, &clilen);
 
-		if((connfd = accept(listenfd, (SA*)&client4_address, &clilen) < 0)) {
-			if(errno == EINTR) 
+		if(connfd <0) {
+			if(errno == EINTR) {
 				continue;
+			}
 			else 
-				echo_error("accept error",false,errno);
+				echo_error("Accept error\n",true,errno);
 		}
 
 		if( (childpid = Fork()) == 0) {
@@ -38,12 +52,4 @@ int main(void)
 	}
 }
 
-void str_echo(int sock)
-{
-	char buffer[MAXLINE];
-	ssize_t n;
 
-	while((n = read(sock, buffer, MAXLINE) > 0)){
-		s_write(sock, buffer,strlen(buffer), true);
-	}
-}

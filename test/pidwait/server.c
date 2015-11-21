@@ -13,7 +13,6 @@ str_echo(int sockfd) {
 		}
 }
 
-
 int
 main(void)
 {

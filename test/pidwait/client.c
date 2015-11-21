@@ -7,11 +7,9 @@ str_cli(FILE *stream, int sockfd)
 	char sendline[MAXLINE], recvline[MAXLINE];
 	while(Fgets(sendline,MAXLINE, stream) != NULL) {
 		s_write(sockfd, sendline, strlen(sendline), true);
-
 		if(readline(sockfd, recvline, MAXLINE) == 0) {
 			prog_error("server exit prematurely\n",true, errno);
 		}
-
 		Fputs(recvline, stdout);
 	}
 }
