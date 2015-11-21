@@ -8,12 +8,11 @@ Fgets(char *pointer,int n, FILE *stream)
 	char *fpointer = fgets(pointer,n,stream);
 	int file_error = ferror(stream);
 
-	if( (fpointer == NULL) && (file_error) )
-	{
+	// if fgets returned null and ferror return true
+	if( (fpointer == NULL) && (file_error) ) {
         echo_error("Can't read line from stdin",true,errno);
 		return NULL;
 	}
-
 	return fpointer;
 }
 void

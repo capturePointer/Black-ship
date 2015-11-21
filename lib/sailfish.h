@@ -201,7 +201,7 @@ int			Sctp_recvmsg(int, void*, size_t, struct sockaddr *, socklen_t *,
 void		Sctp_opt_info(int, sctp_assoc_t, int, void *arg, socklen_t *);
 int			Sctp_peeloff(int, sctp_assoc_t);
 int			Sctp_send(int, const void *, size_t , const struct sctp_sndrcvinfo *
-					  ,uint32_t);
+					  ,int);
 /*SCTP handle functions*/
 sctp_assoc_t sctp_address_to_associd(int ,struct sockaddr *, socklen_t);
 int			sctp_get_number_streams_bsd(int, struct sockaddr *, socklen_t);

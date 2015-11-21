@@ -79,16 +79,16 @@ Sctp_recvmsg(int s, void *msg, size_t len, struct sockaddr *from,
  *
  */
 
-/*int 
+int 
 Sctp_send(int s, const void *msg, size_t len,
-			  const struct sctp_sndrcvinfo *sinfo ,uint32_t flags)
+			  const struct sctp_sndrcvinfo *sinfo ,int flags)
 {
 	 int r = sctp_send(s, msg, len, sinfo, flags);
 	 if( r == -1)
 	 	 prog_error("Sctp_send error", true, errno);
 	 return r;
 
-}*/
+}
 
 ssize_t 
 Send(int fd, const void *buffer, size_t len_buffer, int flags)

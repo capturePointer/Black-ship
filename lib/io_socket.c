@@ -177,7 +177,6 @@ readline(int fd, void *point, size_t len_buffer)
 			else
 				return -1;
 	}
-
 	//point to null
 	*ptr = 0;
 	//reset read_byte_count if we perform the readline in a while/do/for loop

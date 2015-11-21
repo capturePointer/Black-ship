@@ -1,10 +1,8 @@
 #include "sailfish.h"
-
 void
 argc_length(int argc,int expect)
 {
-	if(argc < expect)
-	{
+	if(argc < expect) {
 		printf(KBLU "::> "RESET "None argumnets passed.\n" );
 		printf(KBLU "::> "RESET "Please pass more arguments.\n" );
 		exit(EXIT_FAILURE);
@@ -21,18 +19,14 @@ echo_error(const char *message, bool display_errno,int errnoflag)
 void
 prog_error(const char *message,bool display_errno,int errnoflag)
 {
-	if(display_errno)
-	{
+	if(display_errno) {
         printf(KBLU "::> "KRED "%s : "RESET"%s.\n" ,message,strerror(errnoflag));
 		exit(EXIT_FAILURE);
-	}
-	else
-	{
+	} else {
 	    printf(KBLU "::> "KRED "%s.\n" RESET ,message);
 		exit(EXIT_FAILURE);
 	}
 }
-
 /**
  *  Error handler for addrinfo structure
  *  gai_error(errnoflag);
@@ -44,9 +38,8 @@ error_addrinfo(const char *message, bool display_errno, int errnoflag)
    if(display_errno) {
 		printf(KBLU "::>" KRED ":%s :" RESET "%s.\n",message, gai_strerror(errnoflag));
 		exit(EXIT_FAILURE);
-   } else {
+	} else {
 		printf(KBLU "::> "KRED "%s.\n"  RESET, message);
 		exit(EXIT_FAILURE);
    }
-
 }

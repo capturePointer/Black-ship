@@ -37,6 +37,11 @@ c_signal(int signo,Sigfunc *func)
 			rsig = child_signal(SIGCHLD,func);
 			break;
 		}
+		case SIGPIPE:
+		{
+			// Note: future update with the sigpipe
+			break;	
+		}
 		default:
 		{
 			prog_error("Wrong signal arguments",true,errno);
@@ -73,3 +78,15 @@ child_signal(int signo, Sigfunc *func)
 
 	return consequence.sa_handler;
 }
+/**
+ * static Sigfunc *
+pipe_signal(int signo, Sigfunc *func)
+{
+	sig action, consequence;
+	action.sa_handler =  func;
+	sigemptyset(&action.sa_mask);
+	action.sa_flags = SA_RESTART;
+
+		
+}
+*/
