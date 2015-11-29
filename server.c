@@ -1,2 +1,6 @@
 #include "lib/sailfish.h"
-int main(void){}
+
+
+int main(void) {
+
+}
