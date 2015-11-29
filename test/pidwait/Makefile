@@ -15,6 +15,9 @@ link: compile
 	#Thid
 	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/server2.o -o server2
 	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/client2.o -o client2
+	#Fourth
+	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/server3.o -o server3
+	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/client3.o -o client3
 	rm -rf ../../bin/*.o
 compile:
 	$(CC) $(CFLAGS) $(LIBS)
@@ -25,6 +28,8 @@ compile:
 	$(CC) $(CFLAGS) server1.c client1.c
 	# Third
 	$(CC) $(CFLAGS) server2.c client2.c
+	#Fourth
+	$(CC) $(CFLAGS) server3.c client3.c
 	mv *.o ../../bin/
 clean:
 	rm -rf ../../build/*.o
@@ -33,4 +38,4 @@ clean:
 	rm -rf client server
 	rm -rf server1 client1 
 	rm -rf client2 server2
-
+	rm -rf client3 server3
