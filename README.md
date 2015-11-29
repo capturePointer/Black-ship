@@ -1,7 +1,5 @@
 # Sailfish 
 
-[![Build Status](https://travis-ci.org/hoenirvili/Sailfish.svg)](https://travis-ci.org/hoenirvili/Sailfish)
-
 ##### Also known as Sailfish C ,It's a Network C library, the implementation based on Berkeley Socket API.
 #
 ##### Note
