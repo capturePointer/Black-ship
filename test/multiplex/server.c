@@ -1,6 +1,25 @@
 #include "multiplex.h"
+//
+// Unfortunately, there is a problem with the server that we just showed.
+// Consider what happens if a malicious client connects to the server, sends
+// one byte of data(other than a newline), and then goes to sleep. The server
+// will call read, which will read the single byte of data from the client
+// and then block in the next call to read, waiting for more data from this
+// client.The server is then blocked/hung by this one client and will not
+// service any other clients(either new client connections or existing client
+// data) until the malicious client either sends a newline or terminates.
+//
+// The basic concept here is that when a server is handling multiple clients
+// the server can never block in a function call related to a single client.
+// Doing so can hang the server and deny sevice to all other clients.
+//
+// Possible solutions are to
+//				- use noblocking I/O
+//				- have each client serviced by a separate thread of control
+//				- place a timeout on the I/O operations
 
-int			sockfd, listenfd, connfd, nready, client[FD_SETSIZE],i ,maxi, maxfd;
+int			sockfd, listenfd, connfd, nready, 
+			client[FD_SETSIZE],i ,maxi, maxfd;
 socklen_t	clilen;
 ssize_t		n;
 fd_set		rset, allset;
@@ -25,7 +44,7 @@ main(void)
 	maxfd = listenfd;
 	// index into client[] array
 	maxi = -1; 
-
+	// Fill all all the clients of lenght of FD_SETSIZE
 	for(i = 0; i< FD_SETSIZE; i++) 
 		client[i] = -1;
 
@@ -36,6 +55,7 @@ main(void)
 	// on an existing connection
 	for(;;) {
 		rset = allset;
+		// We interested just in  our readfds
 		nready = Select(maxfd + 1, &rset, NULL,NULL,NULL);
 		// If the listening socket is readable, a new connection
 		// has been established.We call accept and update our data
@@ -54,12 +74,19 @@ main(void)
 					break;
 				}
 			}
+			// If we already fill up the limit of clients
+			// Throw error
 			if( i == FD_SETSIZE)
 				prog_error("too many clients",true,errno);
+			
+			// ELSE if we not reach the limit
+			//
 			// add a new descriptor
 			FD_SET(connfd, &allset);
+
 			if(connfd > maxfd)
 				maxfd = connfd;
+
 			if(i >maxi)
 				maxi = i;
 			if(--nready <=0)

@@ -11,6 +11,8 @@ link: compile
 	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/client.o  -o client
 	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/client1.o -o client1
 	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/server1.o -o server1
+	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/server2.o -o server2
+	$(CC) $(LINK_FLAGS) $(OBJECT) ../../bin/client2.o -o client2
 	rm -rf ../../bin/*.o
 compile:
 	$(CC) $(CFLAGS) $(LIBS)
@@ -18,6 +20,7 @@ compile:
 	# First
 	$(CC) $(CFLAGS) server.c client.c
 	$(CC) $(CFLAGS) server1.c client1.c
+	$(CC) $(CFLAGS) server2.c client2.c
 	mv *.o ../../bin/
 clean:
 	rm -rf ../../build/*.o
@@ -25,3 +28,4 @@ clean:
 	rm -rf *.o
 	rm -rf client server
 	rm -rf client1 server1
+	rm -rf client2 server2

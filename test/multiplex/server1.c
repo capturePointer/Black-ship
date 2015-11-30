@@ -42,6 +42,7 @@ str_echo(int sockfd)
 	ssize_t n;
 
 	while((n=read(sockfd, buffer, MAXLINE)) > 0) {
+		printf("buffer = %s\n", buffer);
 		s_write(sockfd, buffer, (size_t)n, true);
 	}
 }
