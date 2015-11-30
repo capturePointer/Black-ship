@@ -84,8 +84,7 @@ main(void) {
 						Close(sockfd);
 						//free space
 						client[i].fd = -1;
-					} 
-				} else 
+					}  else 
 					prog_error("read error\n",true,errno);
 			} else if(n == 0) {
 				Close(sockfd);
@@ -95,6 +94,7 @@ main(void) {
 
 			if(--nready <=0)
 				break;
+			}
 		}
 	}
 }
