@@ -2,9 +2,10 @@
 
 
 int main_socket, client_socket;
-int rd_sz, wr_sz, flags;
+int  wr_sz, flags;
 int i;
 
+ssize_t rd_sz;
 
 struct sctp_initmsg initmsg;
 struct sctp_event_subscribe event;
@@ -23,7 +24,7 @@ int main(void)
 	main_socket = Socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
 
 	setsockopt(main_socket, SOL_SOCKET, SO_REUSEADDR, &reuse, sizeof(reuse));
-	initz(&server4_address, 0);
+	memset(&server4_address, 0, sizeof(struct sockaddr_in));
 	
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_port = htons(PORT);
@@ -32,23 +33,24 @@ int main(void)
 	Bind(main_socket, (SA *)&server4_address,(socklen_t)sizeof(server4_address));
 
 
-    initz(&initmsg, 0);
-    initz(&sndrcvinfo, 0);
-    initz(&event, 0);
+    memset(&initmsg, 0,sizeof(initmsg));
+    memset(&sndrcvinfo, 0,sizeof(sndrcvinfo));
+    memset(&event, 0, sizeof(event));
     /**
      * Set the number of streams at 5
      * And the number of attempts 4
-     * Also note that our sctp_setNumber_streams is setting 
+     * Also note that our sctp_set_number_streams is setting 
      * with the setsockopt api function
-     * And after the calll aour initmsg struct is updated
+     * And after the call aour initmsg struct is updated
      */
+
 	sctp_set_number_streams(main_socket, &initmsg, 5,4);
 
     Listen(main_socket, LISTENQ);
 
     while(true)
 	{
-       initz(buffer, 0);
+       memset(buffer, 0, sizeof(buffer));
 	   printf("Awaiting a new connection ... \n");
 	   len = sizeof(client4_address);
 	   client_socket = Accept(main_socket, (SA *)&client4_address, (socklen_t *)&len);

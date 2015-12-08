@@ -15,7 +15,7 @@ int main(int argc, char *argv[])
 	 */
 	main_socket = Socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
 
-	initz(&server4_address, 0);
+	memset(&server4_address, 0, sizeof(struct sockaddr_in));
 	
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_port = htons(PORT);

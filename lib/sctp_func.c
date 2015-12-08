@@ -7,8 +7,8 @@
 sctp_assoc_t
 sctp_address_to_associd(int sockfd, struct sockaddr *sa, socklen_t salen)
 {
-	 struct sctp_paddrparams sp;
-	 socklen_t palen = sizeof(struct sctp_paddrparams);
+	 struct				sctp_paddrparams sp;
+	 socklen_t palen =	sizeof(struct sctp_paddrparams);
 
 	 memset(&sp, 0 ,palen);
 	 memcpy(&sp.spp_address, sa, salen);
@@ -24,9 +24,10 @@ int
 sctp_get_number_streams_bsd(int sockfd, struct sockaddr *to, 
 								socklen_t tolen)
 {
-	 socklen_t stlen;
-	 struct sctp_status status;
-	 stlen = sizeof(status);
+	 socklen_t		stlen;
+	 struct			sctp_status status;
+	 stlen		=	sizeof(status);
+
 	 memset(&status, 0, stlen);
 	 status.sstat_assoc_id = sctp_address_to_associd(sockfd,to,tolen);
 	 Getsockopt(sockfd, IPPROTO_SCTP, SCTP_STATUS, &status, &stlen);
@@ -74,11 +75,10 @@ sctp_get_number_streams(int sockfd, struct sctp_sndrcvinfo *sri)
 void
 sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs,int maxatmts)
 {
-     memset(&initm, 0, sizeof(initm));
-	 // we need to convert it to __u16 all the ints 
-	 initm->sinit_num_ostreams =(__u16)nstrs;
-	 initm->sinit_max_instreams =(__u16)nstrs;
-	 initm->sinit_max_attempts = (__u16)maxatmts;
+
+	initm->sinit_num_ostreams	=	(__u16) nstrs;
+	initm->sinit_max_instreams	=	(__u16) nstrs;
+	initm->sinit_max_attempts	=	(__u16) maxatmts;
 
 	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }
