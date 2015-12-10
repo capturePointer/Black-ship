@@ -135,7 +135,6 @@ void 		error_addrinfo(const char *, bool, int);
  */
 int      	max(int,int);
 void    	*Malloc(size_t);
-void	 	initz(void *,int);
 
 ssize_t  	s_write(int, const void*, size_t, bool);
 ssize_t  	s_read(int, void*, size_t, bool);
