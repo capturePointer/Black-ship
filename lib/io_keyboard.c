@@ -5,7 +5,7 @@
  * containing the ENTER/newline char '\n'
  */
 void 
-io_keyb(char *buff,int size)
+io_keyb(char *buff, int size)
 {
 	char *rfget = fgets(buff, size, stdin);
 	int ferr = ferror(stdin);

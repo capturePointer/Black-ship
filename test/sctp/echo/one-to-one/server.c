@@ -13,8 +13,9 @@ char buf[MAXLINE];
 int main(void)
 {
 	sockfd = Socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
-	initz(&server4_address, 0);
-	
+
+	memset(&server4_address, 0, sizeof(server4_address));	
+
 	server4_address.sin_port = htons(PORT);
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -23,13 +24,13 @@ int main(void)
 
 	Listen(sockfd, LISTENQ);
 
-	for(;;){
+	for( ; ; ) {
+
 	  len = (socklen_t) sizeof(client4_address);
       clisockfd = Accept(sockfd, (SA*)&client4_address, &len);
 	  printf("We have a new client..\n");
 
 	  rd_sz = read(clisockfd, buf,sizeof(buf));
-	  
 	  
 	  printf("We have a message\n");
 	  printf("The message is:\n");
@@ -39,7 +40,4 @@ int main(void)
 			close(clisockfd);
 	  printf("Client exits..\n");
 	}
-
-
-
 }

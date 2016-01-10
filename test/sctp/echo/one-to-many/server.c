@@ -1,13 +1,13 @@
-#include	"../../../../lib/sailfish.h"
+#include	"sctp.h"
 
-	int sock_fd,msg_flags;
-	char readbuf[BUFFSIZE];
-	struct sctp_sndrcvinfo sri;
-	struct sctp_event_subscribe evnts;
-	int stream_increment=1;
-	socklen_t len;
-	size_t rd_sz;
-	struct sctp_initmsg initm;
+int			sock_fd,msg_flags;
+char		readbuf[BUFFSIZE];
+struct		sctp_sndrcvinfo sri;
+struct		sctp_event_subscribe evnts;
+int			stream_increment=1;
+socklen_t	len;
+size_t		rd_sz;
+struct		sctp_initmsg initm;
 
 
 
@@ -29,7 +29,7 @@ main(int argc, char **argv)
 	//sctp_set_number_streams( sock_fd, &initm,SERV_MORE_STRMS_SCTP);
 	
 	/*Fill the server struct with 0*/
-	initz(&server4_address, 0);
+	memset(&server4_address, 0,sizeof(server4_address));
 	/* Fill the addres struct with specific protocol dependent info*/
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
@@ -39,7 +39,7 @@ main(int argc, char **argv)
 	Bind(sock_fd, (SA *) &server4_address, sizeof(server4_address));
 	
 	/*Fill sctp_event_subscribe struct with 0*/
-	initz(&evnts, 0);
+	memset(&evnts, 0, sizeof(evnts));
 
 	/*
 	* The server changes the subscription for the one-to-many SCTP sockets.
@@ -79,9 +79,7 @@ for ( ; ; )
 		if(stream_increment)
 		{
 			sri.sinfo_stream++;
-			if(sri.sinfo_stream >= sctp_get_number_streams(sock_fd,(SA *)&client4_address, 
-															len, &sri) )
-			{
+			if(sri.sinfo_stream >= sctp_get_number_streams(sock_fd, &sri)) {
 				sri.sinfo_stream = 0;
 			}
 		}

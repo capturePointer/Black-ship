@@ -1,14 +1,13 @@
-#include	"../../../../lib/sailfish.h"
+#include	"sctp.h"
 
 #define	SCTP_MAXLINE	800
-
-    // the actual socket
-	int sock_fd;
-	struct sctp_event_subscribe evnts;
-	int echo_to_all=0;// By default the flag is not set
+// the actual socket
+int sock_fd;
+struct sctp_event_subscribe evnts;
+int echo_to_all=0;// By default the flag is not set
 
 void
-sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
+sctpstr_cli_echoall(FILE *fp, int sock, struct sockaddr *to, socklen_t tolen)
 {
 	// sockaddr_in peer address structure
 	struct sockaddr_in peeraddr;
@@ -33,8 +32,8 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 	 * collect user input. Then, the client enters the main loop, once again
 	 * blocking on user input
 	 */
-    initz(sendline, 0);
-    initz(&sri,0);
+    memset(sendline, 0 , sizeof(sendline));
+	memset(&sri, 0, sizeof(sri));
 
 
 	while (fgets(sendline, SCTP_MAXLINE - 9, fp) != NULL) 
@@ -68,13 +67,13 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 			snprintf(sendline + strsz, sizeof(sendline) - strsz,
 				".message.%lu 1", i);
 
-			Sctp_sendmsg(sock_fd, sendline, sizeof(sendline), 
+			Sctp_sendmsg(sock, sendline, sizeof(sendline), 
 						to, tolen, 0, 0,i,0, 0);
 
 			snprintf(sendline + strsz, sizeof(sendline) - strsz,
 					".message.%lu 2", i);
 			
-			Sctp_sendmsg(sock_fd, sendline, sizeof(sendline), 
+			Sctp_sendmsg(sock, sendline, sizeof(sendline), 
 						to, tolen, 0, 0,i,0, 0);
  
 		}
@@ -97,7 +96,7 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 		for(i=0;i<SERV_MAX_SCTP_STRM+1;i++) 
 		{
 			len = sizeof(peeraddr);
-			rd_sz = Sctp_recvmsg(sock_fd, recvline, sizeof(recvline),
+			rd_sz = Sctp_recvmsg(sock, recvline, sizeof(recvline),
 				     (SA *)&peeraddr, &len,
 				     &sri,&msg_flags);
 			
@@ -106,7 +105,7 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 				(u_int)sri.sinfo_assoc_id);
 			printf("%.*s\n",rd_sz, recvline);
 			
-			rd_sz = Sctp_recvmsg(sock_fd, recvline, sizeof(recvline),
+			rd_sz = Sctp_recvmsg(sock, recvline, sizeof(recvline),
 				     (SA *)&peeraddr, &len,
 				     &sri,&msg_flags);
 			
@@ -120,7 +119,7 @@ sctpstr_cli_echoall(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 
 
 void
-sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
+sctpstr_cli(FILE *fp, int sock, struct sockaddr *to, socklen_t tolen)
 {
 	struct sockaddr_in peeraddr;
 	struct sctp_sndrcvinfo sri;
@@ -136,7 +135,7 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 	 * until the terminal EOF character(CONTROL+D) is typed by the user.
 	 * The user action ends the function and causes a return to the caller.
 	 */
-	initz(&sri,0);
+	memset(&sri, 0, sizeof(sri));
 	
 	while (fgets(sendline, MAXLINE, fp) != NULL) 
 	{
@@ -155,7 +154,7 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 		 * actual user data, the client sends the message using the sctp_sendmsg funct
 		 */
 		out_sz = strlen(sendline);
-		Sctp_sendmsg(sock_fd, sendline, out_sz, 
+		Sctp_sendmsg(sock, sendline, out_sz, 
 			     to, tolen, 
 			     0, 0,
 			     sri.sinfo_stream,
@@ -165,7 +164,7 @@ sctpstr_cli(FILE *fp, int sock_fd, struct sockaddr *to, socklen_t tolen)
 		 * The client now blocks and waits for the echoed message from the server
 		 */
 		len = sizeof(peeraddr);
-		rd_sz = Sctp_recvmsg(sock_fd, recvline, sizeof(recvline),
+		rd_sz = Sctp_recvmsg(sock, recvline, sizeof(recvline),
 			     (SA *)&peeraddr, &len,
 			     &sri,&msg_flags);
 		
@@ -206,17 +205,17 @@ main(int argc, char **argv)
    // sctp_set_number_streams(sock_fd, &initm, SERV_MAX_SCTP_STRM);
 
 	/* Fill the server4_addres struct with 0*/
-    initz(&server4_address,0);
+	memset(&server4_address, 0, sizeof(server4_address));
+
     /* Complete the struct with the require protocol settings */
 	server4_address.sin_family = AF_INET;
 	server4_address.sin_port = htons(PORT);
 	server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
-	//server4_address.sin_addr.s_addr = htonl(INADDR_ANY);
 	Inet_pton(AF_INET, argv[1], &server4_address.sin_addr);
 
 	/* Fill the evets struct with 0 */
-	initz(&evnts,0);
-	
+	memset(&evnts, 0, sizeof(evnts));	
+
 	/**
 	 * Set the socket with the right options as the server
 	 */

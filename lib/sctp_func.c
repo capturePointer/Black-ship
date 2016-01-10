@@ -47,7 +47,7 @@ sctp_get_number_streams(int sockfd, struct sctp_sndrcvinfo *sri)
 	 struct sctp_status status;
 	 stlen = sizeof(status);
 	 memset(&status, 0, sizeof(status));
-     //for linux it works like this
+	//for linux it works like this
 	 status.sstat_assoc_id = sri->sinfo_assoc_id;
 	
 		/**
@@ -78,11 +78,9 @@ sctp_set_number_streams(int sockfd, struct sctp_initmsg *initm, int nstrs,int ma
 
 	initm->sinit_num_ostreams	=	(__u16) nstrs;
 	initm->sinit_max_instreams	=	(__u16) nstrs;
-	initm->sinit_max_attempts	=	(__u16) maxatmts;
-
-	 Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
+	initm->sinit_max_attempts	=	(__u16) maxatmts; 
+	Setsockopt( sockfd, IPPROTO_SCTP, SCTP_INITMSG, &initm, sizeof(initm));
 }
-
 /**
  * This code is under testing..
  *

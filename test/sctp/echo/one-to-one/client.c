@@ -10,7 +10,7 @@ int main(void)
 {
 
 	sockfd = Socket(AF_INET, SOCK_STREAM, IPPROTO_SCTP);
-	initz(&server4_address,0);
+	memset(&server4_address, 0, sizeof(server4_address));
 
 	server4_address.sin_port = htons(PORT);
 	server4_address.sin_family = AF_INET;
@@ -22,7 +22,6 @@ int main(void)
     echo_name_socket(sockfd);
 
 	wr_sz = write(sockfd, buf,sizeof(buf));
-
 	
 	close(sockfd);
 	printf("We are now disconected from the server..\n");
