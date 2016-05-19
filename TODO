@@ -1,3 +1,7 @@
+- refactoring all the lib
+- decouple every file into .c and .h
+- make a better user interface with this lib
+- make standard types also
 ~ resolve and complete sctp libs
 - test sctp libs
 
