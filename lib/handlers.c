@@ -1,4 +1,6 @@
-#include "sailfish.h"
+#include <unistd.h>
+
+#include "handlers.h"
 /**
  * Handler for singnal
  *  base functions

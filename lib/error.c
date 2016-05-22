@@ -8,6 +8,7 @@ argc_length(int argc,int expect)
 		exit(EXIT_FAILURE);
 	}
 }
+
 void
 echo_error(const char *message, bool display_errno,int errnoflag)
 {
@@ -16,6 +17,7 @@ echo_error(const char *message, bool display_errno,int errnoflag)
 	else
 		printf(KBLU "::> "KRED "%s.\n" RESET,message);
 }
+
 void
 prog_error(const char *message,bool display_errno,int errnoflag)
 {
