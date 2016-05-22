@@ -1,13 +1,11 @@
-#include <unistd.h>
+#include <sys/types.h>
+#include <sys/wait.h>
+#include <stdio.h>
 
 #include "handlers.h"
-/**
- * Handler for singnal
- *  base functions
- */
+
 // signum is the signal flag that will be pased to be handled
-void
-handler_child_wait(int signum)
+void sailfish_handler_wait_child(int signum)
 {
 	pid_t 	pid;
 	int 	stat;

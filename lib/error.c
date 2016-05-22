@@ -1,6 +1,11 @@
+#include <stdio.h>
+#include <errno.h>
+#include <stdbool.h>
+
 #include "sailfish.h"
-void
-argc_length(int argc,int expect)
+#include "error.h"
+
+void sailfish_check_length(int argc,int expect)
 {
 	if(argc < expect) {
 		printf(KBLU "::> "RESET "None argumnets passed.\n" );
@@ -9,8 +14,7 @@ argc_length(int argc,int expect)
 	}
 }
 
-void
-echo_error(const char *message, bool display_errno,int errnoflag)
+void sailfish_error(const char *message, bool display_errno,int errnoflag)
 {
 	if(display_errno)
 		printf(KBLU "::> "KRED "%s : "RESET "%s.\n" ,message,strerror(errnoflag));
@@ -18,8 +22,7 @@ echo_error(const char *message, bool display_errno,int errnoflag)
 		printf(KBLU "::> "KRED "%s.\n" RESET,message);
 }
 
-void
-prog_error(const char *message,bool display_errno,int errnoflag)
+void sailfish_crt_error(const char *message,bool display_errno,int errnoflag)
 {
 	if(display_errno) {
         printf(KBLU "::> "KRED "%s : "RESET"%s.\n" ,message,strerror(errnoflag));
@@ -34,10 +37,9 @@ prog_error(const char *message,bool display_errno,int errnoflag)
  *  gai_error(errnoflag);
  *
  */
-void
-error_addrinfo(const char *message, bool display_errno, int errnoflag)
+void sailfish_error_addrinfo(const char *message, bool display_errno, int errnoflag)
 {
-   if(display_errno) {
+	if(display_errno) {
 		printf(KBLU "::>" KRED ":%s :" RESET "%s.\n",message, gai_strerror(errnoflag));
 		exit(EXIT_FAILURE);
 	} else {

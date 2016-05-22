@@ -9,8 +9,7 @@
  */
 static bool isInterupt(ssize_t nbytes);
 
-ssize_t
-s_write(int fd, const void *point, size_t len_buffer, bool level)
+ssize_t s_write(int fd, const void *point, size_t len_buffer, bool level)
 {
 	size_t 		number_of_bytes_left = len_buffer;
 	ssize_t 	number_of_bytes_written;
@@ -47,6 +46,7 @@ s_write(int fd, const void *point, size_t len_buffer, bool level)
 	/* if everything is ok we should return the size that has been writen to the fd*/
 	return (ssize_t)len_buffer;
 }
+
 /**
  * ssize_t s_read 
  * reades until we hit the maximum len_buffer
@@ -94,8 +94,7 @@ s_read(int fd, void *point, size_t len_buffer, bool level)
 	/*if everything is ok we should return the size that has been readed from the fd*/
 	return (ssize_t)(len_buffer - number_of_bytes_left);
 }
-static
-bool isInterupt(ssize_t nbytes)
+static bool isInterupt(ssize_t nbytes)
 {
 	if( (nbytes < 0) && (errno == EINTR) )
 		return true;
@@ -110,8 +109,7 @@ static char		read_buff[MAXLINE];
  * Read one char
  * with safe signal handleing
  */
-static ssize_t
-char_read(int fd, char *ptr,bool level)
+static ssize_t char_read(int fd, char *ptr,bool level)
 {
 	// check if we have space to read more chars
 	if(read_byte_count <= 0)
@@ -148,8 +146,7 @@ char_read(int fd, char *ptr,bool level)
  * execution , if we need them we can simply gem them with a method like void* _get()
  * Note that this function is not treath safety
  */
-ssize_t
-readline(int fd, void *point, size_t len_buffer)
+ssize_t readline(int fd, void *point, size_t len_buffer)
 {
 	ssize_t n, rc;
 	char	c, *ptr;
