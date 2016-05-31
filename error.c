@@ -2,10 +2,15 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <stdlib.h>
+#include <string.h>
+#include <netdb.h>
 
 #include "sailfish.h"
 #include "error.h"
 
+// func for testing the number or argumnets in the comand line
+// this is just for test purposes and it will be removed in the final
+// release of the library
 void sailfish_check_length(int argc,int expect)
 {
 	if(argc < expect) {
@@ -15,6 +20,7 @@ void sailfish_check_length(int argc,int expect)
 	}
 }
 
+// display error
 void sailfish_error(const char *message, bool display_errno,int errnoflag)
 {
 	if(display_errno)
@@ -23,6 +29,8 @@ void sailfish_error(const char *message, bool display_errno,int errnoflag)
 		printf(KBLU "::> "KRED "%s.\n" RESET,message);
 }
 
+// critical error
+// this func should be used just for critical errors
 void sailfish_crt_error(const char *message,bool display_errno,int errnoflag)
 {
 	if(display_errno) {
@@ -34,6 +42,7 @@ void sailfish_crt_error(const char *message,bool display_errno,int errnoflag)
 	}
 }
 
+// error func for addrinfo
 void sailfish_error_addrinfo(const char *message, bool display_errno, int errnoflag)
 {
 	if(display_errno) {
