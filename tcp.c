@@ -1,4 +1,8 @@
+#include <string.h>
+#include <stdlib.h>
+
 #include "tcp_h"
+
 /**
  * host_tcp performs the normal tcp
  * server steps:
@@ -12,8 +16,7 @@ host_tcp(const char *hostname, const char *service, socklen_t *addrlenptr)
 	int listenfd, n;
 	const int on = 1;
 	struct addrinfo hints, *res, *init;
-	bool flag_getaddr = false,
-		 flag_bind_error = false;
+	bool flag_getaddr = false, flag_bind_error = false;
 
 	memset(&hints, 0,sizeof(hints));
 	/**
