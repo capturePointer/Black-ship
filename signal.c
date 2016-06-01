@@ -1,4 +1,5 @@
 #include "sailfish.h"
+
 /**
  * While a signal handler is executing, the signal being delivered is blocked
  * Furthermore,any additional signals that were specified in the @sa_mask sign
@@ -7,65 +8,53 @@
  * other than the signal being caugh.
  *
  */
-
 static Sigfunc *child_signal(int signo, Sigfunc *func);
 
-
 //Classic wrapper signal function
-Sigfunc *
-Signal(int signo, Sigfunc *func)
+Sigfunc *Signal(int signo, Sigfunc *func)
 {
-	Sigfunc		*rsig;
+	Sigfunc *rsig;
 	rsig = signal(signo, func);
 	/*check if it fails*/
-	if(rsig == SIG_ERR)
-		prog_error("Signal error",true,errno);
+	if (rsig == SIG_ERR)
+		prog_error("Signal error", true, errno);
 
 	//else return the signal
 	return rsig;
 }
+
 //Custom signal cache
-Sigfunc *
-c_signal(int signo,Sigfunc *func)
+Sigfunc *c_signal(int signo, Sigfunc *func)
 {
 	Sigfunc *rsig = NULL;
 
-	switch(signo)
-	{
-		case SIGCHLD:
-		{
-			rsig = child_signal(SIGCHLD,func);
-			break;
-		}
-		case SIGPIPE:
-		{
-			// Note: future update with the sigpipe
-			break;	
-		}
-		default:
-		{
-			prog_error("Wrong signal arguments",true,errno);
-			break;
-		}
+	switch (signo) {
+	case SIGCHLD:
+		rsig = child_signal(SIGCHLD, func);
+		break;
+	case SIGPIPE:
+		// Note: future update with the sigpipe
+		break;
+	default:
+		prog_error("Wrong signal arguments", true, errno);
+		break;
 
 		//..
 		//*future updates will contain more handlers
 	}
 
-	if(rsig == SIG_ERR)
-		prog_error("Signal error",true,errno);
+	if (rsig == SIG_ERR)
+		prog_error("Signal error", true, errno);
 
 	return rsig;
 }
 
-
 // Private methods
 
-static Sigfunc *
-child_signal(int signo, Sigfunc *func)
+static Sigfunc *child_signal(int signo, Sigfunc *func)
 {
 	//node: sig => struct stigaction
-	sig action,consequence;
+	sig action, consequence;
 
 	action.sa_handler = func;
 	// set sa_mask to be emptyset
@@ -73,7 +62,7 @@ child_signal(int signo, Sigfunc *func)
 	// reset function if is  is interupted in the middle of the proccess
 	action.sa_flags = SA_RESTART;
 
-	if(sigaction(signo,&action,&consequence) == -1)
+	if (sigaction(signo, &action, &consequence) == -1)
 		return SIG_ERR;
 
 	return consequence.sa_handler;

@@ -1,21 +1,11 @@
 #ifndef SAILFISH_H
 #define SAILFISH_H
 
-// #ifndef INFTIM
-// 	#include <bsd/sys/poll.h>
-// #endif
-//
+#ifndef INFTIM
+	#include <bsd/sys/poll.h>
+#endif
 
-/*
- * Define simple variables
- */
 
-//IPV4 structure adress
-typedef struct sockaddr_in server4_address;
-typedef struct sockaddr_in client4_address;
-//IPV6 structe address
-typedef struct sockaddr_in6 server6_address;
-typedef struct sockaddr_in6 client6_address;
 /*
  *  Define constant var
  */
@@ -62,10 +52,10 @@ typedef struct sockaddr_in6 client6_address;
 	#define OPEN_MAX 256
 #endif
 
+// encapsulate the type for the function def
+typedef void Sail;
 
-/**
- * for a better readability
- */
+// for a better readability
 #define SA struct sockaddr
 typedef struct hostent hostent;
 typedef struct addrinfo addrinfo;
@@ -74,10 +64,8 @@ typedef struct addrinfo addrinfo;
 #define PORT 9877
 #define MAXLINE 4096
 #define BUFFSIZE 8192
-/* SCTP FLAGS*/
 
-//increment size of pdapi  when adding buf space
-#define SCTP_PDAPI_INCR_SZ 65535
+#define SCTP_PDAPI_INCR_SZ 65535 //increment size of pdapi  when adding buf space
 #define SCTP_PDAPI_NEED_MORE_THRESHOLD 1024
 /**
  * For  the free bsd KAME implementation of SCTP
@@ -86,14 +74,21 @@ typedef struct addrinfo addrinfo;
 #define SERV_MAX_SCTP_STRM 10 //normal maxium streams
 #define SERV_MORE_STRMS_SCTP 20 //larger number of streams
 
- /* we will replace this :
-        void (* signal (int signo, void(*func) (int))) ) (int);
-    with this :
-        Sigfunc *signal(int signo, Sigfunc *func);
-    in order to do this we must typedef smth
- */
+/* 
+ * We will replace this :
+ * void (* signal (int signo, void(*func) (int))) ) (int);
+ * with this :
+ * Sigfunc *signal(int signo, Sigfunc *func);
+ * in order to do this we must typedef smth
+ * */
 typedef void	Sigfunc(int);
 typedef struct  sigaction sig;
 Sigfunc*	c_signal(int,Sigfunc*);
+
+typedef struct sockaddr_in server4_address;
+typedef struct sockaddr_in client4_address;
+
+typedef struct sockaddr_in6 server6_address;
+typedef struct sockaddr_in6 client6_address;
 
 #endif /* SAILFISH_H */
