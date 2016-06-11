@@ -88,8 +88,8 @@ static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 	ptr->error.msg		   = m;
 	ptr->error.code		   = c;
 	ptr->error.errno_state = s;
-	ptr->next = l->head;
-	
+	ptr->next			   = l->head;
+
 	// make next point to new ptr
 	l->tail->next = ptr;
 	// make the current
@@ -132,26 +132,20 @@ void err_new(const char *msg, err_code_t code, int save)
 // very important that msg to malloced and filled with 0
 void err_last(char *msg, err_code_t *code, int *save)
 {
-	if (err) {
-		if (err->tail) {
-			strcpy(msg, err->tail->error.msg);
-			*code = err->tail->error.code;
-			*save = err->tail->error.errno_state;
-		}
-	}
-}
-
-void err_panic()
-{
-	uint8_t i = 0;
-	for (i = 0; i < err->n; i++) {
-		fprintf(stderr, "[ERROR] %s %s", err->tail->error.msg,
-				strerror(err->tail->error.errno_state));
-		err->tail = err->tail->next;
+	if (!err) {
+		INFO("[WARNING] Can't get the last error because the list is empty");
+		return;
 	}
 
-	INFOEE("[STACK-TRACE] Panic because of errors.");
+	if (!err->tail) {
+		INFOEE("[ERROR] Please check the internal state of the list");
+	}
+
+	strcpy(msg, err->tail->error.msg);
+	*code = err->tail->error.code;
+	*save = err->tail->error.errno_state;
 }
+
 
 static bool err_list_free(err_list_t **l)
 {
@@ -179,12 +173,55 @@ void err_destroy()
 	}
 }
 
-void err_dump() {
-	uint8_t i=0;
+// dump all the errors to stderr
+// note that err_dump is no-op if the list is not valid
+void err_dump()
+{
+	if (!err) {
+		INFO("[WARNING] No list found fod dumping");
+		return;
+	}
+
+	uint8_t i	 = 0;
 	err_node_t *p = err->tail->next;
-	for(i=0; i<err->n; i++) {
-		printf("[ERROR] %s\n", p->error.msg);
+	// traverse all the nodes
+	for (i = 0; i < err->n; i++) {
+		fprintf(stderr, "[ERROR] %s\n", p->error.msg);
 		p = p->next;
 	}
+	// yeah I know I should free the node that was traversed but I'm
+	// feeling lazy and I will use this func instead of cluttering the above code
 	err_destroy();
+}
+
+// find the error with the msg or the code or the errno value
+// so this func could you one , two or all the params but it need at least
+// one hint to spot the node
+bool err_find(const char *msg, err_code_t code, int save)
+{
+	if (!err) {
+		INFO("[WARNING] Cloud not any node because the there is no list");
+		return false;
+	}
+
+	uint8_t i	 = 0;
+	err_node_t *p = err->tail;
+
+	for (i = 0; i < err->n; i++) {
+		if ((p->error.code == code) || (p->error.errno_state == save) || (!strcmp(p->error.msg, msg))){
+			return true;	
+		}
+	}
+
+	return false;
+}
+
+
+bool err_empty()
+{
+	if (!err) {
+		return true;
+	}
+
+	return false;
 }

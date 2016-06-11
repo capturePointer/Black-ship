@@ -14,6 +14,8 @@
 #ifndef ERROR_H
 #define ERROR_H
 
+#include <stdbool.h>
+
 // define all error codes that migh a app exist
 // also this way we can combine errors codes and check
 // in a more reasonable fashion
@@ -30,13 +32,19 @@ typedef enum err_code {
 // if the list is not empty and not full it will append a new node with info
 // if the list is full it will overwrite the oldest error in the list
 extern void err_new(const char *message, err_code_t code, int save);
-// print out the list of errors form the oldest to newest and exit out
-extern void err_panic();
 // assign from the current pointer of the list errors into params
 extern void err_last(char *msg, err_code_t *code, int *save);
-// destroy all nodes of the list and the list
+// destroy all nodes of the list and reset the list state to NULL
 // this it's advice to be used when exiting on critical functions and to
 // shut down the program gracefully
 extern void err_destroy();
+// destroy all nodes of the list and reset the list state to NULL
+// printing a nice error dump of all errors from the oldest to newest
+// to be used on panic errors
 extern void err_dump();
+// search for the error and if it's found return true
+extern bool err_find(const char *msg, err_code_t code, int save);
+// test the list is valid
+extern bool err_empty();
+
 #endif /* ERROR_H*/
