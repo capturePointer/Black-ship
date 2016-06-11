@@ -22,6 +22,7 @@
 typedef struct argp_state argp_state;
 typedef struct argp_option argp_option;
 
+
 #define DOC "This tool should be used just for educational \
 purpose but I don't care(in the end) what you do \
 with the code. I hope this will be a fine experience \

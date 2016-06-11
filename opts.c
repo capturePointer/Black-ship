@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// thic cmd tool uses argp as it's parser mechanism for the
-// command line arguments
-
-#include <argp.h>
 #include <stdlib.h>
+
+#include "opts.h"
+#include "cmds.h"
+
 
 // define each key here
 enum {
@@ -59,11 +59,6 @@ struct argp_option options[] = {
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
-// delcare here the list of floods that the app will support
-// informative const list , this list will change over time
-// on the course of dev/mantaining this cmd app
-const char *list_floods = "udp	- upd flood\n"
-						  "syn	- tcp syn flood";
 //
 // set other information options for the argp to display
 // set the current version of the app
@@ -94,11 +89,12 @@ struct argp argp = {
 // write in our body for every key handler function
 int parse_opt(int key, char *arg, argp_state *state)
 {
+
 	switch (key) {
 	case LIST_FLOODS:
-		fprintf(stdout, "%s\n", list_floods);
+		list_floods();
 		break;
 	}
-
+	
 	return EXIT_SUCCESS;
 }
