@@ -51,5 +51,7 @@ extern bool err_empty();
 extern void err_prev(char *msg, err_code_t *code, int *save);
 // dump all information without exiting
 extern void err_info();
+// test when ever the previous error is equal to code
+extern bool err_prev_is(err_code_t code);
 
 #endif /* ERROR_H*/

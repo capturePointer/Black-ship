@@ -1,6 +1,7 @@
 #include <errno.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include <setjmp.h>
 #include <stdarg.h>
@@ -47,7 +48,7 @@ void new_error_test()
 	err_new(mms, ccode, errno);
 
 	// some testing vars
-	char *k = calloc(19, sizeof(char));
+	char *k = calloc(strlen(mms)+1, sizeof(char));
 	err_code_t mkk;
 	int mk = -1;
 
@@ -56,7 +57,7 @@ void new_error_test()
 
 	// check them
 	assert_false(err_empty());
-	assert_memory_equal(mms, k, 19);
+	assert_memory_equal(mms, k, strlen(mms)+1);
 	assert_string_equal(mms, k);
 	assert_int_equal(ccode, mkk);
 	assert_int_equal(errno, mk);
@@ -138,7 +139,6 @@ void find_error_test()
 }
 void prev_error_test()
 {
-	//TODO fix broken test
 	assert_true(err_empty());
 	for(int i = 0; i<4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
@@ -146,13 +146,13 @@ void prev_error_test()
 
 	assert_false(err_empty());
 	// some testing vars
-	char *k = calloc(19, sizeof(char));
+	char *k = calloc(23, sizeof(char));
 	err_code_t mkk;
 	int mk = -1;
 
 	err_prev(k, &mkk, &mk);
 	assert_string_equal(k, msg[2]);
-	assert_int_equal(mkk,code[2]);
+	assert_int_equal(mkk, code[2]);
 	assert_int_equal(mk, errnos[2]);
 	
 	// if everything is fine free the name and print out
@@ -162,6 +162,24 @@ void prev_error_test()
 	printf("======================>>> prev_error_test() Passed\n");
 }
 
+void prev_error_is_test()
+{
+	assert_true(err_empty());
+	for(int i = 0; i<4; i++) {
+		err_new(msg[i], code[i], errnos[i]);
+	}
+
+	assert_false(err_empty());
+
+	assert_true(err_prev_is(ERRTCPCONN));
+	assert_false(err_prev_is(ERRUNKNOWN));
+	
+	// if everything is fine free the name and print out
+	err_destroy();
+	assert_true(err_empty());
+	printf("======================>>>prev_error_is_test() Passed\n");
+}
+
 int main(void)
 {
 	new_error_test();
@@ -169,5 +187,6 @@ int main(void)
 	multi_error_test();
 	stress_error_test();
 	find_error_test();
-
+	prev_error_test();
+	prev_error_is_test();
 }

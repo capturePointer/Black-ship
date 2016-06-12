@@ -29,7 +29,7 @@ compile:
 .PHONY: clean
 clean:
 	rm -rf *.o
-	rm -rf blackship
+	rm -rf $(TARGET)
 
 .PHONY: test
 test:

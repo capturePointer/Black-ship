@@ -213,10 +213,8 @@ bool err_find(const char *msg, err_code_t code, int save)
 	err_node_t *p = err->tail;
 
 	for (i = 0; i < err->n; i++)
-		if (!strcmp(p->error.msg, msg) ||
-			((p->error.code == code) ||
-			 (p->error.errno_state == save)))
-		return true;
+		if (!strcmp(p->error.msg, msg) || ((p->error.code == code) || (p->error.errno_state == save)))
+			return true;
 
 	return false;
 }
@@ -247,7 +245,7 @@ static bool cmp(const err_node_t a, const err_node_t b)
 
 void err_prev(char *msg, err_code_t *code, int *save)
 {
-	bool eq;
+	bool eq = false;
 	if (!err) {
 		INFO("[WARNING] Cloud not find the previous error because there is no list");
 		return;
@@ -258,20 +256,46 @@ void err_prev(char *msg, err_code_t *code, int *save)
 
 	while (true) {
 		eq = cmp(*p, *(err->tail));
-		if (!eq)
-			p = p->next;
-		else {
-			strcpy(msg, p->error.msg);
-			*code = p->error.code;
-			*save = p->error.errno_state;
-			break;
+		if (eq) {
+			strcpy(msg, s->error.msg);
+			*code = s->error.code;
+			*save = s->error.errno_state;
+			return;
 		}
-
-	s = p;
+		s = p;					  // save the prev state
+		p = p->next;
 	}
-
 }
 
+// test when ever the previous error match the code
+bool err_prev_is(err_code_t code)
+{
+	bool eq = false;
+	if (!err)
+		INFOEE("[WARNING] Cloud not check the previous error because there is no list");
+
+	err_node_t *p = err->tail->next;
+	err_node_t *s = NULL;
+
+	while (true) {
+		eq = cmp(*p, *(err->tail));
+		if (eq)
+			break;
+		s = p;
+		p = p->next;
+	}
+	// we have a single error in the list
+	if ((!s) && (err->tail->error.code == code))
+		return true;
+
+	if (s->error.code == code)
+		return true;
+
+	return false;
+}
+
+
+// test if the internal list is empty
 bool err_empty()
 {
 	if (!err)

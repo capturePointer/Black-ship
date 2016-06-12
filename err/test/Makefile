@@ -16,7 +16,6 @@ run:
 	./$(BIN)
 clean:
 	rm -rf *.o
-run:
-	./err_test
-	valgrind -q ./err_test
-
+	rm $(BIN)
+mem:
+	valgrind ./$(BIN)
