@@ -21,9 +21,10 @@
 // in a more reasonable fashion
 typedef enum err_code {
 	ERRUNKNOWN = 0,
-	ERRPROTOS,
-	ERRTHAT,
-
+	ERRTCPCONN,
+	ERRUDPCONN,
+	ERRTIMEOUT,
+	ERRHOSTUNREACHED,
 	ERR_LAST, // NOT TO BE USED 
 } err_code_t;
 
@@ -46,5 +47,9 @@ extern void err_dump();
 extern bool err_find(const char *msg, err_code_t code, int save);
 // test the list is valid
 extern bool err_empty();
+// the the previous error lenght-1 pos in the list
+extern void err_prev(char *msg, err_code_t *code, int *save);
+// dump all information without exiting
+extern void err_info();
 
 #endif /* ERROR_H*/

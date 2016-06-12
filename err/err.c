@@ -64,6 +64,9 @@ err_list_t *err = NULL;
 // and assign info to it
 static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 {
+	if (err)
+		INFOEE("[ERROR] Can't make a new list, please destroy the old one first");
+
 	err_list_t *e = xzmalloc(sizeof(*e));
 	e->tail		  = xzmalloc(sizeof(err_node_t));
 	// assign the info to the current node
@@ -83,6 +86,9 @@ static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 // append a new node into to circular list
 static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 {
+	if (!l)
+		INFOEE("[Error] can't add new node to invalid NULL list");
+
 	err_node_t *ptr = xmalloc(sizeof(*ptr));
 	// add info
 	ptr->error.msg		   = m;
@@ -146,7 +152,6 @@ void err_last(char *msg, err_code_t *code, int *save)
 	*save = err->tail->error.errno_state;
 }
 
-
 static bool err_list_free(err_list_t **l)
 {
 	if (!l) {
@@ -200,28 +205,77 @@ void err_dump()
 bool err_find(const char *msg, err_code_t code, int save)
 {
 	if (!err) {
-		INFO("[WARNING] Cloud not any node because the there is no list");
+		INFO("[WARNING] Cloud not find any node because there is no list");
 		return false;
 	}
 
 	uint8_t i	 = 0;
 	err_node_t *p = err->tail;
 
-	for (i = 0; i < err->n; i++) {
-		if ((p->error.code == code) || (p->error.errno_state == save) || (!strcmp(p->error.msg, msg))){
-			return true;	
-		}
-	}
+	for (i = 0; i < err->n; i++)
+		if (!strcmp(p->error.msg, msg) ||
+			((p->error.code == code) ||
+			 (p->error.errno_state == save)))
+		return true;
 
 	return false;
 }
 
+void err_info()
+{
+	if (!err) {
+		INFO("[WARNING] No list found fod dumping");
+		return;
+	}
+
+	uint8_t i	 = 0;
+	err_node_t *p = err->tail->next;
+	// traverse all the nodes
+	for (i = 0; i < err->n; i++) {
+		INFO(p->error.msg);
+		p = p->next;
+	}
+}
+// compare two odes if their equal
+static bool cmp(const err_node_t a, const err_node_t b)
+{
+	if ((!strcmp(a.error.msg, b.error.msg)) && (a.error.code == b.error.code) && (a.error.errno_state == b.error.errno_state))
+		return true;
+
+	return false;
+}
+
+void err_prev(char *msg, err_code_t *code, int *save)
+{
+	bool eq;
+	if (!err) {
+		INFO("[WARNING] Cloud not find the previous error because there is no list");
+		return;
+	}
+
+	err_node_t *p = err->tail->next;
+	err_node_t *s = NULL;
+
+	while (true) {
+		eq = cmp(*p, *(err->tail));
+		if (!eq)
+			p = p->next;
+		else {
+			strcpy(msg, p->error.msg);
+			*code = p->error.code;
+			*save = p->error.errno_state;
+			break;
+		}
+
+	s = p;
+	}
+
+}
 
 bool err_empty()
 {
-	if (!err) {
+	if (!err)
 		return true;
-	}
 
 	return false;
 }
