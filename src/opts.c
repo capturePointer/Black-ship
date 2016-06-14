@@ -14,9 +14,8 @@
 
 #include <stdlib.h>
 
-#include "opts.h"
 #include "cmds.h"
-
+#include "opts.h"
 
 // define each key here
 enum {
@@ -55,7 +54,6 @@ struct argp_option options[] = {
 	  0 },
 	{ "ip6", IP6, "ipv6", OPTION_ARG_OPTIONAL,
 	  "Ipv6 address", 0 },
-
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
@@ -65,7 +63,6 @@ struct argp_option options[] = {
 const char *argp_program_version = "0.1";
 // set the email dest addr for bug reports
 const char *argp_program_bug_address = "hoenirvili@gmail.com";
-
 
 #define USAGE_DOC "HOST TYPE_OF_ATTACK"
 
@@ -85,16 +82,34 @@ struct argp argp = {
 	0, 0, 0,
 };
 
+
 // callback for argp_parse to call
 // write in our body for every key handler function
 int parse_opt(int key, char *arg, argp_state *state)
 {
+	int *argc_count = state->input;
 
 	switch (key) {
+	case FLOOD:
+		printf("Flood attack %s\n", arg);				
+		break;
 	case LIST_FLOODS:
 		list_floods();
 		break;
+	case ARGP_KEY_INIT:
+		(*argc_count)--;
+		if (*argc_count >=0) {
+			printf(" %s",arg);
+		}
+		break;
+	case ARGP_KEY_END:
+		if(*argc_count >=5) 
+			argp_failure(state, 1, 0, "too frew arguments");
+		else if(*argc_count < 0)
+			argp_failure(state, 1, 0, "to many aguments");
+
+		break;
 	}
-	
+
 	return EXIT_SUCCESS;
 }

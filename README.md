@@ -4,7 +4,7 @@
 
 ### Command line tool for Denial of Service Attacks
 
-![experimental](ship.jpg)
+![experimental](doc/ship.jpg)
 
 I don't know how many times **I've written**, **rewritten** this code but in the end I hope it will be fine. So my main idea is to write a friendly command line **Dos**(*Denial of service*) tool. This tool can be used to test many things like : 
 

@@ -58,4 +58,10 @@ typedef struct conn6_t {
 	unsigned char *buff;
 } conn6_t;
 
+// ipv4 or ipv6 connections
+typedef union conn_t {
+	conn6_t *c6;
+	conn4_t *c4;
+}conn_t;
+
 #endif /*BLACKSHIP_H*/

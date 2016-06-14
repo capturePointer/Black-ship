@@ -25,11 +25,14 @@
 // commnad line
 int main(int argc, char **argv)
 {
+	int ARG_CUR = 2; // minimum 2 , type of attack and host
 	// init function to parse all argc to argp logic
-	argp_parse(&argp, argc, argv, 0, 0, 0);
+	argp_parse(&argp, argc, argv, 0, 0, &ARG_CUR);
 	// so after the parsing is done this should end
 	// the execution of the program and sent SIGCHLD
 	// to the parent process, and all child processes are
 	// assigned a new parrent, also all open streams are closed
+
 	exit(EXIT_SUCCESS);
+	
 }
