@@ -10,8 +10,7 @@ const char *floods[] = {
 	0,
 };
 
-
-void list_floods()
+void list_floods(void)
 {
 	const char **p = floods;
 	while (*p != 0) {

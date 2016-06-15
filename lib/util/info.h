@@ -1,9 +1,9 @@
 #ifndef INFO_H
 #define INFO_H
 
-void info(const char *, const char *, int);
-void info_error(const char *, const char *, int);
-void infoee(const char *, const char *, int);
+extern void info(const char *msg, const char *file, int line);
+extern void infoe(const char *msg, const char *file, int line);
+extern void infoee(const char *msg, const char *file, int line);
 
 #define INFO(message) \
 	info((message), __FILE__, __LINE__)

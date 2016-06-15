@@ -171,7 +171,7 @@ static bool err_list_free(err_list_t **l)
 	return true;
 }
 
-void err_destroy()
+void err_destroy(void)
 {
 	if (!err_list_free(&err)) {
 		INFOEE("[ERROR] Can't free error list, list was not initilized");
@@ -180,7 +180,7 @@ void err_destroy()
 
 // dump all the errors to stderr
 // note that err_dump is no-op if the list is not valid
-void err_dump()
+void err_dump(void)
 {
 	if (!err) {
 		INFO("[WARNING] No list found fod dumping");
@@ -219,7 +219,7 @@ bool err_find(const char *msg, err_code_t code, int save)
 	return false;
 }
 
-void err_info()
+void err_info(void)
 {
 	if (!err) {
 		INFO("[WARNING] No list found fod dumping");
@@ -296,7 +296,7 @@ bool err_prev_is(err_code_t code)
 
 
 // test if the internal list is empty
-bool err_empty()
+bool err_empty(void)
 {
 	if (!err)
 		return true;

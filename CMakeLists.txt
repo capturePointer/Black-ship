@@ -1,54 +1,48 @@
 # Project name
-project(blackship C)
-set(COMPILE_FLAGS "-c -std=gnu11 -g -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes -Wmissing-declarations -Winline -Wlong-long -Wuninitialized -Wconversion -Wstrict-prototypes -Werror -Wno-variadic-macros")
+project( blackship C )
 
-SET(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
-
-cmake_policy(SET CMP0002 NEW)
-
-# #WELCOME FUNCTIOn
-function (welcome)
-	message ("The build process is starting")
-endfunction()
-
-# ASSERTION MACRO FOR TESTING IF THE LIBARRY IS DEFINED
-# ALSO IF IT"S DEFINED LIKED
-function (assert TARGET LIB LIB_NAME)
-	if (${LIB})
-		message ("Library found: ${LIB_NAME}. LINKING")
-		target_link_libraries(${TARGET} ${LIB})
-	elseif (NOT ${LIB})
-		message ("Assertion failed, libary not found ${LIB_NAME}")
-	endif()
-endfunction(assert)
+# set the verbose mode on
+set(CMAKE_VERBOSE_MAKEFILE ON)
 
 # SPECIFY THE MINIMUM VERSION OF CMAKE
 cmake_minimum_required(VERSION 2.6)
+
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
+# Set all modules
+set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
+# include all external modules
+include(def)
+include(macros)
+#TODO
+include(CheckIncludeFile)
+include(CheckLibraryExists)
+
+CHECK_INCLUDE_FILE("argp.h" ARGP_LIBRARY CMAKE_REQUIRED_FLAGS)
+CHECK_INCLUDE_FILE("cmocka.h" CMOCK_LIBRARY CMAKE_REQUIRED_FLAGS)
+CHECK_LIBRARY_EXISTS("argp" "argp_parse" "/usr/include/argp.h" CMAKE_REQUIRED_FLAGS)
+
+# set the new policy
+cmake_policy(SET CMP0002 NEW)
+
+# min version required
+cmake_minimum_required(VERSION 2.6)
+
+include_directories(lib)
+include_directories(src)
+
 set (TARGET_MAIN src/blackship.c 
+				src/blackship.h
+				src/cmds.h
 				src/cmds.c 
 				src/opts.c 
+				src/opts.h
 				lib/err/err.c 
+				lib/err/err.h
 				lib/util/info.c 
+				lib/util/info.h
+				lib/util/util.h
 				lib/util/mem.c)
-set (LIB_PATH /usr/lib /usr/local/lib /usr/include)
 
 add_executable(blackship ${TARGET_MAIN})
 
-# LOOK FOR THE CMOCKA LIBARRY
-find_library(CMOCKA_LIBRARY
-	NAMES cmocka moka
-	PATHS ${LIB_PATH})
-
-# LOOK FOR THE ARGP LIBRARY
-find_library(ARGP_LIBRARY
-	Names argp arg
-	PATH ${LIB_PATH})
-
-if (ARGP_LIBRARY)
-	message ( "DEFINED")
-endif()
-
-assert ("${TARGET}" ARGP_LIBRARY "ARGP")
-
-# WELCOMING FUNCTION
 welcome()

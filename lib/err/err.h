@@ -38,19 +38,19 @@ extern void err_last(char *msg, err_code_t *code, int *save);
 // destroy all nodes of the list and reset the list state to NULL
 // this it's advice to be used when exiting on critical functions and to
 // shut down the program gracefully
-extern void err_destroy();
+extern void err_destroy(void);
 // destroy all nodes of the list and reset the list state to NULL
 // printing a nice error dump of all errors from the oldest to newest
 // to be used on panic errors
-extern void err_dump();
+extern void err_dump(void);
 // search for the error and if it's found return true
 extern bool err_find(const char *msg, err_code_t code, int save);
 // test the list is valid
-extern bool err_empty();
+extern bool err_empty(void);
 // the the previous error lenght-1 pos in the list
 extern void err_prev(char *msg, err_code_t *code, int *save);
 // dump all information without exiting
-extern void err_info();
+extern void err_info(void);
 // test when ever the previous error is equal to code
 extern bool err_prev_is(err_code_t code);
 
