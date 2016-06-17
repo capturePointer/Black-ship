@@ -1,35 +1,33 @@
 # Project name
 project( blackship C )
 
-# set the verbose mode on
-set(CMAKE_VERBOSE_MAKEFILE ON)
-
 # SPECIFY THE MINIMUM VERSION OF CMAKE
-cmake_minimum_required(VERSION 2.6)
-
-set(CMAKE_C_COMPILER "/usr/bin/gcc")
-# Set all modules
-set (CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/CMake/")
-# include all external modules
-include(def)
-include(macros)
-#TODO
-include(CheckIncludeFile)
-include(CheckLibraryExists)
-
-CHECK_INCLUDE_FILE("argp.h" ARGP_LIBRARY CMAKE_REQUIRED_FLAGS)
-CHECK_INCLUDE_FILE("cmocka.h" CMOCK_LIBRARY CMAKE_REQUIRED_FLAGS)
-CHECK_LIBRARY_EXISTS("argp" "argp_parse" "/usr/include/argp.h" CMAKE_REQUIRED_FLAGS)
+cmake_minimum_required(VERSION 2.8)
 
 # set the new policy
 cmake_policy(SET CMP0002 NEW)
 
-# min version required
-cmake_minimum_required(VERSION 2.6)
+set(APPLICATION_VERSION_MAJOR "0")
+set(APPLICATION_VERSION_MINOR "1")
+set(APPLICATION_VERSION_PATCH "0")
 
-include_directories(lib)
-include_directories(src)
+set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
 
+# set the verbose mode on
+set(CMAKE_VERBOSE_MAKEFILE ON)
+set(CMAKE_C_COMPILER "/usr/bin/gcc")
+
+# where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
+set (CMAKE_MODULE_PATH 
+	${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake"
+)
+
+include(Define)
+include(Functions)
+
+check_libs()
+
+# add all files and push them to exec
 set (TARGET_MAIN src/blackship.c 
 				src/blackship.h
 				src/cmds.h
@@ -42,7 +40,5 @@ set (TARGET_MAIN src/blackship.c
 				lib/util/info.h
 				lib/util/util.h
 				lib/util/mem.c)
-
 add_executable(blackship ${TARGET_MAIN})
 
-welcome()

@@ -1,7 +1,7 @@
-# declare and set the flags
+# This file contains only variables and set of definitions for the entire build process
+# compile flags, include paths, etc.
 
+# set the compile flags for every .c 
 set(COMPILE_FLAGS "-std=gnu11 -Wall -Wextra -pedantic -Wshadow -Wpointer-arith -Wcast-align -Wmissing-prototypes -Wmissing-declarations -Winline -Wlong-long -Wuninitialized -Wconversion -Wstrict-prototypes -Werror -Wno-variadic-macros")
 SET(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
-# standard lib path to know where to search for dependency
-set (LIB_PATH /usr/lib /usr/local/lib /usr/include)
 
