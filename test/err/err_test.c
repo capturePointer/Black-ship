@@ -8,7 +8,8 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-#include "../err.h"
+#include "../../lib/err/err.h"
+
 #define MAX 13
 // init variables
 const char *msg[MAX] = {
@@ -26,18 +27,20 @@ const char *msg[MAX] = {
 	"Please Work you with the params error",
 	"Kill the errors from the program",
 };
-err_code_t code[MAX] = {
+static err_code_t code[MAX] = {
 	ERRUNKNOWN, ERRUNKNOWN, ERRTCPCONN,
 	ERRUNKNOWN, ERRUNKNOWN, ERRUDPCONN,
 	ERRUNKNOWN, ERRUNKNOWN, ERRHOSTUNREACHED,
-	ERRUNKNOWN, ERRHOSTUNREACHED,  ERRTCPCONN,
+	ERRUNKNOWN, ERRHOSTUNREACHED, ERRTCPCONN,
 	ERRUNKNOWN,
 };
-int errnos[MAX] = { EIO, EOF, ERANGE, EBUSY, EPIPE, ESRCH, ENOSPC,
-					ENOTSUP, ENOSPC, ENOMSG, ENOTTY, EIDRM, ETIME };
+static int errnos[MAX] = { EIO, EOF, ERANGE, EBUSY, EPIPE, ESRCH, ENOSPC,
+						   ENOTSUP, ENOSPC, ENOMSG, ENOTTY, EIDRM, ETIME };
 
-void new_error_test()
+static void new_error_test(void **state)
 {
+	(void)state;
+	
 	// init variables
 	const char *mms  = "Error give me test";
 	err_code_t ccode = ERRTCPCONN;
@@ -48,7 +51,7 @@ void new_error_test()
 	err_new(mms, ccode, errno);
 
 	// some testing vars
-	char *k = calloc(strlen(mms)+1, sizeof(char));
+	char *k = calloc(strlen(mms) + 1, sizeof(char));
 	err_code_t mkk;
 	int mk = -1;
 
@@ -57,7 +60,7 @@ void new_error_test()
 
 	// check them
 	assert_false(err_empty());
-	assert_memory_equal(mms, k, strlen(mms)+1);
+	assert_memory_equal(mms, k, strlen(mms) + 1);
 	assert_string_equal(mms, k);
 	assert_int_equal(ccode, mkk);
 	assert_int_equal(errno, mk);
@@ -70,8 +73,9 @@ void new_error_test()
 	printf("new_error_test() Passed\n");
 }
 
-void multi_error_dump_test()
+static void multi_error_dump_test(void **state)
 {
+	(void)state;
 	assert_true(err_empty());
 	for (int i = 0; i < MAX; i++) {
 		err_new(msg[i], code[i], errnos[i]);
@@ -84,8 +88,9 @@ void multi_error_dump_test()
 	printf("=======================>>> multi_error_dump_test() Passed\n");
 }
 
-void multi_error_test()
+static void multi_error_test(void **state)
 {
+	(void)state;
 	assert_true(err_empty());
 	// crate
 	for (int i = 0; i < MAX; i++) {
@@ -99,8 +104,9 @@ void multi_error_test()
 	printf("=======================>>> multi_error_test() Passed\n");
 }
 
-void stress_error_test()
+static void stress_error_test(void **state)
 {
+	(void)state;
 	// init variables
 	const char *msg = "Error give me test";
 	err_code_t code = ERRTCPCONN;
@@ -119,8 +125,10 @@ void stress_error_test()
 	printf("======================>>> stress_error_test() passed\n");
 }
 
-void find_error_test()
+static void find_error_test(void **state)
 {
+	(void)state;
+
 	assert_true(err_empty());
 	for (int i = 0; i < MAX; i++) {
 		err_new(msg[i], code[i], errnos[i]);
@@ -128,8 +136,8 @@ void find_error_test()
 
 	assert_false(err_empty());
 	assert_true(err_find(msg[4], 0, -5));
-	assert_true(err_find("",ERRUNKNOWN, 0));
-	assert_false(err_find("",-100,-100));
+	assert_true(err_find("", ERRUNKNOWN, 0));
+	assert_false(err_find("", -100, -100));
 
 	// if everything is fine free the name and print out
 	err_dump();
@@ -137,10 +145,12 @@ void find_error_test()
 
 	printf("======================>>> find_error_test() Passed\n");
 }
-void prev_error_test()
+
+static void prev_error_test(void **state)
 {
+	(void)state;
 	assert_true(err_empty());
-	for(int i = 0; i<4; i++) {
+	for (int i = 0; i < 4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
@@ -154,7 +164,7 @@ void prev_error_test()
 	assert_string_equal(k, msg[2]);
 	assert_int_equal(mkk, code[2]);
 	assert_int_equal(mk, errnos[2]);
-	
+
 	// if everything is fine free the name and print out
 	err_destroy();
 	free(k);
@@ -162,10 +172,12 @@ void prev_error_test()
 	printf("======================>>> prev_error_test() Passed\n");
 }
 
-void prev_error_is_test()
+static void prev_error_is_test(void **state)
 {
+	(void)state;
+
 	assert_true(err_empty());
-	for(int i = 0; i<4; i++) {
+	for (int i = 0; i < 4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
@@ -173,7 +185,7 @@ void prev_error_is_test()
 
 	assert_true(err_prev_is(ERRTCPCONN));
 	assert_false(err_prev_is(ERRUNKNOWN));
-	
+
 	// if everything is fine free the name and print out
 	err_destroy();
 	assert_true(err_empty());
@@ -182,11 +194,16 @@ void prev_error_is_test()
 
 int main(void)
 {
-	new_error_test();
-	multi_error_dump_test();
-	multi_error_test();
-	stress_error_test();
-	find_error_test();
-	prev_error_test();
-	prev_error_is_test();
+	cmocka_set_message_output(CM_OUTPUT_STDOUT);
+	const struct CMUnitTest tests[] = {
+		cmocka_unit_test(new_error_test),
+		cmocka_unit_test(multi_error_dump_test),
+		cmocka_unit_test(multi_error_test),
+		cmocka_unit_test(stress_error_test),
+		cmocka_unit_test(find_error_test),
+		cmocka_unit_test(prev_error_test),
+		cmocka_unit_test(prev_error_is_test),
+	};
+
+	return cmocka_run_group_tests(tests, NULL, NULL);
 }
