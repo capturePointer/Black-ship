@@ -11,6 +11,7 @@ function(check_libs)
 	CHECK_INCLUDE_FILE("stdarg.h" STDARG_H)
 	CHECK_INCLUDE_FILE("stddef.h" STDDEF_H)
 	CHECK_INCLUDE_FILE("setjmp.h" SETJMP_H)
+	CHECK_INCLUDE_FILE("argz.h" ARGZ_H)
 	set (ALL_H ${ARGP_H}
 		${STDBOOL_H}
 		${STRING_H}
@@ -19,13 +20,14 @@ function(check_libs)
 		${STDARG_H}
 		${STDDEF_H}
 		${SETJMP_H}
+		${ARGZ_H}
 	)
 	foreach(HEADER ${ALL_H})
 		if(NOT ${HEADER})
 			message(FATAL_ERROR "[!] PLEASE INSTALL MISSING HEADER")
 		endif()
 	endforeach(HEADER)
-	message(STATUS "[*]Verifying external libraries")
+	message(STATUS "[*] Verifying external libraries")
 
 	find_library(CMAKE_LIB
 		NAMES cmocka cmoka.h

@@ -15,5 +15,5 @@
 #ifndef CMDS_H
 #define CMDS_H
 
-extern void list_floods(void);
+extern void list_attacks(void);
 #endif

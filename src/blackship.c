@@ -16,6 +16,7 @@
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
 #include <argp.h>
+#include <argz.h>
 
 #include "blackship.h"
 #include "opts.h"
@@ -25,14 +26,12 @@
 // commnad line
 int main(int argc, char **argv)
 {
-	int ARG_CUR = 2; // minimum 2 , type of attack and host
+	/* struct arguments argu; */
 	// init function to parse all argc to argp logic
-	argp_parse(&argp, argc, argv, 0, 0, &ARG_CUR);
+	argp_parse(&argp, argc, argv, 0, 0, NULL);
 	// so after the parsing is done this should end
 	// the execution of the program and sent SIGCHLD
 	// to the parent process, and all child processes are
 	// assigned a new parrent, also all open streams are closed
-
 	exit(EXIT_SUCCESS);
-	
 }

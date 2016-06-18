@@ -69,8 +69,6 @@ static void new_error_test(void **state)
 	free(k);
 	err_destroy();
 	assert_true(err_empty());
-
-	printf("new_error_test() Passed\n");
 }
 
 static void multi_error_dump_test(void **state)
@@ -85,7 +83,6 @@ static void multi_error_dump_test(void **state)
 	// if everything is fine free the meme and print out
 	err_dump();
 	assert_true(err_empty());
-	printf("=======================>>> multi_error_dump_test() Passed\n");
 }
 
 static void multi_error_test(void **state)
@@ -101,7 +98,6 @@ static void multi_error_test(void **state)
 	// if everything is fine free the meme and print out
 	err_destroy();
 	assert_true(err_empty());
-	printf("=======================>>> multi_error_test() Passed\n");
 }
 
 static void stress_error_test(void **state)
@@ -121,8 +117,6 @@ static void stress_error_test(void **state)
 		err_destroy();
 		assert_true(err_empty());
 	}
-
-	printf("======================>>> stress_error_test() passed\n");
 }
 
 static void find_error_test(void **state)
@@ -143,7 +137,6 @@ static void find_error_test(void **state)
 	err_dump();
 	assert_true(err_empty());
 
-	printf("======================>>> find_error_test() Passed\n");
 }
 
 static void prev_error_test(void **state)
@@ -169,7 +162,6 @@ static void prev_error_test(void **state)
 	err_destroy();
 	free(k);
 	assert_true(err_empty());
-	printf("======================>>> prev_error_test() Passed\n");
 }
 
 static void prev_error_is_test(void **state)
@@ -189,7 +181,6 @@ static void prev_error_is_test(void **state)
 	// if everything is fine free the name and print out
 	err_destroy();
 	assert_true(err_empty());
-	printf("======================>>>prev_error_is_test() Passed\n");
 }
 
 int main(void)

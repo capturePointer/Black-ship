@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <argz.h>
 #include <stdlib.h>
 
 #include "cmds.h"
@@ -19,52 +20,50 @@
 
 // define each key here
 enum {
-	LIST_FLOODS = 0,
-	PORT		= 'p',
-	FLOOD		= 'f',
-	RANGE_PORTS = 'P',
-	HOST		= 'h',
-	IP6			= 1,
+	LIST_ATTACKS = 10,
+	PORT		 = 'p',
+	ATTACK		 = 'a',
+	RANGE_PORTS  = 'P',
+	HOST		 = 'h',
+	I4			 = 16,
+	RANDOM		 = 'r',
 };
-
-#include "opts.h"
 
 // this array of options will be checked by the callback parse_opt
 // in order to execute some special handlers on every interations
 // parse_opt is called for every argv passed on the cmd line
 struct argp_option options[] = {
-	{ "flood", FLOOD, "type", 0,
-	  "Select the type of flood. To know what types are supported"
-	  "please check this options --list-flood",
+	{ "attack", ATTACK, "type", 0,
+	  "Select the type of attack. To know what types are supported"
+	  "please check this options --list-attacks",
 	  0 },
-	{ "port", PORT, "n", OPTION_ARG_OPTIONAL,
+	{ "port", PORT, "n", 0,
 	  "Select on a specific port to send all the packets",
 	  0 },
-	{ "range-ports", RANGE_PORTS, "p-p", OPTION_ARG_OPTIONAL,
+	{ "range", RANGE_PORTS, "x-y", OPTION_ARG_OPTIONAL,
 	  "Select a specic range of ports to send all the packets",
 	  0 },
-	{ "random", 'r', 0, OPTION_ARG_OPTIONAL,
+	{ "random", RANDOM, 0, OPTION_ARG_OPTIONAL,
 	  "Just flood on random ports",
 	  0 },
-	{ "list-floods", LIST_FLOODS, 0, 0,
+	{ "list-attacks", LIST_ATTACKS, 0, 0,
 	  "List the dos floods supported",
 	  0 },
-	{ "host", HOST, "ip", 0,
-	  "Specify the traget hostname or ipv4 addr. if you want use ipv6 please specify with -ip6 option",
+	{ "host", HOST, "ip_addr", 0,
+	  "Specify the ipv4 address.",
 	  0 },
-	{ "ip6", IP6, "ipv6", OPTION_ARG_OPTIONAL,
-	  "Ipv6 address", 0 },
+	{ "ip4", I4, "ipv4", 0,
+	  "Ipv4 address.The reason this option exists it's because in the future the attacks will support ipv6 addr", 0 },
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
-//
 // set other information options for the argp to display
 // set the current version of the app
 const char *argp_program_version = "0.1";
 // set the email dest addr for bug reports
 const char *argp_program_bug_address = "hoenirvili@gmail.com";
 
-#define USAGE_DOC "HOST TYPE_OF_ATTACK"
+#define USAGE_DOC "HOST PORT TYPE_OF_ATTACK EXTRA-OPTIONS"
 
 // here we add all the option declared above this struct
 // this struct is the main configuration for the argp
@@ -81,34 +80,33 @@ struct argp argp = {
 	// leave other to default
 	0, 0, 0,
 };
-
-
+//
 // callback for argp_parse to call
 // write in our body for every key handler function
 int parse_opt(int key, char *arg, argp_state *state)
 {
-	int *argc_count = state->input;
+	(void)state;
+	(void)arg;
 
 	switch (key) {
-	case FLOOD:
-		printf("Flood attack %s\n", arg);				
+	case ATTACK:
 		break;
-	case LIST_FLOODS:
-		list_floods();
+	case PORT:
 		break;
-	case ARGP_KEY_INIT:
-		(*argc_count)--;
-		if (*argc_count >=0) {
-			printf(" %s",arg);
-		}
+	case RANGE_PORTS:
 		break;
-	case ARGP_KEY_END:
-		if(*argc_count >=5) 
-			argp_failure(state, 1, 0, "too frew arguments");
-		else if(*argc_count < 0)
-			argp_failure(state, 1, 0, "to many aguments");
-
+	case RANDOM:
 		break;
+	case LIST_ATTACKS:
+		//TODO
+		list_attacks();
+		break;
+	case HOST:
+		break;
+	case I4:
+		break;
+	default:
+		return ARGP_ERR_UNKNOWN;
 	}
 
 	return EXIT_SUCCESS;
