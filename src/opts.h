@@ -18,10 +18,11 @@
 #define OPTS_H
 
 #include <argp.h>
+#include <stdint.h>
+#include <stdbool.h>
 
 typedef struct argp_state argp_state;
 typedef struct argp_option argp_option;
-
 
 #define DOC "This tool should be used just for educational \
 purpose but I don't care(in the end) what you do \
@@ -32,10 +33,40 @@ much cooler.So my main idea is to write a friendly \
 command line Dos(Denial of service) tool."
 
 extern const char *doc;
-extern int parse_opt(int, char*, argp_state*);
+extern int parse_opt(int, char *, argp_state *);
 extern const char *argp_program_version;
 extern const char *argp_program_bug_address;
 extern struct argp_option options[];
 extern struct argp argp;
+
+typedef enum ip_t {
+	IPV4,
+	IPV6,
+} ip_t;
+
+typedef struct port_t {
+	// default standard port
+	uint16_t n;
+	// range values ports
+	uint16_t low;
+	uint16_t high;
+	// flag for knowing that the port option
+	// is set to random/dynamic ports
+	bool random;
+
+} port_t;
+typedef enum other_t {
+	L_ATTACKS,					  // list attacks
+} other_t;
+
+// arguments retains all info from the parse_opt command
+// when it finishes
+typedef struct arguments {
+	char *host;
+	char *attack;
+	ip_t host_type;
+	port_t port;
+	other_t list_attacks;
+} arguments;
 
 #endif

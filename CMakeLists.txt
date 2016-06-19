@@ -39,6 +39,7 @@ set (TARGET_MAIN src/blackship.c
 				lib/util/info.c 
 				lib/util/info.h
 				lib/util/util.h
-				lib/util/mem.c)
+				lib/util/mem.c
+				lib/util/util.c)
 add_executable(blackship ${TARGET_MAIN})
 

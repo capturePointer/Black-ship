@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "opts.h"
+#include "../lib/util/util.h"
+#include "cmds.h"
 #include <argz.h>
 #include <stdlib.h>
-
-#include "cmds.h"
-#include "opts.h"
 
 // define each key here
 enum {
@@ -80,30 +80,33 @@ struct argp argp = {
 	// leave other to default
 	0, 0, 0,
 };
-//
+
 // callback for argp_parse to call
 // write in our body for every key handler function
 int parse_opt(int key, char *arg, argp_state *state)
 {
-	(void)state;
-	(void)arg;
-
+	arguments *args = state->input;
 	switch (key) {
 	case ATTACK:
+		args->attack = arg;
 		break;
 	case PORT:
+		args->port.n = port_conv(arg);
 		break;
 	case RANGE_PORTS:
+		port_conv_range(arg, &args->port.low, &args->port.high);
 		break;
 	case RANDOM:
+		args->port.random = true;
 		break;
 	case LIST_ATTACKS:
-		//TODO
-		list_attacks();
+		args->list_attacks = L_ATTACKS;
 		break;
 	case HOST:
+		args->host = arg;
 		break;
 	case I4:
+		args->host_type = IPV4;
 		break;
 	default:
 		return ARGP_ERR_UNKNOWN;

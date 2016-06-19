@@ -26,12 +26,24 @@
 // commnad line
 int main(int argc, char **argv)
 {
+	arguments arg;
+	memset(&arg, 0, sizeof(arguments));
+
 	/* struct arguments argu; */
 	// init function to parse all argc to argp logic
-	argp_parse(&argp, argc, argv, 0, 0, NULL);
-	// so after the parsing is done this should end
-	// the execution of the program and sent SIGCHLD
-	// to the parent process, and all child processes are
-	// assigned a new parrent, also all open streams are closed
-	exit(EXIT_SUCCESS);
+	if (argp_parse(&argp, argc, argv, 0, 0, &arg) == 0) {
+		// so after the parsing is done this should end
+		// the execution of the program and sent SIGCHLD
+		// to the parent process, and all child processes are
+		// assigned a new parrent, also all open streams are closed
+		printf("argumnets\n");
+		printf("host : %s\n", arg.host);
+		printf("port: %d\n", arg.port.n);
+		printf("random: %d\n", (arg.port.random) ? 1 : 0);
+		printf("range-ports \n");
+		printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
+		printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
+		exit(EXIT_SUCCESS);
+	}
+	exit(EXIT_FAILURE);
 }
