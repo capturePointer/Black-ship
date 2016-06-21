@@ -22,8 +22,9 @@ extern void *mem_calloc(size_t n, size_t sz);
 extern void *mem_zmalloc(size_t sz);
 extern void mem_free(void *block);
 
-extern uint16_t port_conv(char *arg);
+extern uint16_t port_conv(const char *arg);
 extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
+
 #define xmalloc(sz) \
 	mem_malloc((sz))
 

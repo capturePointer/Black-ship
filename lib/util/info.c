@@ -6,16 +6,16 @@
 
 void info(const char *msg, const char *file, int line)
 {
-	fprintf(stdout, "%s %s %d", msg, file, line);
+	fprintf(stdout, "%s %s %d\n", msg, file, line);
 }
 
 void infoe(const char *msg, const char *file, int line)
 {
-	fprintf(stderr, "%s %s %d", msg, file, line);
+	fprintf(stderr, "%s %s %d\n", msg, file, line);
 }
 
 void infoee(const char *msg, const char *file, int line)
 {
-	fprintf(stderr, "%s %s %d", msg, file, line);
+	fprintf(stderr, "%s %s %d\n", msg, file, line);
 	exit(EXIT_FAILURE);
 }

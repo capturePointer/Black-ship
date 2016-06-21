@@ -57,7 +57,7 @@ typedef struct err_list_t {
 } err_list_t;
 
 // state of the circular list
-err_list_t *err = NULL;
+static err_list_t *err;
 
 // err_list_t * err_list_new
 // create new circular linked list also create the first node
@@ -173,9 +173,8 @@ static bool err_list_free(err_list_t **l)
 
 void err_destroy(void)
 {
-	if (!err_list_free(&err)) {
+	if (!err_list_free(&err))
 		INFOEE("[ERROR] Can't free error list, list was not initilized");
-	}
 }
 
 // dump all the errors to stderr
@@ -183,7 +182,7 @@ void err_destroy(void)
 void err_dump(void)
 {
 	if (!err) {
-		INFO("[WARNING] No list found fod dumping");
+		INFO("[WARNING] No list found for dumping");
 		return;
 	}
 
@@ -213,7 +212,10 @@ bool err_find(const char *msg, err_code_t code, int save)
 	err_node_t *p = err->tail;
 
 	for (i = 0; i < err->n; i++)
-		if (!strcmp(p->error.msg, msg) || ((p->error.code == code) || (p->error.errno_state == save)))
+		if (!strcmp(p->error.msg, msg) || 
+			((p->error.code == code) || 
+			(p->error.errno_state == save)))
+
 			return true;
 
 	return false;
@@ -234,10 +236,12 @@ void err_info(void)
 		p = p->next;
 	}
 }
-// compare two odes if their equal
+// compare two errors if their equal
 static bool cmp(const err_node_t a, const err_node_t b)
 {
-	if ((!strcmp(a.error.msg, b.error.msg)) && (a.error.code == b.error.code) && (a.error.errno_state == b.error.errno_state))
+	if ((!strcmp(a.error.msg, b.error.msg)) && 
+		(a.error.code == b.error.code) && 
+		(a.error.errno_state == b.error.errno_state))
 		return true;
 
 	return false;
@@ -278,12 +282,15 @@ bool err_prev_is(err_code_t code)
 	err_node_t *s = NULL;
 
 	while (true) {
+		// go and step through the list
+		// and stop when we start
 		eq = cmp(*p, *(err->tail));
 		if (eq)
 			break;
 		s = p;
 		p = p->next;
 	}
+
 	// we have a single error in the list
 	if ((!s) && (err->tail->error.code == code))
 		return true;
