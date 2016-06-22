@@ -11,11 +11,11 @@
 // max value for a port should be UINT_MAX
 uint16_t port_conv(const char *arg)
 {
-	unsigned long u = strtoul(arg, NULL, 10);
+	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT_MAX)) {
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) {
 		// ports are 16 byte wide
-		err_new("[ERROR] Connot convert the number into a real port.", ERRLARGEVALUE, errno);
+		err_new("[ERROR] Connot convert the number into a real port.", ERRCONVPORT, errno);
 		return 0;
 	}
 
@@ -32,7 +32,7 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 	char *t1, *t2;
 	t1 = strtok(arg, delim);
 	if (t1 == NULL) {
-		err_new("[ERROR] Connot convert numbers into range ports.", ERRRANGEVALUE, 0);
+		err_new("[ERROR] Connot convert numbers into range ports.", ERRCONVPORT, 0);
 		return;
 	}
 	*low = port_conv(t1);
@@ -42,7 +42,7 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 	// NULL is passed as first arg
 	t2 = strtok(NULL, delim);
 	if (t2 == NULL) {
-		err_new("[Error] Connot convert numbers into range ports.", ERRRANGEVALUE, 0);
+		err_new("[Error] Connot convert numbers into range ports.", ERRCONVPORT, 0);
 		return;
 	}
 	*high = port_conv(t2);

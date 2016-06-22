@@ -25,8 +25,7 @@ typedef enum err_code {
 	ERRUDPCONN,
 	ERRTIMEOUT,
 	ERRHOSTUNREACHED,
-	ERRLARGEVALUE, // error large values
-	ERRRANGEVALUE, // error range value
+	ERRCONVPORT, // error conversion port
 	ERR_LAST, // NOT TO BE USED 
 } err_code_t;
 

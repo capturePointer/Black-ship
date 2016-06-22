@@ -21,16 +21,15 @@ static void port_conv_test(void **state)
 	uint16_t r1	= port_conv(p1);
 	assert_int_equal(r1, 5213);
 	assert_true(err_empty());
-	
+
 	uint16_t r2 = port_conv(p2);
 	assert_int_equal(r2, 0);
 	assert_false(err_empty());
-	assert_true(err_prev_is(ERRLARGEVALUE));
+	assert_true(err_prev_is(ERRCONVPORT));
 
-	//TODO BROKEN
 	uint16_t r3 = port_conv(p3);
-	printf("%d\n", r3);
-	assert_true(err_prev_is(ERRLARGEVALUE));
+	assert_int_equal(r3, 0);
+	assert_true(err_prev_is(ERRCONVPORT));
 	assert_false(err_empty());
 
 	err_destroy();
@@ -44,7 +43,7 @@ static void port_conv_range_test(void **state)
 	char *p1 = strdup("100-200");
 	char *p2 = strdup("5000-10000");
 	char *p3 = strdup("231-100");
-	/* char *p4 = strdup("1jhas-diajsudja"); */
+	char *p4 = strdup("1jhas-diajsudja");
 	/* char *p5 = strdup("0000-0000"); */
 
 	// p1
@@ -63,20 +62,23 @@ static void port_conv_range_test(void **state)
 	port_conv_range(p3, &r1, &r2);
 	assert_int_equal(r1, 100);
 	assert_int_equal(r2, 231);
-	assert_true(err_empty());	
+	assert_true(err_empty());
 
-	/* // p4 */
-	/* port_conv_range(p4, &r1, &r2); */
-    /*  */
+	// p4
+	port_conv_range(p4, &r1, &r2);
+	printf("%d\n", r1);
+	printf("%d\n", r2);
+	assert_false(err_empty());
+
 	/* // p5 */
 	/* port_conv_range(p5, &r1, &r2); */
 
 	xfree(p1);
 	xfree(p2);
 	xfree(p3);
-	/* xfree(p4); */
+	xfree(p4);
 	/* xfree(p5); */
-	/* err_destroy(); */
+	err_destroy();
 }
 
 int main(void)
