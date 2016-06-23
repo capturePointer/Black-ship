@@ -11,16 +11,21 @@
 // max value for a port should be UINT_MAX
 uint16_t port_conv(const char *arg)
 {
+	if (!filter_number(arg))
+		goto err;
+
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) {
-		// ports are 16 byte wide
-		err_new("[ERROR] Connot convert the number into a real port.", ERRCONVPORT, errno);
-		return 0;
-	}
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0))  // ports are 16 byte wide
+		goto err;	
 
 	// it is safe is u is a value from 0 to UINT_MAX(65,535)
 	return (uint16_t)u;
+
+err:
+	err_new("[ERROR] Connot convert the number into a real port.", ERRCONVPORT, errno);
+	return 0;
+
 }
 
 // uint16_t port_conv_range()
@@ -54,3 +59,22 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 		*low  = *low ^ *high;
 	}
 }
+
+// filter_number()
+// filters all character in the block of mem and it tests
+// if we have in the block only digits and return true
+// if we have letters or other simbols just return false
+// this function exptects that the string is NULL terminated or it will fail
+bool filter_number(const char *arg)
+{
+	const char *p = arg;
+	for(; true; p++) {
+		if(*p == '\0')
+			break;
+		// if it's not in this interval
+		if (!(*p >= 0x30 && (*p <= 0x39)))
+			return false;
+	}
+	return true;
+}
+

@@ -14,8 +14,9 @@
 #ifndef UTIL_H
 #define UTIL_H
 
-#include <stdio.h>
 #include <stdint.h>
+#include <stdio.h>
+#include <stdbool.h>
 
 extern void *mem_malloc(size_t sz);
 extern void *mem_calloc(size_t n, size_t sz);
@@ -24,6 +25,7 @@ extern void mem_free(void *block);
 
 extern uint16_t port_conv(const char *arg);
 extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
+extern bool filter_number(const char *arg);
 
 #define xmalloc(sz) \
 	mem_malloc((sz))
@@ -34,8 +36,7 @@ extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
 #define xzmalloc(sz) \
 	mem_zmalloc((sz))
 
-#define xfree(ptr)\
+#define xfree(ptr) \
 	mem_free((ptr))
-
 
 #endif /*UTIL_H*/

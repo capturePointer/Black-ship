@@ -18,7 +18,9 @@ static void port_conv_test(void **state)
 	const char *p1 = "5213";
 	const char *p2 = "-3213";
 	const char *p3 = "70000";
-	uint16_t r1	= port_conv(p1);
+	const char *p4 = "ufiusahfs";
+
+	uint16_t r1 = port_conv(p1);
 	assert_int_equal(r1, 5213);
 	assert_true(err_empty());
 
@@ -29,8 +31,13 @@ static void port_conv_test(void **state)
 
 	uint16_t r3 = port_conv(p3);
 	assert_int_equal(r3, 0);
-	assert_true(err_prev_is(ERRCONVPORT));
 	assert_false(err_empty());
+	assert_true(err_prev_is(ERRCONVPORT));
+
+	uint16_t r4 = port_conv(p4);
+	assert_int_equal(r4, 0);
+	assert_false(err_empty());
+	assert_true(err_prev_is(ERRCONVPORT));
 
 	err_destroy();
 	//test for error
@@ -44,7 +51,7 @@ static void port_conv_range_test(void **state)
 	char *p2 = strdup("5000-10000");
 	char *p3 = strdup("231-100");
 	char *p4 = strdup("1jhas-diajsudja");
-	/* char *p5 = strdup("0000-0000"); */
+	char *p5 = strdup("0000-0000");
 
 	// p1
 	port_conv_range(p1, &r1, &r2);
@@ -66,25 +73,44 @@ static void port_conv_range_test(void **state)
 
 	// p4
 	port_conv_range(p4, &r1, &r2);
-	printf("%d\n", r1);
-	printf("%d\n", r2);
 	assert_false(err_empty());
+	assert_true(err_prev_is(ERRCONVPORT));
 
-	/* // p5 */
-	/* port_conv_range(p5, &r1, &r2); */
+	// p5
+	port_conv_range(p5, &r1, &r2);
+	assert_int_equal(r1, 0);
+	assert_int_equal(r2, 0);
 
 	xfree(p1);
 	xfree(p2);
 	xfree(p3);
 	xfree(p4);
-	/* xfree(p5); */
+	xfree(p5);
+
 	err_destroy();
+}
+
+static void filter_number_test(void **state)
+{
+	(void)state;
+	char *p1 = strdup("523");
+	char *p2 = strdup("423sad");
+	char *p3 = strdup("dusjiuf");
+
+	assert_true(filter_number(p1));
+	assert_false(filter_number(p2));
+	assert_false(filter_number(p3));
+
+	free(p1);
+	free(p2);
+	free(p3);
 }
 
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
 	const struct CMUnitTest tests[] = {
+		cmocka_unit_test(filter_number_test),
 		cmocka_unit_test(port_conv_test),
 		cmocka_unit_test(port_conv_range_test),
 	};
