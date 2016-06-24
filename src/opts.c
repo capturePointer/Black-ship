@@ -14,6 +14,7 @@
 
 #include "opts.h"
 #include "../lib/util/util.h"
+#include "../lib/err/err.h"
 #include "cmds.h"
 #include <argz.h>
 #include <stdlib.h>
@@ -95,6 +96,8 @@ int parse_opt(int key, char *arg, argp_state *state)
 		break;
 	case RANGE_PORTS:
 		port_conv_range(arg, &args->port.low, &args->port.high);
+		//TODO
+		if(err_prev_is(ERRCONVPORT)) return ARGP_KEY_ERROR;
 		break;
 	case RANDOM:
 		args->port.random = true;

@@ -73,6 +73,7 @@ static void port_conv_range_test(void **state)
 
 	// p4
 	port_conv_range(p4, &r1, &r2);
+	assert_int_equal(r1, r2);
 	assert_false(err_empty());
 	assert_true(err_prev_is(ERRCONVPORT));
 

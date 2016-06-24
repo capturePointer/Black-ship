@@ -70,11 +70,10 @@ bool filter_number(const char *arg)
 	const char *p = arg;
 	for(; true; p++) {
 		if(*p == '\0')
-			break;
+			return true;
 		// if it's not in this interval
 		if (!(*p >= 0x30 && (*p <= 0x39)))
 			return false;
 	}
-	return true;
 }
 
