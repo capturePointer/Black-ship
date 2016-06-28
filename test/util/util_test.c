@@ -27,17 +27,17 @@ static void port_conv_test(void **state)
 	uint16_t r2 = port_conv(p2);
 	assert_int_equal(r2, 0);
 	assert_false(err_empty());
-	assert_true(err_prev_is(ERRCONVPORT));
+	assert_true(err_prev_code_is(ERRCONVPORT));
 
 	uint16_t r3 = port_conv(p3);
 	assert_int_equal(r3, 0);
 	assert_false(err_empty());
-	assert_true(err_prev_is(ERRCONVPORT));
+	assert_true(err_prev_code_is(ERRCONVPORT));
 
 	uint16_t r4 = port_conv(p4);
 	assert_int_equal(r4, 0);
 	assert_false(err_empty());
-	assert_true(err_prev_is(ERRCONVPORT));
+	assert_true(err_prev_code_is(ERRCONVPORT));
 
 	err_destroy();
 	//test for error
@@ -75,7 +75,7 @@ static void port_conv_range_test(void **state)
 	port_conv_range(p4, &r1, &r2);
 	assert_int_equal(r1, r2);
 	assert_false(err_empty());
-	assert_true(err_prev_is(ERRCONVPORT));
+	assert_true(err_prev_code_is(ERRCONVPORT));
 
 	// p5
 	port_conv_range(p5, &r1, &r2);

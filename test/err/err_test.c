@@ -175,8 +175,14 @@ static void prev_error_is_test(void **state)
 
 	assert_false(err_empty());
 
-	assert_true(err_prev_is(ERRTCPCONN));
-	assert_false(err_prev_is(ERRUNKNOWN));
+	assert_true(err_prev_code_is(ERRTCPCONN));
+	assert_false(err_prev_code_is(ERRUNKNOWN));
+
+	assert_true(err_prev_msg_is("This is likly my fault"));
+	assert_false(err_prev_msg_is("Unkndusahduhsa"));
+
+	assert_true(err_prev_save_is(ERANGE));
+	assert_false(err_prev_save_is(EIO));
 
 	// if everything is fine free the name and print out
 	err_destroy();
