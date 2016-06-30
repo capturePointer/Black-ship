@@ -53,7 +53,7 @@ struct argp_option options[] = {
 	{ "host", HOST, "ip_addr", 0,
 	  "Specify the ipv4 address.",
 	  0 },
-	{ "ip4", I4, "ipv4", 0,
+	{ "i4", I4, 0, 0,
 	  "Ipv4 address.The reason this option exists it's because in the future the attacks will support ipv6 addr", 0 },
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
@@ -84,9 +84,10 @@ struct argp argp = {
 
 // callback for argp_parse to call
 // write in our body for every key handler function
-int parse_opt(int key, char *arg, argp_state *state)
+error_t parse_opt(int key, char *arg, argp_state *state)
 {
 	arguments *args = state->input;
+
 	switch (key) {
 	case ATTACK:
 		// select the type of attack
@@ -96,6 +97,9 @@ int parse_opt(int key, char *arg, argp_state *state)
 		// select the single port and convert the string value
 		// into uint16_t
 		args->port.n = port_conv(arg);
+		if (err_this(ERRCONVPORT))
+			return ARGP_KEY_ERROR;
+		// continue with parsing
 		break;
 	case RANGE_PORTS:
 		// convert range port values into uint16_t
@@ -122,6 +126,9 @@ int parse_opt(int key, char *arg, argp_state *state)
 		// use ip version 4
 		args->host_type = IPV4;
 		break;
+	/* case ARGP_KEY_NO_ARGS: */
+	/* 	argp_usage(state); */
+	/* 	break; */
 	default:
 		// not a valid option
 		return ARGP_ERR_UNKNOWN;

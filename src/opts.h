@@ -56,6 +56,7 @@ typedef struct port_t {
 
 } port_t;
 typedef enum other_t {
+	NO_LIST,
 	L_ATTACKS,					  // list attacks
 } other_t;
 

@@ -20,6 +20,7 @@
 
 #include "blackship.h"
 #include "opts.h"
+#include "cmds.h"
 
 // here we should treat all the command line parsing
 // logic and init all the other func with in this
@@ -43,7 +44,6 @@ int main(int argc, char **argv)
 		printf("range-ports \n");
 		printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
 		printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
-		exit(EXIT_SUCCESS);
 	}
 	exit(EXIT_FAILURE);
 }
