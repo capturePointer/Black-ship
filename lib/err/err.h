@@ -58,5 +58,7 @@ extern bool err_prev_code_is(err_code_t code);
 extern bool err_prev_msg_is(const char *msg);
 // test when ever the previous errno state is equal to save
 extern bool err_prev_save_is(const int save);
+// test if the new error is equl to code err->this.error
+extern bool err_this(err_code_t code);
 
 #endif /* ERROR_H*/

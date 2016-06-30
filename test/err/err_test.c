@@ -183,10 +183,14 @@ static void prev_error_is_test(void **state)
 
 	assert_true(err_prev_save_is(ERANGE));
 	assert_false(err_prev_save_is(EIO));
+	
+	assert_true(err_this(ERRUNKNOWN));
+	assert_false(err_this(ERRTCPCONN));
 
 	// if everything is fine free the name and print out
 	err_destroy();
 	assert_true(err_empty());
+
 }
 
 int main(void)

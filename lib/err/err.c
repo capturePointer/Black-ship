@@ -241,6 +241,15 @@ void err_info(void)
 	}
 }
 
+// test if the internal list is empty
+bool err_empty(void)
+{
+	if (!err)
+		return true;
+
+	return false;
+}
+
 // bool cmp()
 // compare two errors if their equal
 static bool cmp(const err_node_t a, const err_node_t b)
@@ -339,12 +348,12 @@ bool err_prev_msg_is(const char *msg)
 		return true;
 
 	return false;
-
 }
 
 // err_prev_save_is()
 // test when ever the previous save errno state is equl to save
-bool err_prev_save_is(const int save) {
+bool err_prev_save_is(const int save)
+{
 	bool eq = false;
 	if (!err)
 		INFOEE("[WARNING] Cloud not check the previous error because there is no list");
@@ -372,11 +381,9 @@ bool err_prev_save_is(const int save) {
 	return false;
 }
 
-// test if the internal list is empty
-bool err_empty(void)
+// test if the new error is equal to code
+bool err_this(err_code_t code)
 {
-	if (!err)
-		return true;
+	return (err->tail->error.code == code);
 
-	return false;
 }

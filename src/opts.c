@@ -89,31 +89,43 @@ int parse_opt(int key, char *arg, argp_state *state)
 	arguments *args = state->input;
 	switch (key) {
 	case ATTACK:
+		// select the type of attack
 		args->attack = arg;
 		break;
 	case PORT:
+		// select the single port and convert the string value
+		// into uint16_t
 		args->port.n = port_conv(arg);
 		break;
 	case RANGE_PORTS:
+		// convert range port values into uint16_t
 		port_conv_range(arg, &args->port.low, &args->port.high);
-		//TODO
-		if(err_prev_is(ERRCONVPORT)) return ARGP_KEY_ERROR;
+		// if there is error retun it to the parser
+		if(err_this(ERRCONVPORT))
+			return ARGP_KEY_ERROR;
+		// continue
 		break;
 	case RANDOM:
+		// assign random port option this will ignore all range port values 
+		// and single port, it will send traffic to random ports
 		args->port.random = true;
 		break;
 	case LIST_ATTACKS:
+		// print out the list of attacks
 		args->list_attacks = L_ATTACKS;
 		break;
 	case HOST:
+		// select the target we will send all the traffic
 		args->host = arg;
 		break;
 	case I4:
+		// use ip version 4
 		args->host_type = IPV4;
 		break;
 	default:
+		// not a valid option
 		return ARGP_ERR_UNKNOWN;
 	}
-
+	
 	return EXIT_SUCCESS;
 }
