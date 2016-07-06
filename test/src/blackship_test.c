@@ -12,15 +12,14 @@
 #include "../../src/cmds.h"
 #include "../../src/opts.h"
 
+#define N_ARGS 7
+
 static void argp_parse_test(void **state)
 {
 	(void)state;
 	char **argv = NULL;
-	/* {"./blackship", "-h", "192.168.122.21", */
-	/* "-p", "6421", "-a", "udp-flood", NULL}; */
-
-	size_t len = sizeof(char *);
-	argv	   = xzmalloc(8 * len);
+	size_t sz   = sizeof(char *);
+	argv		= xzmalloc((N_ARGS + 1) * sz);
 
 	argv[0] = strdup("./blackship");
 	argv[1] = strdup("-h");

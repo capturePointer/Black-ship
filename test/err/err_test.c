@@ -10,6 +10,8 @@
 
 #include "../../lib/err/err.h"
 
+static int DEBUG;
+
 #define MAX 13
 // init variables
 const char *msg[MAX] = {
@@ -40,7 +42,7 @@ static int errnos[MAX] = { EIO, EOF, ERANGE, EBUSY, EPIPE, ESRCH, ENOSPC,
 static void new_error_test(void **state)
 {
 	(void)state;
-	
+
 	// init variables
 	const char *mms  = "Error give me test";
 	err_code_t ccode = ERRTCPCONN;
@@ -80,8 +82,13 @@ static void multi_error_dump_test(void **state)
 	}
 
 	assert_false(err_empty());
-	// if everything is fine free the meme and print out
+
+// if everything is fine free the meme and print out
+if(DEBUG)
 	err_dump();
+else
+	err_destroy();
+
 	assert_true(err_empty());
 }
 
@@ -133,10 +140,13 @@ static void find_error_test(void **state)
 	assert_true(err_find("", ERRUNKNOWN, 0));
 	assert_false(err_find("", -100, -100));
 
-	// if everything is fine free the name and print out
+// if everything is fine free the name and print out
+if(DEBUG)
 	err_dump();
-	assert_true(err_empty());
+else
+	err_destroy();
 
+	assert_true(err_empty());
 }
 
 static void prev_error_test(void **state)
@@ -183,18 +193,43 @@ static void prev_error_is_test(void **state)
 
 	assert_true(err_prev_save_is(ERANGE));
 	assert_false(err_prev_save_is(EIO));
-	
+
 	assert_true(err_this(ERRUNKNOWN));
 	assert_false(err_this(ERRTCPCONN));
 
 	// if everything is fine free the name and print out
 	err_destroy();
 	assert_true(err_empty());
-
 }
 
-int main(void)
+static void err_this_test(void **state)
 {
+	(void)state;
+
+	assert_true(err_empty());
+
+	assert_true(err_empty());
+	for (int i = 0; i < 4; i++) {
+		err_new(msg[i], code[i], errnos[i]);
+	}
+	assert_false(err_empty());
+
+	assert_true(err_this(code[3]));						// ERRUNKNOWN
+	assert_false(err_this(code[2]));					// ERRTCPCON
+
+	err_destroy();
+	assert_true(err_empty());
+}
+
+int main(int argc, char **argv)
+{
+	// if we want to debug
+	if (argc == 2) {
+		if (!strncmp(argv[1], "-debug", 6)) {
+			DEBUG = 1;
+		}
+	}
+
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(new_error_test),
@@ -204,6 +239,7 @@ int main(void)
 		cmocka_unit_test(find_error_test),
 		cmocka_unit_test(prev_error_test),
 		cmocka_unit_test(prev_error_is_test),
+		cmocka_unit_test(err_this_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);
