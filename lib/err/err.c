@@ -384,5 +384,9 @@ bool err_prev_save_is(const int save)
 // test if the new error is equal to code
 bool err_this(err_code_t code)
 {
-	return (err) ? (err->tail->error.code == code) ? true : false : true;
+	if (err)
+		if (err->tail->error.code == code)
+			return true;
+
+	return false;
 }

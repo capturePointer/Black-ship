@@ -8,20 +8,20 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-#include "../../src/opts.h"
-#include "../../src/cmds.h"
 #include "../../lib/util/util.h"
+#include "../../src/cmds.h"
+#include "../../src/opts.h"
 
 static void argp_parse_test(void **state)
 {
 	(void)state;
 	char **argv = NULL;
 	/* {"./blackship", "-h", "192.168.122.21", */
-						/* "-p", "6421", "-a", "udp-flood", NULL}; */
+	/* "-p", "6421", "-a", "udp-flood", NULL}; */
 
-	size_t len = sizeof(char*);
-	argv = xzmalloc(8*len);
-	
+	size_t len = sizeof(char *);
+	argv	   = xzmalloc(8 * len);
+
 	argv[0] = strdup("./blackship");
 	argv[1] = strdup("-h");
 	argv[2] = strdup("192.168.122.122");
@@ -31,12 +31,12 @@ static void argp_parse_test(void **state)
 	argv[6] = strdup("udp-flood");
 	argv[7] = NULL;
 
-	for(uint8_t i = 0; i<7; i++) {
+	for (uint8_t i = 0; i < 7; i++) {
 		assert_non_null(argv[i]);
 	}
-	
+
 	assert_null(argv[7]);
-	
+
 	arguments arg;
 	memset(&arg, 0, sizeof(arguments));
 
@@ -49,9 +49,9 @@ static void argp_parse_test(void **state)
 	assert_int_equal(arg.port.high, 0);
 	assert_int_equal(arg.port.n, 4423);
 	assert_int_equal(arg.port.random, 0);
-	assert_int_equal(arg.host_type,IPV4);
+	assert_int_equal(arg.host_type, IPV4);
 
-	for(uint8_t i = 0; i<7; i++) {
+	for (uint8_t i = 0; i < 7; i++) {
 		xfree(argv[i]);
 	}
 	xfree(argv);

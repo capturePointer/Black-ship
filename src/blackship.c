@@ -27,12 +27,14 @@
 // commnad line
 int main(int argc, char **argv)
 {
+	error_t err = 0;
 	arguments arg;
 	memset(&arg, 0, sizeof(arguments));
 
 	/* struct arguments argu; */
 	// init function to parse all argc to argp logic
-	if (argp_parse(&argp, argc, argv, 0, 0, &arg) == 0) {
+	err = argp_parse(&argp, argc, argv, 0, 0, &arg);
+	if (err == 0) {
 		// so after the parsing is done this should end
 		// the execution of the program and sent SIGCHLD
 		// to the parent process, and all child processes are
@@ -44,6 +46,9 @@ int main(int argc, char **argv)
 		printf("range-ports \n");
 		printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
 		printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
+	} else if (err == ARGP_KEY_ERROR) {
+		printf("Unknown flag ERROR\n");
 	}
+
 	exit(EXIT_FAILURE);
 }

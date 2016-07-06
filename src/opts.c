@@ -87,6 +87,8 @@ struct argp argp = {
 error_t parse_opt(int key, char *arg, argp_state *state)
 {
 	arguments *args = state->input;
+	state->err_stream = stderr;
+	state->out_stream = stdout;
 
 	switch (key) {
 	case ATTACK:
@@ -94,12 +96,10 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		args->attack = arg;
 		break;
 	case PORT:
-		// select the single port and convert the string value
-		// into uint16_t
+		// select the single port and convert the string value into uint16_t
 		args->port.n = port_conv(arg);
 		if (err_this(ERRCONVPORT))
 			return ARGP_KEY_ERROR;
-		// continue with parsing
 		break;
 	case RANGE_PORTS:
 		// convert range port values into uint16_t
@@ -107,7 +107,6 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		// if there is error retun it to the parser
 		if(err_this(ERRCONVPORT))
 			return ARGP_KEY_ERROR;
-		// continue
 		break;
 	case RANDOM:
 		// assign random port option this will ignore all range port values 
@@ -134,5 +133,5 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		return ARGP_ERR_UNKNOWN;
 	}
 	
-	return EXIT_SUCCESS;
+	return 0;
 }
