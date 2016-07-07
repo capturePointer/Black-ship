@@ -45,11 +45,25 @@ set (BLACKSHIP_TEST_SRC ../src/cmds.h
 				../lib/util/util.c
 				../lib/util/mem.c
 				src/blackship_test.c)
+set (CMDS_TEST_SRC ../src/cmds.h
+				../src/cmds.c
+				../src/opts.c
+				../src/opts.h
+				../src/blackship.h
+				../lib/err/err.h
+				../lib/err/err.c
+				../lib/util/info.c
+				../lib/util/info.h
+				../lib/util/util.c
+				../lib/util/mem.c
+				src/cmds_test.c)
 
 add_executable(err_test ${ERR_TEST_LIB})
 add_executable(util_test ${UTIL_TEST_LIB})
 add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
+add_executable(cmds_test ${CMDS_TEST_SRC})
 
 target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
 target_link_libraries(blackship_test cmocka)
+target_link_libraries(cmds_test cmocka)

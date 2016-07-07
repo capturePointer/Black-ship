@@ -1,5 +1,6 @@
 #include "util.h"
 #include "../err/err.h"
+#include <arpa/inet.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
@@ -16,8 +17,8 @@ uint16_t port_conv(const char *arg)
 
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0))  // ports are 16 byte wide
-		goto err;	
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) // ports are 16 byte wide
+		goto err;
 
 	// it is safe is u is a value from 0 to UINT_MAX(65,535)
 	return (uint16_t)u;
@@ -25,7 +26,6 @@ uint16_t port_conv(const char *arg)
 err:
 	err_new("[ERROR] Connot convert the number into a real port.", ERRCONVPORT, errno);
 	return 0;
-
 }
 
 // uint16_t port_conv_range()
@@ -68,8 +68,8 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 bool filter_number(const char *arg)
 {
 	const char *p = arg;
-	for(; true; p++) {
-		if(*p == '\0')
+	for (; true; p++) {
+		if (*p == '\0')
 			return true;
 		// if it's not in this interval
 		if (!(*p >= 0x30 && (*p <= 0x39)))
@@ -77,3 +77,18 @@ bool filter_number(const char *arg)
 	}
 }
 
+// valid_ip()
+// test if it's a valid ip(ipv4,ipv6) and return true
+// if it's not a valid ip return false
+bool valid_ip(const char *ip)
+{
+	struct sockaddr_in in4;
+	struct sockaddr_in6 in6;
+
+	if (inet_pton(AF_INET, ip, &in4.sin_addr))
+		return true;
+	if (inet_pton(AF_INET6, ip, &in6.sin6_addr))
+		return true;
+
+	return false;
+}

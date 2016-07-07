@@ -27,7 +27,7 @@ static void argp_parse_test(void **state)
 	argv[3] = strdup("-p");
 	argv[4] = strdup("4423");
 	argv[5] = strdup("-a");
-	argv[6] = strdup("udp-flood");
+	argv[6] = strdup("udp");
 	argv[7] = NULL;
 
 	for (uint8_t i = 0; i < 7; i++) {
@@ -42,7 +42,7 @@ static void argp_parse_test(void **state)
 	argp_parse(&argp, 7, argv, 0, 0, &arg);
 
 	assert_string_equal(arg.host, "192.168.122.122");
-	assert_string_equal(arg.attack, "udp-flood");
+	assert_string_equal(arg.attack, "udp");
 	assert_int_equal(arg.list_attacks, NO_LIST);
 	assert_int_equal(arg.port.low, 0);
 	assert_int_equal(arg.port.high, 0);

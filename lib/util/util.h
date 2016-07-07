@@ -26,6 +26,7 @@ extern void mem_free(void *block);
 extern uint16_t port_conv(const char *arg);
 extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
 extern bool filter_number(const char *arg);
+extern bool valid_ip(const char *ip);
 
 #define xmalloc(sz) \
 	mem_malloc((sz))

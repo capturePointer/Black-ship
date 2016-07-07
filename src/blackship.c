@@ -21,6 +21,8 @@
 #include "blackship.h"
 #include "opts.h"
 #include "cmds.h"
+#include "../lib/util/info.h"
+#include "../lib/err/err.h"
 
 // here we should treat all the command line parsing
 // logic and init all the other func with in this
@@ -30,25 +32,16 @@ int main(int argc, char **argv)
 	error_t err = 0;
 	arguments arg;
 	memset(&arg, 0, sizeof(arguments));
+	char *msg = NULL;
+	err_code_t code_err;
 
-	/* struct arguments argu; */
-	// init function to parse all argc to argp logic
 	err = argp_parse(&argp, argc, argv, 0, 0, &arg);
 	if (err == 0) {
-		// so after the parsing is done this should end
-		// the execution of the program and sent SIGCHLD
-		// to the parent process, and all child processes are
-		// assigned a new parrent, also all open streams are closed
-		printf("argumnets\n");
-		printf("host : %s\n", arg.host);
-		printf("port: %d\n", arg.port.n);
-		printf("random: %d\n", (arg.port.random) ? 1 : 0);
-		printf("range-ports \n");
-		printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
-		printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
+		run_cmd(arg);
 	} else if (err == ARGP_KEY_ERROR) {
-		printf("Unknown flag ERROR\n");
+		err_last(msg, &code_err, &errno);
+		INFOEE(msg);
 	}
 
-	exit(EXIT_FAILURE);
+	exit(EXIT_SUCCESS);
 }

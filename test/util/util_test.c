@@ -107,6 +107,32 @@ static void filter_number_test(void **state)
 	free(p3);
 }
 
+static void valid_ip_test(void **state)
+{
+	(void)state;
+	char *p1 = strdup("192.168.23.232");
+	assert_non_null(p1);
+
+	char *p2 = strdup("FE80:0000:0000:0000:0202:B3FF:FE1E:8329");
+	assert_non_null(p2);
+	
+	char *p3 = strdup("1923.3123.312.31");
+	assert_non_null(p3);
+
+	char *p4 = strdup("FFF:dsauhdif2143!:31@:#1@:#!:@3!:#12");
+	assert_non_null(p4);
+
+	assert_true(valid_ip(p1));
+	assert_true(valid_ip(p2));
+	assert_false(valid_ip(p3));
+	assert_false(valid_ip(p4));	
+
+	xfree(p1);
+	xfree(p2);
+	xfree(p3);
+	xfree(p4);
+}
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
@@ -114,6 +140,7 @@ int main(void)
 		cmocka_unit_test(filter_number_test),
 		cmocka_unit_test(port_conv_test),
 		cmocka_unit_test(port_conv_range_test),
+		cmocka_unit_test(valid_ip_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

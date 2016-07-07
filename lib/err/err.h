@@ -21,11 +21,13 @@
 // also this way we can combine errors codes and check
 // in a more reasonable fashion
 typedef enum err_code {
-	ERRUNKNOWN = 0,
-	ERRTCPCONN,
-	ERRUDPCONN,
-	ERRTIMEOUT,
-	ERRHOSTUNREACHED,
+	ERRUNKNOWN = 0, // unknown error
+	ERRTCPCONN, // error tcp conn
+	ERRATTACKUNSUPPORTED, // attack up unsuported
+	ERRUDPCONN, // error udp conn
+	ERRIPADDR, //error invalid ip address
+	ERRTIMEOUT, // error timing out connection
+	ERRHOSTUNREACHED, // error host unreached
 	ERRCONVPORT, // error conversion port
 	ERR_LAST, // NOT TO BE USED 
 } err_code_t;

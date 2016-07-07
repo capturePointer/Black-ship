@@ -145,6 +145,7 @@ void err_last(char *msg, err_code_t *code, int *save)
 		INFOEE("[ERROR] Please check the internal state of the list");
 	}
 
+	//TODO
 	strcpy(msg, err->tail->error.msg);
 	*code = err->tail->error.code;
 	*save = err->tail->error.errno_state;

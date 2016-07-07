@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "opts.h"
-#include "../lib/util/util.h"
-#include "../lib/err/err.h"
-#include "cmds.h"
 #include <argz.h>
 #include <stdlib.h>
+
+#include "../lib/err/err.h"
+#include "../lib/util/util.h"
+#include "cmds.h"
+#include "opts.h"
 
 // define each key here
 enum {
@@ -86,14 +87,20 @@ struct argp argp = {
 // write in our body for every key handler function
 error_t parse_opt(int key, char *arg, argp_state *state)
 {
-	arguments *args = state->input;
+	arguments *args   = state->input;
 	state->err_stream = stderr;
 	state->out_stream = stdout;
 
 	switch (key) {
 	case ATTACK:
-		// select the type of attack
+		// if there is not a valid attack
+		if (!valid_attack(arg)) {
+			err_new("This attack is unsupported or invalid,"
+					"please try --list-attacks.", ERRATTACKUNSUPPORTED, 0);
+			return ARGP_KEY_END;
+		}
 		args->attack = arg;
+
 		break;
 	case PORT:
 		// select the single port and convert the string value into uint16_t
@@ -105,11 +112,11 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		// convert range port values into uint16_t
 		port_conv_range(arg, &args->port.low, &args->port.high);
 		// if there is error retun it to the parser
-		if(err_this(ERRCONVPORT))
+		if (err_this(ERRCONVPORT))
 			return ARGP_KEY_ERROR;
 		break;
 	case RANDOM:
-		// assign random port option this will ignore all range port values 
+		// assign random port option this will ignore all range port values
 		// and single port, it will send traffic to random ports
 		args->port.random = true;
 		break;
@@ -118,7 +125,14 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		args->list_attacks = L_ATTACKS;
 		break;
 	case HOST:
-		// select the target we will send all the traffic
+		// if it's not a valid ip addr
+		if (!valid_ip(arg)) {
+			err_new("Invalid ip address."
+					"Not a valid IPv4 Ipv6 addr",
+					ERRIPADDR, 0);
+			return ARGP_KEY_ERROR;
+		}
+		// assign ip
 		args->host = arg;
 		break;
 	case I4:
@@ -132,6 +146,6 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		// not a valid option
 		return ARGP_ERR_UNKNOWN;
 	}
-	
+
 	return 0;
 }
