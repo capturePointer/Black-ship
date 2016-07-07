@@ -97,7 +97,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		if (!valid_attack(arg)) {
 			err_new("This attack is unsupported or invalid,"
 					"please try --list-attacks.", ERRATTACKUNSUPPORTED, 0);
-			return ARGP_KEY_END;
+			return ARGP_KEY_ERROR;
 		}
 		args->attack = arg;
 
