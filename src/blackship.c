@@ -18,7 +18,6 @@
 #include <argp.h>
 #include <argz.h>
 
-#include "blackship.h"
 #include "opts.h"
 #include "cmds.h"
 #include "../lib/util/info.h"

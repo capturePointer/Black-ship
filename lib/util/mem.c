@@ -18,7 +18,7 @@
 #include <string.h>
 
 #include "info.h"
-#include "util.h"
+#include "mem.h"
 
 #define ALLOC_RETRY 5
 

@@ -10,6 +10,7 @@
 
 #include "../../lib/err/err.h"
 #include "../../lib/util/util.h"
+#include "../../lib/util/mem.h"
 
 static void port_conv_test(void **state)
 {

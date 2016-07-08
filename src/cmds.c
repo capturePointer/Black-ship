@@ -2,6 +2,9 @@
 #include <string.h>
 
 #include "cmds.h"
+#include "../lib/util/util.h"
+#include "../lib/net/conn.h"
+#include "../lib/util/mem.h"
 
 // delcare here the list of attacks that the app will support
 // informative const list , this list will change over time
@@ -49,9 +52,24 @@ bool valid_attack(const char *exploit)
 
 void run_cmd(arguments arg)
 {
+	conn_t *conn = NULL;
+
 	printf("host : %s\n", arg.host);
 	printf("port: %d\n", arg.port.n);
 	printf("random: %d\n", (arg.port.random) ? 1 : 0);
 	printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
 	printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
+
+	if (arg.list_attacks) {
+		list_attacks();
+		goto done;
+	}
+	
+	if(arg.host_type == IPV4) {
+		conn = xzmalloc(sizeof(conn_t));
+		conn->c4 = xzmalloc(sizeof (conn4_t));
+	}
+	
+done:
+	return;
 }

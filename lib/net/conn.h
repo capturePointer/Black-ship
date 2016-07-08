@@ -14,8 +14,8 @@
 
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
-#ifndef BLACKSHIP_H
-#define BLACKSHIP_H
+#ifndef CONN_H
+#define CONN_H
 
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -64,4 +64,4 @@ typedef union conn_t {
 	conn4_t *c4;
 }conn_t;
 
-#endif /*BLACKSHIP_H*/
+#endif /*CONN_H*/

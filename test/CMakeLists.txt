@@ -22,6 +22,7 @@ set (ERR_TEST_LIB ../lib/err/err.c
 				../lib/util/info.h
 				../lib/util/util.h
 				../lib/util/mem.c
+				../lib/util/mem.h
 				err/err_test.c)
 
 set (UTIL_TEST_LIB ../lib/err/err.c 
@@ -31,31 +32,32 @@ set (UTIL_TEST_LIB ../lib/err/err.c
 				../lib/util/util.h
 				../lib/util/mem.c
 				../lib/util/util.c
+				../lib/util/mem.h
 				util/util_test.c)
 
 set (BLACKSHIP_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
 				../src/opts.h
-				../src/blackship.h
 				../lib/err/err.h
 				../lib/err/err.c
 				../lib/util/info.c
 				../lib/util/info.h
 				../lib/util/util.c
 				../lib/util/mem.c
+				../lib/util/mem.h
 				src/blackship_test.c)
 set (CMDS_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
 				../src/opts.h
-				../src/blackship.h
 				../lib/err/err.h
 				../lib/err/err.c
 				../lib/util/info.c
 				../lib/util/info.h
 				../lib/util/util.c
 				../lib/util/mem.c
+				../lib/util/mem.h
 				src/cmds_test.c)
 
 add_executable(err_test ${ERR_TEST_LIB})

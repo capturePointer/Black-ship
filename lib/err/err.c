@@ -20,7 +20,8 @@
 #include <string.h>
 
 #include "../util/info.h"
-#include "../util/util.h"
+#include "../util/mem.h"
+
 // err module
 #include "err.h"
 

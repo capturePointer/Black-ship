@@ -1,10 +1,28 @@
-#include "util.h"
-#include "../err/err.h"
-#include <arpa/inet.h>
 #include <errno.h>
 #include <limits.h>
 #include <stdlib.h>
 #include <string.h>
+#include <arpa/inet.h>
+
+#include "../err/err.h"
+#include "util.h"
+
+// filter_number()
+// filters all character in the block of mem and it tests
+// if we have in the block only digits and return true
+// if we have letters or other simbols just return false
+// this function exptects that the string is NULL terminated or it will fail
+bool filter_number(const char *arg)
+{
+	const char *p = arg;
+	for (; true; p++) {
+		if (*p == '\0')
+			return true;
+		// if it's not in this interval
+		if (!(*p >= 0x30 && (*p <= 0x39)))
+			return false;
+	}
+}
 
 // uint16_t port_conv
 // convert from a char* representation to port number
@@ -57,23 +75,6 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 		*low  = *low ^ *high;
 		*high = *high ^ *low;
 		*low  = *low ^ *high;
-	}
-}
-
-// filter_number()
-// filters all character in the block of mem and it tests
-// if we have in the block only digits and return true
-// if we have letters or other simbols just return false
-// this function exptects that the string is NULL terminated or it will fail
-bool filter_number(const char *arg)
-{
-	const char *p = arg;
-	for (; true; p++) {
-		if (*p == '\0')
-			return true;
-		// if it's not in this interval
-		if (!(*p >= 0x30 && (*p <= 0x39)))
-			return false;
 	}
 }
 

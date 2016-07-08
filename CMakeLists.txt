@@ -29,17 +29,19 @@ check_libs()
 
 # add all files and push them to exec
 set (TARGET_MAIN src/blackship.c 
-				src/blackship.h
-				src/cmds.h
+	#src/cmds.h
 				src/cmds.c 
 				src/opts.c 
-				src/opts.h
+				#src/opts.h
 				lib/err/err.c 
-				lib/err/err.h
-				lib/util/info.c 
-				lib/util/info.h
-				lib/util/util.h
+				#lib/err/err.h
 				lib/util/mem.c
-				lib/util/util.c)
+				#lib/util/mem.h
+				lib/util/info.c 
+				#lib/util/info.h
+				lib/util/util.c
+				#lib/util/util.h
+				)
+
 add_executable(blackship ${TARGET_MAIN})
 

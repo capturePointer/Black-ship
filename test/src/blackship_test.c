@@ -8,7 +8,7 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-#include "../../lib/util/util.h"
+#include "../../lib/util/mem.h"
 #include "../../src/cmds.h"
 #include "../../src/opts.h"
 
@@ -21,7 +21,7 @@ static void argp_parse_test(void **state)
 	size_t sz   = sizeof(char *);
 	argv		= xzmalloc((N_ARGS + 1) * sz);
 
-	argv[0] = strdup("./blackship");
+	argv[0] = strdup("./blackship_test");
 	argv[1] = strdup("-h");
 	argv[2] = strdup("192.168.122.122");
 	argv[3] = strdup("-p");
