@@ -52,24 +52,10 @@ bool valid_attack(const char *exploit)
 
 void run_cmd(arguments arg)
 {
-	conn_t *conn = NULL;
-
+	// TODO
 	printf("host : %s\n", arg.host);
 	printf("port: %d\n", arg.port.n);
 	printf("random: %d\n", (arg.port.random) ? 1 : 0);
 	printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
 	printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
-
-	if (arg.list_attacks) {
-		list_attacks();
-		goto done;
-	}
-	
-	if(arg.host_type == IPV4) {
-		conn = xzmalloc(sizeof(conn_t));
-		conn->c4 = xzmalloc(sizeof (conn4_t));
-	}
-	
-done:
-	return;
 }

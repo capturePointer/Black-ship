@@ -19,6 +19,9 @@
 
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <stdint.h>
+
+#include "../../src/opts.h"
 
 // define the sock_t type
 typedef int sock_t;
@@ -27,7 +30,7 @@ typedef int sock_t;
 typedef struct sockaddr_in addr4_t;
 typedef struct sockaddr_in6 addr6_t;
 
-// make is shorter for casts to this struct type
+// make is shorter for casts to this type
 #define SA struct sockaddr
 
 // define ipv4 connection
@@ -63,5 +66,10 @@ typedef union conn_t {
 	conn6_t *c6;
 	conn4_t *c4;
 }conn_t;
+
+// alloc new connection type ipv4 or ipv6.
+extern conn_t *conn_new(ip_t version);
+extern void conn_addr4_setup(conn_t *conn, char *const host, const uint16_t port);
+extern void conn_addr6_setup(conn_t *conn, char *const host, const uint16_t port);
 
 #endif /*CONN_H*/
