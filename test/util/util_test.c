@@ -111,6 +111,7 @@ static void filter_number_test(void **state)
 static void valid_ip_test(void **state)
 {
 	(void)state;
+	bool f;
 	char *p1 = strdup("192.168.23.232");
 	assert_non_null(p1);
 
@@ -123,10 +124,14 @@ static void valid_ip_test(void **state)
 	char *p4 = strdup("FFF:dsauhdif2143!:31@:#1@:#!:@3!:#12");
 	assert_non_null(p4);
 
-	assert_true(valid_ip(p1));
-	assert_true(valid_ip(p2));
-	assert_false(valid_ip(p3));
-	assert_false(valid_ip(p4));	
+	f = valid_ip(p1);
+	assert_true(f);
+	f = valid_ip(p2);
+	assert_true(f);
+	f = valid_ip(p3);
+	assert_false(f);
+	f = valid_ip(p4);
+	assert_false(f);
 
 	xfree(p1);
 	xfree(p2);

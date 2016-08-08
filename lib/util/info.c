@@ -4,17 +4,17 @@
 
 #include "info.h"
 
-void info(const char *msg, const char *file, int line)
+inline void info(const char *msg, const char *file, int line)
 {
 	fprintf(stdout, "%s %s %d\n", msg, file, line);
 }
 
-void infoe(const char *msg, const char *file, int line)
+inline void infoe(const char *msg, const char *file, int line)
 {
 	fprintf(stderr, "%s %s %d\n", msg, file, line);
 }
 
-void infoee(const char *msg, const char *file, int line)
+inline void infoee(const char *msg, const char *file, int line)
 {
 	fprintf(stderr, "%s %s %d\n", msg, file, line);
 	exit(EXIT_FAILURE);

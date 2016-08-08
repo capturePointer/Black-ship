@@ -32,7 +32,7 @@ void *mem_malloc(size_t n)
 	uint8_t i = 0;
 
 	if (!n)
-		INFOEE("[error]-[malloc] Invalid size for alloc memory");
+		INFOEE("[ERROR] Invalid size for alloc memory");
 
 // alloc block of mem
 retry:
@@ -43,7 +43,7 @@ retry:
 	}
 
 	if ((i == ALLOC_RETRY) && (errno == ENOMEM))
-		INFOEE("[error]-[malloc] allocation failed, out of memory");
+		INFOEE("[ERROR] Allocation failed, out of memory");
 	return p;
 }
 
@@ -57,7 +57,7 @@ void *mem_calloc(size_t count, size_t n)
 	uint8_t i = 0;
 
 	if (!n)
-		INFOEE("[error]-[calloc] Invalid size for alloc memory");
+		INFOEE("[ERROR] Invalid size for alloc memory");
 
 // alloc block of mem
 retry:
@@ -68,7 +68,7 @@ retry:
 	}
 
 	if ((i == ALLOC_RETRY) && (errno == ENOMEM))
-		INFOEE("[error]-[calloc] allocation failed, out of memory");
+		INFOEE("[ERROR] Allocation failed, out of memory");
 	return p;
 }
 
@@ -80,7 +80,7 @@ void *mem_zmalloc(size_t n)
 	uint8_t i = 0;
 
 	if (!n)
-		INFOEE("[error]-[zmalloc] Invalid size of alloc memory");
+		INFOEE("[ERROR] Invalid size of alloc memory");
 
 // alloc block of mem
 retry:
@@ -92,7 +92,7 @@ retry:
 	}
 
 	if ((i == ALLOC_RETRY) && (errno == ENOMEM))
-		INFOEE("[error]-[zmalloc] allocation failed out of memory");
+		INFOEE("[ERROR] allocation failed out of memory");
 
 	// set the entire block of mem to 0
 	memset(p, 0, n);
@@ -105,6 +105,6 @@ retry:
 void mem_free(void *p)
 {
 	if (!p)
-		INFOEE("[error]-[free] Invalid pointer passed to free");
+		INFOEE("[ERROR] Invalid pointer passed to free");
 	free(p);
 }

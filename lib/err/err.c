@@ -87,7 +87,7 @@ static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 {
 	if (!l)
-		INFOEE("[Error] can't add new node to invalid NULL list");
+		INFOEE("[ERROR] can't add new node to invalid NULL list");
 
 	err_node_t *ptr = xmalloc(sizeof(*ptr));
 	// add info
@@ -95,7 +95,6 @@ static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 	ptr->error.code		   = c;
 	ptr->error.errno_state = s;
 	ptr->next			   = l->head;
-
 	// make next point to new ptr
 	l->tail->next = ptr;
 	// make the current
@@ -146,7 +145,10 @@ void err_last(char *msg, err_code_t *code, int *save)
 		INFOEE("[ERROR] Please check the internal state of the list");
 	}
 
-	//TODO
+	//TODO(hoenir): we must find a better way
+	// to copy the content msg err into msg
+	// it's not so safe with strcpy,
+	// the error.msg must be '\0' terminated.
 	strcpy(msg, err->tail->error.msg);
 	*code = err->tail->error.code;
 	*save = err->tail->error.errno_state;
@@ -216,9 +218,7 @@ bool err_find(const char *msg, err_code_t code, int save)
 	err_node_t *p = err->tail;
 
 	for (i = 0; i < err->n; i++)
-		if (!strcmp(p->error.msg, msg) || 
-			((p->error.code == code) || 
-			(p->error.errno_state == save)))
+		if (!strcmp(p->error.msg, msg) || ((p->error.code == code) || (p->error.errno_state == save)))
 
 			return true;
 
@@ -256,9 +256,7 @@ bool err_empty(void)
 // compare two errors if their equal
 static bool cmp(const err_node_t a, const err_node_t b)
 {
-	if ((!strcmp(a.error.msg, b.error.msg)) && 
-		(a.error.code == b.error.code) && 
-		(a.error.errno_state == b.error.errno_state))
+	if ((!strcmp(a.error.msg, b.error.msg)) && (a.error.code == b.error.code) && (a.error.errno_state == b.error.errno_state))
 		return true;
 
 	return false;
