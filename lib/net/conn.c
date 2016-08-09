@@ -22,8 +22,7 @@
 #include "../../src/opts.h"
 #include "../util/info.h"
 
-// conn_new()
-// alloc new ipv4, ipv6 connection
+// conn_new alloc new ipv4, ipv6 connection
 conn_t *conn_new(ip_t version)
 {
 	conn_t *conn = NULL;
@@ -44,8 +43,7 @@ conn_t *conn_new(ip_t version)
 	return conn;
 }
 
-// conn_addr4_setup()
-// setup the underlying ipv4 addr struct of the conn_t 
+// conn_addr4_setup setup the underlying ipv4 addr struct of the conn_t 
 void conn_addr4_setup(conn_t *conn, char *const host, const uint16_t port)
 {
 	if(!conn)
@@ -61,8 +59,7 @@ void conn_addr4_setup(conn_t *conn, char *const host, const uint16_t port)
 		INFOEE("[ERROR] Could not parse the ip host address");
 }
 
-// conn_addr6_setup()
-// setup the underlying ipv6 addr struct of the conn_t 
+// conn_addr6_setup setup the underlying ipv6 addr struct of the conn_t 
 void conn_addr6_setup(conn_t *conn, char *const host, const uint16_t port)
 {
 	if(!conn)

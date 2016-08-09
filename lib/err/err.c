@@ -59,8 +59,7 @@ typedef struct err_list_t {
 // state of the circular list
 static err_list_t *err;
 
-// err_list_t * err_list_new()
-// create new circular linked list
+// err_list_new create new circular linked list
 // also create the first node and assign info to it
 static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 {
@@ -82,8 +81,7 @@ static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 	return e;
 }
 
-// void err_node_new()
-// append a new node into to circular list
+// err_node_new append a new node into to circular list
 static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 {
 	if (!l)
@@ -101,8 +99,7 @@ static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 	l->tail = l->tail->next;
 }
 
-// void err_write_node()
-// overwrite the next node to be the new error
+// err_write_node overwrite the next node to be the new error
 static void err_write_node(err_list_t *l, const char *m, err_code_t c, int s)
 {
 	// get the next pointer
@@ -113,8 +110,7 @@ static void err_write_node(err_list_t *l, const char *m, err_code_t c, int s)
 	l->tail->error.code		   = c;
 }
 
-// void err_new()
-// construct new error with message, code and errno
+// err_new construct new error with message, code and errno
 void err_new(const char *msg, err_code_t code, int save)
 {
 	// if the list is empty
@@ -130,8 +126,7 @@ void err_new(const char *msg, err_code_t code, int save)
 	}
 }
 
-// void err_last()
-// construct to get the last error that had been written
+// err_last construct to get the last error that had been written
 // the values will be saved to msg, code, save
 // very important that msg needs to be null terminated
 void err_last(char *msg, err_code_t *code, int *save)
@@ -154,8 +149,7 @@ void err_last(char *msg, err_code_t *code, int *save)
 	*save = err->tail->error.errno_state;
 }
 
-// bool err_list_free()
-// free the circular list element by element
+// err_list_free free the circular list element by element
 static bool err_list_free(err_list_t **l)
 {
 	if (!l) {
@@ -175,16 +169,14 @@ static bool err_list_free(err_list_t **l)
 	return true;
 }
 
-// void err_destroy()
-// wrapper around err_list_free()
+// err_destroy wrapper around err_list_free()
 void err_destroy(void)
 {
 	if (!err_list_free(&err))
 		INFOEE("[ERROR] Can't free error list, list was not initilized");
 }
 
-// void err_dump()
-// dump all the errors to stderr
+// err_dump dump all the errors to stderr
 // note that err_dump is no-op if the list is not valid
 void err_dump(void)
 {
@@ -205,8 +197,7 @@ void err_dump(void)
 	err_destroy();
 }
 
-// bool err_find()
-// find errors with the msg or code or errno
+// err_find find errors with the msg or code or errno
 bool err_find(const char *msg, err_code_t code, int save)
 {
 	if (!err) {
@@ -225,8 +216,7 @@ bool err_find(const char *msg, err_code_t code, int save)
 	return false;
 }
 
-// void err_info()
-// print all the circular list members with their message
+// err_info print all the circular list members with their message
 void err_info(void)
 {
 	if (!err) {
@@ -252,8 +242,7 @@ bool err_empty(void)
 	return false;
 }
 
-// bool cmp()
-// compare two errors if their equal
+// cmp compare two errors if their equal
 static bool cmp(const err_node_t a, const err_node_t b)
 {
 	if ((!strcmp(a.error.msg, b.error.msg)) && (a.error.code == b.error.code) && (a.error.errno_state == b.error.errno_state))
@@ -262,8 +251,7 @@ static bool cmp(const err_node_t a, const err_node_t b)
 	return false;
 }
 
-// void err_prev()
-// get the previous error infos inside msg, code, and save
+// err_prev get the previous error infos inside msg, code, and save
 void err_prev(char *msg, err_code_t *code, int *save)
 {
 	bool eq = false;
@@ -288,8 +276,7 @@ void err_prev(char *msg, err_code_t *code, int *save)
 	}
 }
 
-// err_prev_is()
-// test when ever the previous error match the code
+// err_prev_is test when ever the previous error match the code
 bool err_prev_code_is(err_code_t code)
 {
 	bool eq = false;
@@ -319,8 +306,7 @@ bool err_prev_code_is(err_code_t code)
 	return false;
 }
 
-// err_prev_msg_is()
-// test when ever the previous error msg is equl to msg
+// err_prev_msg_is test when ever the previous error msg is equl to msg
 bool err_prev_msg_is(const char *msg)
 {
 	bool eq = false;
@@ -350,8 +336,7 @@ bool err_prev_msg_is(const char *msg)
 	return false;
 }
 
-// err_prev_save_is()
-// test when ever the previous save errno state is equl to save
+// err_prev_save_is test when ever the previous save errno state is equl to save
 bool err_prev_save_is(const int save)
 {
 	bool eq = false;

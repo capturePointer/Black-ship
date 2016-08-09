@@ -18,8 +18,8 @@
 #define OPTS_H
 
 #include <argp.h>
-#include <stdint.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 typedef struct argp_state argp_state;
 typedef struct argp_option argp_option;
@@ -45,8 +45,7 @@ typedef enum ip_t {
 } ip_t;
 
 typedef struct port_t {
-	// default standard port
-	uint16_t n;
+	uint16_t n;	// default standard port
 	// range values ports
 	uint16_t low;
 	uint16_t high;
@@ -57,7 +56,7 @@ typedef struct port_t {
 } port_t;
 typedef enum other_t {
 	NO_LIST,
-	L_ATTACKS,					  // list attacks
+	L_ATTACKS,	// list attacks
 } other_t;
 
 // arguments retains all info from the parse_opt command

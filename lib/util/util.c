@@ -7,8 +7,7 @@
 #include "../err/err.h"
 #include "util.h"
 
-// filter_number()
-// filters all character in the block of mem and it tests
+// filter_number filters all character in the block of mem and it tests
 // if we have in the block only digits and return true
 // if we have letters or other simbols just return false
 // this function exptects that the string is NULL terminated or it will fail
@@ -24,8 +23,7 @@ bool filter_number(const char *arg)
 	}
 }
 
-// uint16_t port_conv
-// convert from a char* representation to port number
+// port_conv convert from a char* representation to port number
 // ports are defined as uint16_t because are 16 byte wide.
 // max value for a port should be UINT_MAX
 uint16_t port_conv(const char *arg)
@@ -46,8 +44,7 @@ err:
 	return 0;
 }
 
-// uint16_t port_conv_range()
-// converts a string reperesentatio of two numbers x-y delim with "-"
+// port_conv_range converts a string reperesentatio of two numbers x-y delim with "-"
 // the function wraps port_conv for every token
 void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 {
@@ -78,8 +75,7 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 	}
 }
 
-// valid_ip()
-// test if it's a valid ip(ipv4,ipv6) and return true
+// valid_ip test if it's a valid ip(ipv4,ipv6) and return true
 // if it's not a valid ip return false
 bool valid_ip(const char *ip)
 {

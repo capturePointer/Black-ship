@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <stdbool.h>
 #include <setjmp.h>
 #include <stdarg.h>
 #include <stddef.h>
@@ -42,26 +42,29 @@ static int errnos[MAX] = { EIO, EOF, ERANGE, EBUSY, EPIPE, ESRCH, ENOSPC,
 static void new_error_test(void **state)
 {
 	(void)state;
-
+	bool f = false;
 	// init variables
 	const char *mms  = "Error give me test";
 	err_code_t ccode = ERRTCPCONN;
 	errno			 = ENOMEM;					  // 0xC -> 12
+	
 	// call the func
-
-	assert_true(err_empty());
+	f = err_empty();
+	assert_true(f);
 	err_new(mms, ccode, errno);
 
 	// some testing vars
 	char *k = calloc(strlen(mms) + 1, sizeof(char));
 	err_code_t mkk;
 	int mk = -1;
+	
 	//TODO
 	// get the vars	that were sumbited
 	err_last(k, &mkk, &mk);
 
 	// check them
-	assert_false(err_empty());
+	f = err_empty();
+	assert_false(f);
 	assert_memory_equal(mms, k, strlen(mms) + 1);
 	assert_string_equal(mms, k);
 	assert_int_equal(ccode, mkk);
@@ -70,18 +73,23 @@ static void new_error_test(void **state)
 	// if everything is fine free the meme and print out
 	free(k);
 	err_destroy();
-	assert_true(err_empty());
+	f = err_empty();
+	assert_true(f);
 }
 
 static void multi_error_dump_test(void **state)
 {
 	(void)state;
-	assert_true(err_empty());
+	bool f = false;
+	f = err_empty();
+	assert_true(f);
+
 	for (int i = 0; i < MAX; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
-	assert_false(err_empty());
+	f = err_empty();
+	assert_false(f);
 
 // if everything is fine free the meme and print out
 if(DEBUG)
@@ -89,27 +97,36 @@ if(DEBUG)
 else
 	err_destroy();
 
-	assert_true(err_empty());
+	f = err_empty();
+	assert_true(f);
 }
 
 static void multi_error_test(void **state)
 {
 	(void)state;
-	assert_true(err_empty());
+	bool f = false;
+
+	f = err_empty();
+	assert_true(f);
 	// crate
 	for (int i = 0; i < MAX; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
-	assert_false(err_empty());
+	f = err_empty();
+	assert_false(f);
 	// if everything is fine free the meme and print out
 	err_destroy();
-	assert_true(err_empty());
+
+	f = err_empty();
+	assert_true(f);
 }
 
 static void stress_error_test(void **state)
 {
 	(void)state;
+	bool f = false;
+	
 	// init variables
 	const char *msg = "Error give me test";
 	err_code_t code = ERRTCPCONN;
@@ -117,25 +134,30 @@ static void stress_error_test(void **state)
 
 	//call the func
 	for (int i = 0; i < 10000; i++) {
-		assert_true(err_empty());
+		f = err_empty();
+		assert_true(f);
 		for (int j = 0; j < 10000; j++) {
 			err_new(msg, code, errno);
 		}
 		err_destroy();
-		assert_true(err_empty());
+		f = err_empty();
+		assert_true(f);
 	}
 }
 
 static void find_error_test(void **state)
 {
 	(void)state;
+	bool f = false;
+	assert_false(f);
 
-	assert_true(err_empty());
 	for (int i = 0; i < MAX; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
-	assert_false(err_empty());
+	f = err_empty();
+	assert_false(f);
+
 	assert_true(err_find(msg[4], 0, -5));
 	assert_true(err_find("", ERRUNKNOWN, 0));
 	assert_false(err_find("", -100, -100));
@@ -146,18 +168,23 @@ if(DEBUG)
 else
 	err_destroy();
 
-	assert_true(err_empty());
+	f = err_empty();
+	assert_true(f);
 }
 
 static void prev_error_test(void **state)
 {
 	(void)state;
-	assert_true(err_empty());
+	bool f = false;
+	f = err_empty();
+	assert_true(f);
 	for (int i = 0; i < 4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
-	assert_false(err_empty());
+	f = err_empty();
+	assert_false(f);
+
 	// some testing vars
 	char *k = calloc(23, sizeof(char));
 	err_code_t mkk;
@@ -171,19 +198,26 @@ static void prev_error_test(void **state)
 	// if everything is fine free the name and print out
 	err_destroy();
 	free(k);
-	assert_true(err_empty());
+
+	f = err_empty();
+	assert_true(f);
 }
 
 static void prev_error_is_test(void **state)
 {
 	(void)state;
+	bool f = false;
 
-	assert_true(err_empty());
+	f = err_empty();
+	assert_true(f);
+
 	for (int i = 0; i < 4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
 
-	assert_false(err_empty());
+
+	f = err_empty();
+	assert_false(f);
 
 	assert_true(err_prev_code_is(ERRTCPCONN));
 	assert_false(err_prev_code_is(ERRUNKNOWN));
@@ -199,26 +233,32 @@ static void prev_error_is_test(void **state)
 
 	// if everything is fine free the name and print out
 	err_destroy();
-	assert_true(err_empty());
+
+	f = err_empty();
+	assert_true(f);
 }
 
 static void err_this_test(void **state)
 {
 	(void)state;
+	bool f = false;
+	f = err_empty();
+	assert_true(f);
 
-	assert_true(err_empty());
-
-	assert_true(err_empty());
 	for (int i = 0; i < 4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
-	assert_false(err_empty());
+
+	f = err_empty();
+	assert_false(f);
 
 	assert_true(err_this(code[3]));						// ERRUNKNOWN
 	assert_false(err_this(code[2]));					// ERRTCPCON
 
 	err_destroy();
-	assert_true(err_empty());
+
+	f = err_empty();
+	assert_true(f);
 }
 
 int main(int argc, char **argv)

@@ -69,3 +69,17 @@ target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
 target_link_libraries(blackship_test cmocka)
 target_link_libraries(cmds_test cmocka)
+
+
+message(STATUS "[*] Verifying external libraries")
+
+find_library(CMAKE_LIB
+	NAMES cmocka cmoka.h
+	HINTS "/usr/include /usr/lib /usr/local/lib /usr/local/include"
+)
+if(NOT ${CMOCKA_LIB})
+	message(FATAL_ERROR "[!} PLEASE INSTALL MISSING LIBRARY")
+else()
+	message(STATUS "[+] Cmoka library - found")
+endif()
+
