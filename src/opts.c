@@ -15,8 +15,8 @@
 #include <argz.h>
 #include <stdlib.h>
 
-#include "../lib/err/err.h"
-#include "../lib/util/util.h"
+#include <lib/err.h>
+#include <lib/util.h>
 #include "cmds.h"
 #include "opts.h"
 

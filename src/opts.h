@@ -21,6 +21,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
+#include <lib/conn.h>
+
 typedef struct argp_state argp_state;
 typedef struct argp_option argp_option;
 
@@ -39,10 +41,6 @@ extern const char *argp_program_bug_address;
 extern struct argp_option options[];
 extern struct argp argp;
 
-typedef enum ip_t {
-	IPV4,
-	IPV6,
-} ip_t;
 
 typedef struct port_t {
 	uint16_t n;	// default standard port

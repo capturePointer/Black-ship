@@ -18,11 +18,11 @@
 #include <argp.h>
 #include <argz.h>
 
+#include <lib/info.h>
+#include <lib/err.h>
+
 #include "opts.h"
 #include "cmds.h"
-#include "../lib/util/info.h"
-#include "../lib/err/err.h"
-
 // here we should treat all the command line parsing
 // logic and init all the other func with in this
 // commnad line

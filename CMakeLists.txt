@@ -33,16 +33,16 @@ set (TARGET_MAIN src/blackship.c
 				src/cmds.c 
 				src/opts.c 
 				src/opts.h
-				lib/err/err.c 
-				lib/err/err.h
-				lib/util/mem.c
-				lib/util/mem.h
-				lib/util/info.c 
-				lib/util/info.h
-				lib/util/util.c
-				lib/util/util.h
-				lib/net/conn.c
-				lib/net/conn.h)
+				lib/err.c 
+				lib/err.h
+				lib/mem.c
+				lib/mem.h
+				lib/info.c 
+				lib/info.h
+				lib/util.c
+				lib/util.h
+				lib/conn.c
+				lib/conn.h)
 
 add_executable(blackship ${TARGET_MAIN})
 

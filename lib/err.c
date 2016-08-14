@@ -19,8 +19,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "../util/info.h"
-#include "../util/mem.h"
+#include "info.h"
+#include "mem.h"
 
 // err module
 #include "err.h"

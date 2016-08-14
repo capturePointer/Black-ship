@@ -1,10 +1,11 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <lib/util.h>
+#include <lib/conn.h>
+#include <lib/mem.h>
+
 #include "cmds.h"
-#include "../lib/util/util.h"
-#include "../lib/net/conn.h"
-#include "../lib/util/mem.h"
 
 // delcare here the list of attacks that the app will support
 // informative const list , this list will change over time

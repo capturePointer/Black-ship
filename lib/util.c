@@ -4,7 +4,7 @@
 #include <string.h>
 #include <arpa/inet.h>
 
-#include "../err/err.h"
+#include "err.h"
 #include "util.h"
 
 // filter_number filters all character in the block of mem and it tests

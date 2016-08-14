@@ -21,7 +21,6 @@
 #include <sys/socket.h>
 #include <stdint.h>
 
-#include "../../src/opts.h"
 
 // define the sock_t type
 typedef int sock_t;
@@ -66,6 +65,11 @@ typedef union conn_t {
 	conn6_t *c6;
 	conn4_t *c4;
 }conn_t;
+
+typedef enum ip_t {
+	IPV4,
+	IPV6,
+} ip_t;
 
 // alloc new connection type ipv4 or ipv6.
 extern conn_t *conn_new(ip_t version);
