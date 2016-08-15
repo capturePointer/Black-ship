@@ -4,6 +4,18 @@ project( blackship C )
 # SPECIFY THE MINIMUM VERSION OF CMAKE
 cmake_minimum_required(VERSION 2.8)
 
+if(UNIX AND NOT APPLE)
+        set(LINUX TRUE)
+endif()
+
+if(LINUX)
+	# set the verbose mode on
+	set(CMAKE_VERBOSE_MAKEFILE ON)
+	set(CMAKE_C_COMPILER "/usr/bin/gcc")
+else()
+	message(SEND_ERROR "The program is not compatible to run on this platform ${PLATFROM}")
+endif()
+
 # set the new policy
 cmake_policy(SET CMP0002 NEW)
 
@@ -12,10 +24,6 @@ set(APPLICATION_VERSION_MINOR "1")
 set(APPLICATION_VERSION_PATCH "0")
 
 set(APPLICATION_VERSION "${APPLICATION_VERSION_MAJOR}.${APPLICATION_VERSION_MINOR}.${APPLICATION_VERSION_PATCH}")
-
-# set the verbose mode on
-set(CMAKE_VERBOSE_MAKEFILE ON)
-set(CMAKE_C_COMPILER "/usr/bin/gcc")
 
 # where to look first for cmake modules, before ${CMAKE_ROOT}/Modules/ is checked
 set (CMAKE_MODULE_PATH 

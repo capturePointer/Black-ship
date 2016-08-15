@@ -8,9 +8,9 @@
 #include <string.h>
 #include <cmocka.h>
 
-#include "../../lib/err/err.h"
-#include "../../lib/util/util.h"
-#include "../../lib/util/mem.h"
+#include <lib/err.h>
+#include <lib/util.h>
+#include <lib/mem.h>
 
 static void port_conv_test(void **state)
 {

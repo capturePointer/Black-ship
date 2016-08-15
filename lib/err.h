@@ -16,9 +16,11 @@
 #define ERROR_H
 
 #include <stdbool.h>
+
 // how long the MSG will be
 // no need for long error messages
-#define ERR_MSG_MAX 150
+// this will be used in order to xmalloc strings
+#define ERR_MSG_MAX 151
 
 // define all error codes that might exist
 // also this way we can combine errors codes and check

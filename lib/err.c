@@ -88,6 +88,10 @@ static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 		INFOEE("[ERROR] can't add new node to invalid NULL list");
 
 	err_node_t *ptr = xmalloc(sizeof(*ptr));
+
+	if (strlen(m) > ERR_MSG_MAX-1)
+		INFOEE("[ERROR] can't insert messages longer than ERR_MSG_MAX");
+
 	// add info
 	ptr->error.msg		   = m;
 	ptr->error.code		   = c;
@@ -105,6 +109,9 @@ static void err_write_node(err_list_t *l, const char *m, err_code_t c, int s)
 	// get the next pointer
 	l->tail = l->tail->next;
 	// assign new info
+	if (strlen(m) > ERR_MSG_MAX)
+			INFOEE("[ERROR] can't insert messages longer than ERR_MSG_MAX");
+
 	l->tail->error.msg		   = m;
 	l->tail->error.errno_state = s;
 	l->tail->error.code		   = c;
@@ -128,7 +135,8 @@ void err_new(const char *msg, err_code_t code, int save)
 
 // err_last construct to get the last error that had been written
 // the values will be saved to msg, code, save
-// very important that msg needs to be null terminated
+// very important that msg needs to be null terminated and also msg
+// needs to be at least ERR_MSG_MAX bytes.
 void err_last(char *msg, err_code_t *code, int *save)
 {
 	if (!err) {
@@ -139,12 +147,17 @@ void err_last(char *msg, err_code_t *code, int *save)
 	if (!err->tail) {
 		INFOEE("[ERROR] Please check the internal state of the list");
 	}
+	
+	// we assume that the error message inside the our ring buffer
+	// it's null terminated string and it's no longer that ERR_MSG_MAX
+	size_t len = strnlen(err->tail->error.msg, ERR_MSG_MAX);
+	strncpy(msg, err->tail->error.msg, len);
+	
+	// if we reached the max value be sure to safely terminate the string
+	if (len == ERR_MSG_MAX-1) 
+		// this way we don't risk it copying wihout null char into msg
+		msg[ERR_MSG_MAX] = '\0';
 
-	//TODO(hoenir): we must find a better way
-	// to copy the content msg err into msg
-	// it's not so safe with strcpy,
-	// the error.msg must be '\0' terminated.
-	strcpy(msg, err->tail->error.msg);
 	*code = err->tail->error.code;
 	*save = err->tail->error.errno_state;
 }
@@ -209,7 +222,9 @@ bool err_find(const char *msg, err_code_t code, int save)
 	err_node_t *p = err->tail;
 
 	for (i = 0; i < err->n; i++)
-		if (!strcmp(p->error.msg, msg) || ((p->error.code == code) || (p->error.errno_state == save)))
+		if (!strncmp(p->error.msg, msg, ERR_MSG_MAX) || 
+			((p->error.code == code) || 
+			 (p->error.errno_state == save)))
 
 			return true;
 
@@ -245,7 +260,9 @@ bool err_empty(void)
 // cmp compare two errors if their equal
 static bool cmp(const err_node_t a, const err_node_t b)
 {
-	if ((!strcmp(a.error.msg, b.error.msg)) && (a.error.code == b.error.code) && (a.error.errno_state == b.error.errno_state))
+	if ((!strncmp(a.error.msg, b.error.msg, ERR_MSG_MAX)) && 
+			(a.error.code == b.error.code) && 
+			(a.error.errno_state == b.error.errno_state))
 		return true;
 
 	return false;
@@ -266,7 +283,7 @@ void err_prev(char *msg, err_code_t *code, int *save)
 	while (true) {
 		eq = cmp(*p, *(err->tail));
 		if (eq) {
-			strcpy(msg, s->error.msg);
+			strncpy(msg, s->error.msg, ERR_MSG_MAX);
 			*code = s->error.code;
 			*save = s->error.errno_state;
 			return;

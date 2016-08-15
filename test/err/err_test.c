@@ -8,7 +8,7 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-#include "../../lib/err/err.h"
+#include <lib/err.h>
 
 static int DEBUG;
 
@@ -186,8 +186,10 @@ static void prev_error_test(void **state)
 	assert_false(f);
 
 	// some testing vars
-	char *k = calloc(23, sizeof(char));
-	err_code_t mkk;
+	char *k = calloc(ERR_MSG_MAX, sizeof(char));
+	assert_true(k != NULL);
+
+	err_code_t mkk = 0;
 	int mk = -1;
 
 	err_prev(k, &mkk, &mk);
@@ -203,6 +205,85 @@ static void prev_error_test(void **state)
 	assert_true(f);
 }
 
+static void prev_error_test_depth(void **state) 
+{
+	(void)state;
+	bool f = false;
+	f = err_empty();
+	assert_true(f);
+	const char *trymsg = "This is another error from another place";
+	for (int i = 0; i < 4; i++) {
+		if (i == 2)
+			err_new(trymsg, code[5], errnos[5]);
+		else
+			err_new(msg[i], code[i], errnos[i]);
+	}
+
+	f = err_empty();
+	assert_false(f);
+	
+	// some testing vars
+	char *k = calloc(ERR_MSG_MAX, sizeof(char));
+	assert_true(k != NULL);
+
+	err_code_t mkk = 0;
+	int mk = -1;
+
+
+	err_prev(k, &mkk, &mk);
+	assert_string_equal(k, trymsg);
+	assert_int_equal(mkk, code[5]);
+	assert_int_equal(mk, errnos[5]);
+
+	// if everything is fine free the name and print out
+	err_destroy();
+	free(k);
+
+	f = err_empty();
+	assert_true(f);
+}
+static void prev_error_test_max_msg(void **state)
+{
+	(void)state;
+	bool f = false;
+
+	// some testing vars
+	char *k = calloc(ERR_MSG_MAX, sizeof(char));
+	assert_true(k != NULL);
+	// write in the k buffer ERR_MSG_MAX chars
+	// without including the '\0'
+	for (int i=0; i<ERR_MSG_MAX;i++){
+		k[i] = 'A';
+	}
+
+	err_code_t mkk = 0;
+	int mk = -1;
+
+	// create the list
+	f = err_empty();
+	assert_true(f);
+	for (int i = 0; i < 4; i++) {
+		if (i == 2) 
+			err_new(k, code[i], errnos[i]);
+		else 
+			err_new(msg[i], code[i], errnos[i]);
+	}
+	f = err_empty();
+	assert_false(f);
+
+	// test now the vals
+	err_prev(k, &mkk, &mk);
+	assert_true(k[ERR_MSG_MAX] == '\0');
+	assert_int_equal(mkk, code[2]);
+	assert_int_equal(mk, errnos[2]);
+
+	// if everything is fine free the name and print out
+	err_destroy();
+	free(k);
+
+	f = err_empty();
+	assert_true(f);
+}
 static void prev_error_is_test(void **state)
 {
 	(void)state;
@@ -278,6 +359,7 @@ int main(int argc, char **argv)
 		cmocka_unit_test(stress_error_test),
 		cmocka_unit_test(find_error_test),
 		cmocka_unit_test(prev_error_test),
+		cmocka_unit_test(prev_error_test_depth),
 		cmocka_unit_test(prev_error_is_test),
 		cmocka_unit_test(err_this_test),
 	};

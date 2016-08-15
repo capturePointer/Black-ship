@@ -11,53 +11,56 @@ SET(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
 # set the new policy
 cmake_policy(SET CMP0002 NEW)
 
+set(COMPILE_FLAGS "-std=gnu11 -I ../ -g")
+SET(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
+
 # set the verbose mode on
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_C_COMPILER "/usr/bin/gcc")
 
 # add all files and push them to exec
-set (ERR_TEST_LIB ../lib/err/err.c 
-				../lib/err/err.h
-				../lib/util/info.c 
-				../lib/util/info.h
-				../lib/util/util.h
-				../lib/util/mem.c
-				../lib/util/mem.h
+set (ERR_TEST_LIB ../lib/err.c 
+				../lib/err.h
+				../lib/info.c 
+				../lib/info.h
+				../lib/util.h
+				../lib/mem.c
+				../lib/mem.h
 				err/err_test.c)
 
-set (UTIL_TEST_LIB ../lib/err/err.c 
-				../lib/err/err.h
-				../lib/util/info.c 
-				../lib/util/info.h
-				../lib/util/util.h
-				../lib/util/mem.c
-				../lib/util/util.c
-				../lib/util/mem.h
+set (UTIL_TEST_LIB ../lib/err.c 
+				../lib/err.h
+				../lib/info.c 
+				../lib/info.h
+				../lib/util.h
+				../lib/mem.c
+				../lib/util.c
+				../lib/mem.h
 				util/util_test.c)
 
 set (BLACKSHIP_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
 				../src/opts.h
-				../lib/err/err.h
-				../lib/err/err.c
-				../lib/util/info.c
-				../lib/util/info.h
-				../lib/util/util.c
-				../lib/util/mem.c
-				../lib/util/mem.h
+				../lib/err.h
+				../lib/err.c
+				../lib/info.c
+				../lib/info.h
+				../lib/util.c
+				../lib/mem.c
+				../lib/mem.h
 				src/blackship_test.c)
 set (CMDS_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
 				../src/opts.h
-				../lib/err/err.h
-				../lib/err/err.c
-				../lib/util/info.c
-				../lib/util/info.h
-				../lib/util/util.c
-				../lib/util/mem.c
-				../lib/util/mem.h
+				../lib/err.h
+				../lib/err.c
+				../lib/info.c
+				../lib/info.h
+				../lib/util.c
+				../lib/mem.c
+				../lib/mem.h
 				src/cmds_test.c)
 
 add_executable(err_test ${ERR_TEST_LIB})

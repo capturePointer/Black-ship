@@ -8,9 +8,9 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-#include "../../lib/util/util.h"
-#include "../../lib/util/mem.h"
-#include "../../src/cmds.h"
+#include <lib/util.h>
+#include <lib/mem.h>
+#include <src/cmds.h>
 
 static void valid_attack_test(void **state)
 {

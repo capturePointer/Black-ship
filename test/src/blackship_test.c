@@ -8,9 +8,9 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-#include "../../lib/util/mem.h"
-#include "../../src/cmds.h"
-#include "../../src/opts.h"
+#include <lib/mem.h>
+#include <src/cmds.h>
+#include <src/opts.h>
 
 #define N_ARGS 7
 
