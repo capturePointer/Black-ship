@@ -11,9 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-// thic cmd tool uses argp as it's parser mechanism for the
-// command line arguments
+//
 #ifndef CONN_H
 #define CONN_H
 
@@ -66,6 +64,8 @@ typedef union conn_t {
 	conn4_t *c4;
 }conn_t;
 
+// this type will be used for flag detection
+// in order to know if we are using IPV4 or IPV6 conn
 typedef enum ip_t {
 	IPV4,
 	IPV6,

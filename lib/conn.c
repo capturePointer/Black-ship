@@ -14,14 +14,12 @@
 
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
-
 #include <arpa/inet.h>
 
-#include "conn.h"
 #include "mem.h"
 #include "info.h"
+#include "conn.h"
 
-#include <src/opts.h>
 
 // conn_new alloc new ipv4, ipv6 connection
 conn_t *conn_new(ip_t version)

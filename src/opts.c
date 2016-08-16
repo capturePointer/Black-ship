@@ -92,6 +92,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	state->out_stream = stdout;
 
 	switch (key) {
+
 	case ATTACK:
 		// if there is not a valid attack
 		if (!valid_attack(arg)) {
@@ -100,14 +101,15 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 			return ARGP_KEY_ERROR;
 		}
 		args->attack = arg;
-
 		break;
+
 	case PORT:
 		// select the single port and convert the string value into uint16_t
 		args->port.n = port_conv(arg);
 		if (err_this(ERRCONVPORT))
 			return ARGP_KEY_ERROR;
 		break;
+
 	case RANGE_PORTS:
 		// convert range port values into uint16_t
 		port_conv_range(arg, &args->port.low, &args->port.high);
@@ -115,30 +117,34 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		if (err_this(ERRCONVPORT))
 			return ARGP_KEY_ERROR;
 		break;
+
 	case RANDOM:
 		// assign random port option this will ignore all range port values
 		// and single port, it will send traffic to random ports
 		args->port.random = true;
 		break;
+
 	case LIST_ATTACKS:
 		// print out the list of attacks
 		args->list_attacks = L_ATTACKS;
 		break;
+
 	case HOST:
 		// if it's not a valid ip addr
 		if (!valid_ip(arg)) {
-			err_new("Invalid ip address."
-					"Not a valid IPv4 Ipv6 addr",
+			err_new("Invalid ip address.Not a valid IPv4 Ipv6 addr",
 					ERRIPADDR, 0);
 			return ARGP_KEY_ERROR;
 		}
 		// assign ip
 		args->host = arg;
 		break;
+
 	case I4:
 		// use ip version 4
 		args->host_type = IPV4;
 		break;
+
 	/* case ARGP_KEY_NO_ARGS: */
 	/* 	argp_usage(state); */
 	/* 	break; */

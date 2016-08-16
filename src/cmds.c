@@ -53,7 +53,6 @@ bool valid_attack(const char *exploit)
 
 void run_cmd(arguments arg)
 {
-	// TODO
 	printf("host : %s\n", arg.host);
 	printf("port: %d\n", arg.port.n);
 	printf("random: %d\n", (arg.port.random) ? 1 : 0);

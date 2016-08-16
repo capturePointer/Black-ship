@@ -246,22 +246,28 @@ static void prev_error_test_max_msg(void **state)
 {
 	(void)state;
 	bool f = false;
+	err_code_t mkk = 0;
+	int mk = -1;
+
 
 	// some testing vars
 	char *k = calloc(ERR_MSG_MAX, sizeof(char));
 	assert_true(k != NULL);
+	char *save_msg = calloc(ERR_MSG_MAX, sizeof(char));
+	assert_true(save_msg != NULL);
+	
 	// write in the k buffer ERR_MSG_MAX chars
-	// without including the '\0'
 	for (int i=0; i<ERR_MSG_MAX;i++){
 		k[i] = 'A';
 	}
+	k[ERR_MSG_MAX-1]='\0';
 
-	err_code_t mkk = 0;
-	int mk = -1;
+	assert_int_equal(ERR_MSG_MAX-1, (int)strlen(k));
 
-	// create the list
 	f = err_empty();
 	assert_true(f);
+
+	// create the list
 	for (int i = 0; i < 4; i++) {
 		if (i == 2) 
 			err_new(k, code[i], errnos[i]);
@@ -272,15 +278,15 @@ static void prev_error_test_max_msg(void **state)
 	assert_false(f);
 
 	// test now the vals
-	err_prev(k, &mkk, &mk);
-	assert_true(k[ERR_MSG_MAX] == '\0');
+	err_prev(save_msg, &mkk, &mk);
+	assert_true(save_msg[ERR_MSG_MAX] == '\0');
 	assert_int_equal(mkk, code[2]);
 	assert_int_equal(mk, errnos[2]);
 
 	// if everything is fine free the name and print out
 	err_destroy();
 	free(k);
-
+	free(save_msg);
 	f = err_empty();
 	assert_true(f);
 }
@@ -346,7 +352,7 @@ int main(int argc, char **argv)
 {
 	// if we want to debug
 	if (argc == 2) {
-		if (!strncmp(argv[1], "-debug", 6)) {
+		if (!strncmp(argv[1], "--debug", 6)) {
 			DEBUG = 1;
 		}
 	}
@@ -361,6 +367,7 @@ int main(int argc, char **argv)
 		cmocka_unit_test(prev_error_test),
 		cmocka_unit_test(prev_error_test_depth),
 		cmocka_unit_test(prev_error_is_test),
+		cmocka_unit_test(prev_error_test_max_msg),
 		cmocka_unit_test(err_this_test),
 	};
 

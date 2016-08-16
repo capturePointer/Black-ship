@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
 #ifndef ERROR_H
 #define ERROR_H
 
@@ -20,21 +19,22 @@
 // how long the MSG will be
 // no need for long error messages
 // this will be used in order to xmalloc strings
+// note that this includes the \0 char in the string in 151 pos
 #define ERR_MSG_MAX 151
 
 // define all error codes that might exist
 // also this way we can combine errors codes and check
 // in a more reasonable fashion
 typedef enum err_code {
-	ERRUNKNOWN = 0, // unknown error
-	ERRTCPCONN, // error tcp conn
-	ERRATTACKUNSUPPORTED, // attack up unsuported
-	ERRUDPCONN, // error udp conn
-	ERRIPADDR, //error invalid ip address
-	ERRTIMEOUT, // error timing out connection
-	ERRHOSTUNREACHED, // error host unreached
-	ERRCONVPORT, // error conversion port
-	ERR_LAST, // NOT TO BE USED 
+	ERRUNKNOWN = 0,			// unknown error
+	ERRTCPCONN,				// error tcp conn
+	ERRATTACKUNSUPPORTED,	// attack unsuported
+	ERRUDPCONN,				// error udp conn
+	ERRIPADDR,				// error invalid ip address
+	ERRTIMEOUT,				// error timing out connection
+	ERRHOSTUNREACHED,		// error host unreached
+	ERRCONVPORT,			// error conversion port
+	ERR_LAST, // NOT TO BE USED
 } err_code_t;
 
 // write new errors in the list
