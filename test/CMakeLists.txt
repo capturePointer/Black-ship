@@ -5,14 +5,12 @@ project(test C )
 cmake_minimum_required(VERSION 2.8)
 
 # set the compile flags for every .c 
-set(COMPILE_FLAGS "-std=gnu11 -g")
-SET(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
+set(COMPILE_FLAGS "-std=gnu11 -I ../../ -g")
+set(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
+
 
 # set the new policy
 cmake_policy(SET CMP0002 NEW)
-
-set(COMPILE_FLAGS "-std=gnu11 -I ../ -g")
-SET(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
 
 # set the verbose mode on
 set(CMAKE_VERBOSE_MAKEFILE ON)
@@ -26,7 +24,7 @@ set (ERR_TEST_LIB ../lib/err.c
 				../lib/util.h
 				../lib/mem.c
 				../lib/mem.h
-				err/err_test.c)
+				err_test.c)
 
 set (UTIL_TEST_LIB ../lib/err.c 
 				../lib/err.h
@@ -36,7 +34,7 @@ set (UTIL_TEST_LIB ../lib/err.c
 				../lib/mem.c
 				../lib/util.c
 				../lib/mem.h
-				util/util_test.c)
+				util_test.c)
 
 set (BLACKSHIP_TEST_SRC ../src/cmds.h
 				../src/cmds.c
@@ -49,7 +47,7 @@ set (BLACKSHIP_TEST_SRC ../src/cmds.h
 				../lib/util.c
 				../lib/mem.c
 				../lib/mem.h
-				src/blackship_test.c)
+				blackship_test.c)
 set (CMDS_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
@@ -61,18 +59,25 @@ set (CMDS_TEST_SRC ../src/cmds.h
 				../lib/util.c
 				../lib/mem.c
 				../lib/mem.h
-				src/cmds_test.c)
+				cmds_test.c)
+
+set (MEM_TEST_LIB ../lib/mem.h
+				  ../lib/mem.c
+				  ../lib/info.h
+				  ../lib/info.c
+				  mem_test.c)
 
 add_executable(err_test ${ERR_TEST_LIB})
 add_executable(util_test ${UTIL_TEST_LIB})
 add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
 add_executable(cmds_test ${CMDS_TEST_SRC})
+add_executable(mem_test ${MEM_TEST_LIB})
 
 target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
 target_link_libraries(blackship_test cmocka)
 target_link_libraries(cmds_test cmocka)
-
+target_link_libraries(mem_test cmocka)
 
 message(STATUS "[*] Verifying external libraries")
 
