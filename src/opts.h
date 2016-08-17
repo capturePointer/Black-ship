@@ -41,6 +41,23 @@ extern const char *argp_program_bug_address;
 extern struct argp_option options[];
 extern struct argp argp;
 
+// list of attacks
+enum ATTACK_SW {
+	UDP_FLOOD = 0,
+	ICMP_FLOOD,
+	IGMP_FLOOD,
+	SYN_FLOOD,
+	RST_FLOOD,
+	PSH_ACK_FLOOD,
+	SOCKSTRESS,
+	HTTP_FLOOD,
+	DNS_FLOOD,
+
+	END_ATTACK,	// end do not use
+} ATTACK_LIST;
+
+typedef enum ATTACK_SW ATTACK_SW;
+
 
 typedef struct port_t {
 	uint16_t n;	// default standard port
@@ -61,7 +78,7 @@ typedef enum other_t {
 // when it finishes
 typedef struct arguments {
 	char *host;
-	char *attack;
+	ATTACK_SW attack;	
 	ip_t host_type;
 	port_t port;
 	other_t list_attacks;

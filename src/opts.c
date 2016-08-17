@@ -17,6 +17,7 @@
 
 #include <lib/err.h>
 #include <lib/util.h>
+
 #include "cmds.h"
 #include "opts.h"
 
@@ -94,13 +95,13 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	switch (key) {
 
 	case ATTACK:
-		// if there is not a valid attack
-		if (!valid_attack(arg)) {
+		// test if the attack is valid
+		args->attack = valid_attack(arg);
+		if (args->attack == END_ATTACK) {
 			err_new("This attack is unsupported or invalid,"
 					"please try --list-attacks.", ERRATTACKUNSUPPORTED, 0);
 			return ARGP_KEY_ERROR;
 		}
-		args->attack = arg;
 		break;
 
 	case PORT:

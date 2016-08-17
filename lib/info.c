@@ -18,6 +18,7 @@
 
 #include "info.h"
 
+
 // info prints out to stdout the msg, file and line number
 inline void info(const char *msg, const char *file, int line)
 {
@@ -30,4 +31,14 @@ inline void infoee(const char *msg, const char *file, int line)
 {
 	fprintf(stderr, "%s %s %d\n", msg, file, line);
 	exit(EXIT_FAILURE);
+}
+
+inline void wstatus (const char *msg)
+{
+	fprintf(stdout, "[ ! ] %s\n", msg);
+}
+
+inline void status (const char *msg)
+{
+	fprintf(stdout,"[ * ] %s\n" , msg);
 }

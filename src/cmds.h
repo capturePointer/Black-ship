@@ -19,6 +19,6 @@
 
 extern void list_attacks(void);
 extern void run_cmd(arguments arg);
-extern bool valid_attack(const char *exploit);
+extern ATTACK_SW valid_attack(const char *exploit);
 
 #endif

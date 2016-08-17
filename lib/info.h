@@ -17,11 +17,19 @@
 
 extern void info(const char *msg, const char *file, int line);
 extern void infoee(const char *msg, const char *file, int line);
+extern void wstatus(const char *msg);
+extern void status(const char *msg);
 
 #define INFO(message) \
 	info((message), __FILE__, __LINE__)
 
 #define INFOEE(message) \
 	infoee((message), __FILE__, __LINE__)
+
+#define WSTATUS(message) \
+	wstatus(message)
+
+#define STATUS(message) \
+	status(message)
 
 #endif /*INFO_H*/
