@@ -12,15 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+#include <arpa/inet.h>
 #include <errno.h>
 #include <limits.h>
+#include <linux/random.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <arpa/inet.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #include "err.h"
+#include "info.h"
 #include "util.h"
-
+#include "mem.h"
 // filter_number filters all character in the block of mem and it tests
 // if we have in the block only digits and return true
 // if we have letters or other simbols just return false
@@ -47,7 +52,7 @@ uint16_t port_conv(const char *arg)
 
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) // ports are 16 byte wide
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0))					 // ports are 16 byte wide
 		goto err;
 
 	// it is safe is u is a value from 0 to UINT_MAX(65,535)
@@ -102,4 +107,12 @@ bool valid_ip(const char *ip)
 		return true;
 
 	return false;
+}
+
+// port_random
+// generates a valid port number from 0 to UINT16_MAX
+uint16_t port_random(void)
+{
+	//TODO
+	return 0;
 }

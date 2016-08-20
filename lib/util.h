@@ -22,5 +22,6 @@ extern uint16_t port_conv(const char *arg);
 extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
 extern bool filter_number(const char *arg);
 extern bool valid_ip(const char *ip);
+extern uint16_t port_random(void);
 
 #endif /*UTIL_H*/

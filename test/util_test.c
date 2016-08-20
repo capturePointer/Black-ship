@@ -9,8 +9,8 @@
 #include <cmocka.h>
 
 #include <lib/err.h>
-#include <lib/util.h>
 #include <lib/mem.h>
+#include <lib/util.h>
 
 static void port_conv_test(void **state)
 {
@@ -117,7 +117,7 @@ static void valid_ip_test(void **state)
 
 	char *p2 = strdup("FE80:0000:0000:0000:0202:B3FF:FE1E:8329");
 	assert_non_null(p2);
-	
+
 	char *p3 = strdup("1923.3123.312.31");
 	assert_non_null(p3);
 
