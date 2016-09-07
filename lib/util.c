@@ -109,10 +109,22 @@ bool valid_ip(const char *ip)
 	return false;
 }
 
+
 // port_random
 // generates a valid port number from 0 to UINT16_MAX
 uint16_t port_random(void)
 {
 	//TODO
+	return 0;
+}
+
+//TODO
+static uint64_t pcg_random_seed;
+//TODO
+uint16_t pcg_random_xorshit_seed(uint64_t s) {
+	//TODO
+}
+// pcg_random_xorshit
+uint16_t pcg_random_xorshit(void) {
 	return 0;
 }
