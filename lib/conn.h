@@ -73,7 +73,7 @@ typedef enum ip_t {
 
 // alloc new connection type ipv4 or ipv6.
 extern conn_t *conn_new(ip_t version);
-extern void conn_addr4_setup(conn_t *conn, char *const host, const uint16_t port);
-extern void conn_addr6_setup(conn_t *conn, char *const host, const uint16_t port);
+extern void conn_addr4_setup(conn_t *conn, const char *host, const char *proto);
+extern void conn_addr6_setup(conn_t *conn, const char *host, const char *proto);
 
 #endif /*CONN_H*/

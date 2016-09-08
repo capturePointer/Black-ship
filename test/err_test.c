@@ -266,7 +266,7 @@ static void prev_error_test_max_msg(void **state)
 
 	f = err_empty();
 	assert_true(f);
-
+//TODO
 	// create the list
 	for (int i = 0; i < 4; i++) {
 		if (i == 2) 
@@ -301,7 +301,6 @@ static void prev_error_is_test(void **state)
 	for (int i = 0; i < 4; i++) {
 		err_new(msg[i], code[i], errnos[i]);
 	}
-
 
 	f = err_empty();
 	assert_false(f);

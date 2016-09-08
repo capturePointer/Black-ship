@@ -33,7 +33,7 @@
 
 // error_t type for holding error information
 typedef struct err_t {
-	const char *msg;
+	char *msg;
 	err_code_t code;
 	int errno_state;
 } err_t;
@@ -65,10 +65,10 @@ static err_list_t *err;
 
 // err_list_new create new circular linked list
 // also create the first node and assign info to it
-static err_list_t *err_list_new(const char *m, err_code_t c, int s)
+static err_list_t *err_list_new(char *m, err_code_t c, int s)
 {
 	if (err)
-		INFOEE("[ERROR] Can't make a new list, please destroy the old one first");
+		INFOEE("Can't make a new list, please destroy the old one first");
 
 	err_list_t *e = xzmalloc(sizeof(*e));
 	e->tail		  = xzmalloc(sizeof(err_node_t));
@@ -86,15 +86,15 @@ static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 }
 
 // err_node_new append a new node into to circular list
-static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
+static void err_node_new(err_list_t *l, char *m, err_code_t c, int s)
 {
 	if (!l)
-		INFOEE("[ERROR] can't add new node to invalid NULL list");
+		INFOEE("Can't add new node to invalid NULL list");
 
 	err_node_t *ptr = xmalloc(sizeof(*ptr));
 
 	if ((strnlen(m, ERR_MSG_MAX) == ERR_MSG_MAX))
-		INFOEE("[ERROR] can't insert node that has message longer than ERR_MSG_MAX");
+		INFOEE("Can't insert node that has message longer than ERR_MSG_MAX");
 
 	// add info
 	ptr->error.msg		   = m;
@@ -108,13 +108,13 @@ static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 }
 
 // err_write_node overwrite the next node to be the new error
-static void err_write_node(err_list_t *l, const char *m, err_code_t c, int s)
+static void err_write_node(err_list_t *l, char *m, err_code_t c, int s)
 {
 	// get the next pointer
 	l->tail = l->tail->next;
 	// assign new info
 	if ((strnlen(m, ERR_MSG_MAX) == ERR_MSG_MAX))
-			INFOEE("[ERROR] can't set node messages longer than ERR_MSG_MAX");
+			INFOEE("Can't set node messages longer than ERR_MSG_MAX");
 
 	l->tail->error.msg		   = m;
 	l->tail->error.errno_state = s;
@@ -122,7 +122,7 @@ static void err_write_node(err_list_t *l, const char *m, err_code_t c, int s)
 }
 
 // err_new construct new error with message, code and errno
-void err_new(const char *msg, err_code_t code, int save)
+void err_new(char *msg, err_code_t code, int save)
 {
 	// if the list is empty
 	if (!err) {
@@ -144,12 +144,12 @@ void err_new(const char *msg, err_code_t code, int save)
 void err_last(char *msg, err_code_t *code, int *save)
 {
 	if (!err) {
-		INFO("[WARNING] Can't get the last error because the list is empty");
+		WSTATUS("Can't get the last error because the list is empty");
 		return;
 	}
 
 	if (!err->tail) {
-		INFOEE("[ERROR] Please check the internal state of the list");
+		INFOEE("Please check the internal state of the list");
 	}
 	
 	// we assume that the error message inside the our ring buffer
@@ -192,7 +192,7 @@ static bool err_list_free(err_list_t **l)
 void err_destroy(void)
 {
 	if (!err_list_free(&err))
-		INFOEE("[ERROR] Can't free error list, list was not initilized");
+		INFOEE("Can't free error list, list was not initilized");
 }
 
 // err_dump dump all the errors to stderr
@@ -201,7 +201,7 @@ void err_destroy(void)
 void err_dump(void)
 {
 	if (!err) {
-		INFO("[WARNING] No list found for dumping");
+		WSTATUS("No list found for dumping");
 		return;
 	}
 
@@ -224,7 +224,7 @@ void err_dump(void)
 bool err_find(const char *msg, err_code_t code, int save)
 {
 	if (!err) {
-		INFO("[WARNING] Cloud not find any node because there is no list");
+		WSTATUS("Cloud not find any node because there is no list");
 		return false;
 	}
 
@@ -245,7 +245,7 @@ bool err_find(const char *msg, err_code_t code, int save)
 void err_info(void)
 {
 	if (!err) {
-		INFO("[WARNING] No list found fod dumping");
+		WSTATUS("No list found fod dumping");
 		return;
 	}
 
@@ -288,7 +288,7 @@ void err_prev(char *msg, err_code_t *code, int *save)
 {
 	bool eq = false;
 	if (!err) {
-		INFO("[WARNING] Cloud not find the previous error because there is no list");
+		WSTATUS("Cloud not find the previous error because there is no list");
 		return;
 	}
 
@@ -311,9 +311,10 @@ void err_prev(char *msg, err_code_t *code, int *save)
 // err_prev_is test when ever the previous error match the code
 bool err_prev_code_is(err_code_t code)
 {
-	bool eq = false;
 	if (!err)
-		INFOEE("[WARNING] Cloud not check the previous error because there is no list");
+		INFOEE("Cloud not check the previous error because there is no list");
+
+	bool eq = false;
 
 	err_node_t *p = err->tail->next;
 	err_node_t *s = NULL;
@@ -341,9 +342,10 @@ bool err_prev_code_is(err_code_t code)
 // err_prev_msg_is test when ever the previous error msg is equl to msg
 bool err_prev_msg_is(const char *msg)
 {
-	bool eq = false;
 	if (!err)
-		INFOEE("[WARNING] Cloud not check the previous error because there is no list");
+		INFOEE("Cloud not check the previous error because there is no list");
+
+	bool eq = false;
 
 	err_node_t *p = err->tail->next;
 	err_node_t *s = NULL;
@@ -371,10 +373,10 @@ bool err_prev_msg_is(const char *msg)
 // err_prev_save_is test when ever the previous save errno state is equl to save
 bool err_prev_save_is(const int save)
 {
-	bool eq = false;
 	if (!err)
 		INFOEE("[WARNING] Cloud not check the previous error because there is no list");
 
+	bool eq = false;
 	err_node_t *p = err->tail->next;
 	err_node_t *s = NULL;
 
