@@ -41,7 +41,7 @@ typedef enum err_code {
 // if the list is empty it will create and append a new node with info
 // if the list is not empty and not full it will append a new node with info
 // if the list is full it will overwrite the oldest error in the list
-extern void err_new(char *message, err_code_t code, int save);
+extern void err_new(const char *message, err_code_t code, int save);
 // assign from the current pointer of the list of errors into params
 extern void err_last(char *msg, err_code_t *code, int *save);
 // destroy all nodes of the list and reset the list state to NULL

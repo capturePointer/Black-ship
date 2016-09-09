@@ -33,7 +33,7 @@
 
 // error_t type for holding error information
 typedef struct err_t {
-	char *msg;
+	const char *msg;
 	err_code_t code;
 	int errno_state;
 } err_t;
@@ -65,7 +65,7 @@ static err_list_t *err;
 
 // err_list_new create new circular linked list
 // also create the first node and assign info to it
-static err_list_t *err_list_new(char *m, err_code_t c, int s)
+static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 {
 	if (err)
 		INFOEE("Can't make a new list, please destroy the old one first");
@@ -86,14 +86,14 @@ static err_list_t *err_list_new(char *m, err_code_t c, int s)
 }
 
 // err_node_new append a new node into to circular list
-static void err_node_new(err_list_t *l, char *m, err_code_t c, int s)
+static void err_node_new(err_list_t *l, const char *m, err_code_t c, int s)
 {
 	if (!l)
 		INFOEE("Can't add new node to invalid NULL list");
 
 	err_node_t *ptr = xmalloc(sizeof(*ptr));
 
-	if ((strnlen(m, ERR_MSG_MAX) == ERR_MSG_MAX))
+	if ((strnlen(m, ERR_MSG_MAX) == ERR_MSG_MAX)) // max ERR_MSG_MAX-1 without the '\0'
 		INFOEE("Can't insert node that has message longer than ERR_MSG_MAX");
 
 	// add info
@@ -108,12 +108,12 @@ static void err_node_new(err_list_t *l, char *m, err_code_t c, int s)
 }
 
 // err_write_node overwrite the next node to be the new error
-static void err_write_node(err_list_t *l, char *m, err_code_t c, int s)
+static void err_write_node(err_list_t *l, const char *m, err_code_t c, int s)
 {
 	// get the next pointer
 	l->tail = l->tail->next;
 	// assign new info
-	if ((strnlen(m, ERR_MSG_MAX) == ERR_MSG_MAX))
+	if ((strnlen(m, ERR_MSG_MAX) == ERR_MSG_MAX)) // max ERR_MSG_MAX-1 without the '\0'
 			INFOEE("Can't set node messages longer than ERR_MSG_MAX");
 
 	l->tail->error.msg		   = m;
@@ -122,7 +122,7 @@ static void err_write_node(err_list_t *l, char *m, err_code_t c, int s)
 }
 
 // err_new construct new error with message, code and errno
-void err_new(char *msg, err_code_t code, int save)
+void err_new(const char *msg, err_code_t code, int save)
 {
 	// if the list is empty
 	if (!err) {
@@ -153,12 +153,12 @@ void err_last(char *msg, err_code_t *code, int *save)
 	}
 	
 	// we assume that the error message inside the our ring buffer
-	// it's null terminated string and it's no longer that ERR_MSG_MAX
-	size_t len = strnlen(err->tail->error.msg, ERR_MSG_MAX-1);
+	// it's null terminated string and it's no longer that ERR_MSG_MAX-1
+	size_t len = strnlen(err->tail->error.msg, ERR_MSG_MAX-1);  
 	strncpy(msg, err->tail->error.msg, len);
 	
 	// if we reached the max value be sure to safely terminate the string
-	if (len == ERR_MSG_MAX-1) 
+	if (len == ERR_MSG_MAX-1)  
 		// this way we don't risk it copying wihout null char into msg
 		msg[ERR_MSG_MAX-1] = '\0';
 
@@ -279,7 +279,7 @@ static bool cmp(const err_node_t a, const err_node_t b)
 }
 
 // err_prev get the previous error info inside msg, code, and save
-// very important that len(msg) equal or grater than ERR_MSG_MAX
+// very important that len(msg) equal or grater than ERR_MSG_MAX(including \0)
 //
 // if the length of the internal message node is less than n, it will
 // copy aditional null bytes to msg, to ensure that a total of ERR_MSG_MAX

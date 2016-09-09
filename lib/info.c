@@ -17,7 +17,7 @@
 #include <string.h>
 
 #include "info.h"
-
+#include "err.h"
 
 // info prints out to stdout the msg, file and line number
 inline void info(const char *msg, const char *file, int line)
@@ -30,6 +30,7 @@ inline void info(const char *msg, const char *file, int line)
 inline void infoee(const char *msg, const char *file, int line)
 {
 	fprintf(stderr, "[ ! ] %s %s %d\n", msg, file, line);
+	err_destroy();
 	exit(EXIT_FAILURE);
 }
 

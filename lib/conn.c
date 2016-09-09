@@ -123,9 +123,9 @@ void conn_addr6_setup(conn_t *conn, const char *host, const char *proto)
 				STATUS("Default port number assigned is 0.");
 				conn->c6->addr->sin6_port = 0;
 			}
-			conn->c6->sock			   = sk;
+			conn->c6->sock			    = sk;
 			conn->c6->addr->sin6_family = (sa_family_t)p->ai_family;
-			conn->c6->addr			   = (addr6_t *)&p->ai_addr; // convert into addr6_t from sockaddr*
+			conn->c6->addr			    = (addr6_t *)&p->ai_addr; // convert into addr6_t from sockaddr*
 		}
 		break;
 	}

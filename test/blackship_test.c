@@ -42,7 +42,7 @@ static void argp_parse_test(void **state)
 	argp_parse(&argp, 7, argv, 0, 0, &arg);
 
 	assert_string_equal(arg.host, "192.168.122.122");
-	assert_string_equal(arg.attack, "udp");
+	assert_int_equal(arg.attack, UDP_FLOOD);
 	assert_int_equal(arg.list_attacks, NO_LIST);
 	assert_int_equal(arg.port.low, 0);
 	assert_int_equal(arg.port.high, 0);
@@ -55,7 +55,7 @@ static void argp_parse_test(void **state)
 	}
 	xfree(argv);
 }
-//TODO
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);

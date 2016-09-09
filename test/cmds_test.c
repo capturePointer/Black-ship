@@ -11,6 +11,7 @@
 #include <lib/util.h>
 #include <lib/mem.h>
 #include <src/cmds.h>
+#include <src/opts.h>
 
 static void valid_attack_test(void **state)
 {
@@ -21,8 +22,11 @@ static void valid_attack_test(void **state)
 	char *p2 = strdup("uhdusad");
 	assert_non_null(p2);
 
-	assert_true(valid_attack(p1));
-	assert_false(valid_attack(p2));
+	ATTACK_SW ret;
+	ret = valid_attack(p1);
+	assert_true((ret == UDP_FLOOD));
+	ret = valid_attack(p2);
+	assert_true((ret == END_ATTACK));
 
 
 	xfree(p1);

@@ -65,6 +65,8 @@ set (MEM_TEST_LIB ../lib/mem.h
 				  ../lib/mem.c
 				  ../lib/info.h
 				  ../lib/info.c
+				  ../lib/err.h
+				  ../lib/err.c
 				  mem_test.c)
 
 add_executable(err_test ${ERR_TEST_LIB})

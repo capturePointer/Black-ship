@@ -108,7 +108,7 @@ void run_cmd(arguments arg)
 			return;
 	}
 
-	STATUS("[ * ] Blackship start sailing..");
+	STATUS("Blackship start sailing..");
 	// decide what attack we should launch
 	switch(arg.attack) {
 		case UDP_FLOOD:
@@ -132,7 +132,7 @@ void run_cmd(arguments arg)
 			break;
 		// if we reached this point that means something bad happened.
 		case END_ATTACK:
-			INFOEE("[ERROR] Can't run this attack, something is wrong");
+			INFOEE("Can't run this attack, something is wrong");
 	}
 
 	/*DEBUG*/	

@@ -33,13 +33,13 @@
 bool filter_number(const char *arg)
 {
 	const char *p = arg;
-	for (; true; p++) {
-		if (*p == '\0')
-			return true;
+	for (; *p !='\0'; p++)
+		
 		// if it's not in this interval
 		if (!(*p >= 0x30 && (*p <= 0x39)))
 			return false;
-	}
+
+	return true;
 }
 
 // port_conv convert from a char* representation to port number
@@ -114,17 +114,23 @@ bool valid_ip(const char *ip)
 // generates a valid port number from 0 to UINT16_MAX
 uint16_t port_random(void)
 {
-	//TODO
-	return 0;
+	pcg_random_xorshit_seed(21931590123U);//TODO
+	uint16_t port = pcg_random_xorshit_r() % UINT16_MAX;
+	return port;
 }
 
-//TODO
-static uint64_t pcg_random_seed;
-//TODO
-uint16_t pcg_random_xorshit_seed(uint64_t s) {
-	//TODO
+// psg_seed
+static uint64_t psg_seed;
+
+// psg_random_xorshit_seed
+void pcg_random_xorshit_seed(uint64_t seed)
+{
+	psg_seed = seed;
 }
-// pcg_random_xorshit
-uint16_t pcg_random_xorshit(void) {
-	return 0;
+//TODO
+// pcg_random_xorshit_r
+uint64_t pcg_random_xorshit_r(void) 
+{
+	uint64_t d = psg_seed * 1231241u;
+	return d;
 }

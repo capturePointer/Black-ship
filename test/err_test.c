@@ -253,8 +253,6 @@ static void prev_error_test_max_msg(void **state)
 	// some testing vars
 	char *k = calloc(ERR_MSG_MAX, sizeof(char));
 	assert_true(k != NULL);
-	char *save_msg = calloc(ERR_MSG_MAX, sizeof(char));
-	assert_true(save_msg != NULL);
 	
 	// write in the k buffer ERR_MSG_MAX chars
 	for (int i=0; i<ERR_MSG_MAX;i++){
@@ -266,7 +264,7 @@ static void prev_error_test_max_msg(void **state)
 
 	f = err_empty();
 	assert_true(f);
-//TODO
+	
 	// create the list
 	for (int i = 0; i < 4; i++) {
 		if (i == 2) 
@@ -277,9 +275,11 @@ static void prev_error_test_max_msg(void **state)
 	f = err_empty();
 	assert_false(f);
 
+	char *save_msg = calloc(ERR_MSG_MAX, sizeof(char));
+	assert_true(save_msg != NULL);
 	// test now the vals
 	err_prev(save_msg, &mkk, &mk);
-	assert_true(save_msg[ERR_MSG_MAX] == '\0');
+	assert_true(save_msg[ERR_MSG_MAX-1] == '\0');
 	assert_int_equal(mkk, code[2]);
 	assert_int_equal(mk, errnos[2]);
 
