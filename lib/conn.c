@@ -39,7 +39,7 @@ conn_t *conn_new(ip_t version)
 		break;
 	case IPV6:
 		conn->c6 = xzmalloc(sizeof(conn6_t));
-		conn->c6 = xzmalloc(sizeof(addr6_t));
+		conn->c6->addr = xzmalloc(sizeof(addr6_t));
 		break;
 	}
 
