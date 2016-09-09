@@ -9,7 +9,6 @@
 #include <stddef.h>
 #include <cmocka.h>
 
-
 #include <lib/mem.h>
 #include <lib/conn.h>
 
@@ -17,10 +16,27 @@
 static void conn_new_test(void **state)
 {
 	(void)state;
-	conn_t *conn= conn_new(IPV4);
-	
+	// create new ipv4 conn
+	conn_t *conn = conn_new(IPV4);
 	assert_non_null(conn);
+	assert_non_null(conn->c4);
+	assert_non_null(conn->c4->addr);
+
+	xfree(conn->c4->addr);
 	xfree(conn->c4);
+	xfree(conn);
+	
+	//reset state of the connection
+	*(void**)(&conn) = NULL;
+	assert_null(conn);
+
+	conn = conn_new(IPV6);
+	assert_non_null(conn);
+	assert_non_null(conn->c6);
+	assert_non_null(conn->c6->addr);
+
+	xfree(conn->c6->addr);
+	xfree(conn->c6);
 	xfree(conn);
 }
 

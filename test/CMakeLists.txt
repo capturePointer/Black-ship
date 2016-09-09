@@ -32,8 +32,9 @@ set (UTIL_TEST_LIB ../lib/err.c
 				../lib/info.h
 				../lib/util.h
 				../lib/mem.c
-				../lib/util.c
 				../lib/mem.h
+				../lib/util.c
+				../lib/util.h
 				util_test.c)
 
 set (BLACKSHIP_TEST_SRC ../src/cmds.h
@@ -86,13 +87,13 @@ add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
 add_executable(cmds_test ${CMDS_TEST_SRC})
 add_executable(mem_test ${MEM_TEST_LIB})
 add_executable(conn_test ${CONN_TEST_LIB})
-
 target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
 target_link_libraries(blackship_test cmocka)
 target_link_libraries(cmds_test cmocka)
 target_link_libraries(mem_test cmocka)
-target_link_libraries(conn_test cmoka)
+target_link_libraries(conn_test cmocka)
+
 
 message(STATUS "[*] Verifying external libraries")
 

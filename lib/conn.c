@@ -26,18 +26,19 @@
 #include "util.h"
 
 // conn_new alloc new ipv4, ipv6 connection
+// if a invalid version is passed the return will be NULL
 conn_t *conn_new(ip_t version)
 {
 	conn_t *conn = NULL;
 
-	conn = xzmalloc(sizeof(conn_t));
-
 	switch (version) {
 	case IPV4:
+		conn = xzmalloc(sizeof(conn_t));
 		conn->c4	   = xzmalloc(sizeof(conn4_t));
 		conn->c4->addr = xzmalloc(sizeof(addr4_t));
 		break;
 	case IPV6:
+		conn = xzmalloc(sizeof(conn_t));
 		conn->c6 = xzmalloc(sizeof(conn6_t));
 		conn->c6->addr = xzmalloc(sizeof(addr6_t));
 		break;
