@@ -115,7 +115,7 @@ bool valid_ip(const char *ip)
 uint16_t port_random(void)
 {
 	pcg_random_xorshit_seed(21931590123U);//TODO
-	uint16_t port = pcg_random_xorshit_r() % UINT16_MAX;
+	uint16_t port = (uint16_t)pcg_random_xorshit_r() % UINT16_MAX;
 	return port;
 }
 

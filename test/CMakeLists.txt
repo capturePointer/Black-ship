@@ -37,17 +37,17 @@ set (UTIL_TEST_LIB ../lib/err.c
 				util_test.c)
 
 set (BLACKSHIP_TEST_SRC ../src/cmds.h
-				../src/cmds.c
-				../src/opts.c
-				../src/opts.h
-				../lib/err.h
-				../lib/err.c
-				../lib/info.c
-				../lib/info.h
-				../lib/util.c
-				../lib/mem.c
-				../lib/mem.h
-				blackship_test.c)
+					../src/cmds.c
+					../src/opts.c
+					../src/opts.h
+					../lib/err.h
+					../lib/err.c
+					../lib/info.c
+					../lib/info.h
+					../lib/util.c
+					../lib/mem.c
+					../lib/mem.h
+					blackship_test.c)
 set (CMDS_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
@@ -62,24 +62,37 @@ set (CMDS_TEST_SRC ../src/cmds.h
 				cmds_test.c)
 
 set (MEM_TEST_LIB ../lib/mem.h
-				  ../lib/mem.c
-				  ../lib/info.h
-				  ../lib/info.c
-				  ../lib/err.h
-				  ../lib/err.c
+				../lib/mem.c
+				../lib/info.h
+				../lib/info.c
+				../lib/err.h
+				../lib/err.c
 				  mem_test.c)
+
+set (CONN_TEST_LIB ../lib/err.h
+				../lib/err.c
+				../lib/info.c
+				../lib/info.h
+				../lib/util.c
+				../lib/mem.c
+				../lib/mem.h
+				../lib/conn.h
+				../lib/conn.c
+				conn_test.c)
 
 add_executable(err_test ${ERR_TEST_LIB})
 add_executable(util_test ${UTIL_TEST_LIB})
 add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
 add_executable(cmds_test ${CMDS_TEST_SRC})
 add_executable(mem_test ${MEM_TEST_LIB})
+add_executable(conn_test ${CONN_TEST_LIB})
 
 target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
 target_link_libraries(blackship_test cmocka)
 target_link_libraries(cmds_test cmocka)
 target_link_libraries(mem_test cmocka)
+target_link_libraries(conn_test cmoka)
 
 message(STATUS "[*] Verifying external libraries")
 
