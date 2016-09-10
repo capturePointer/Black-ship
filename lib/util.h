@@ -18,6 +18,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+extern char *xsprintf(const char *fmt, ...);
 extern uint16_t port_conv(const char *arg);
 extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
 extern bool filter_number(const char *arg);
@@ -25,4 +26,5 @@ extern bool valid_ip(const char *ip);
 extern uint16_t port_random(void);
 extern uint64_t pcg_random_xorshit_r(void);
 extern void pcg_random_xorshit_seed(uint64_t seed);
+
 #endif /*UTIL_H*/

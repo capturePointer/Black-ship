@@ -139,6 +139,19 @@ static void valid_ip_test(void **state)
 	xfree(p4);
 }
 
+static void xsprintf_test(void **state)
+{
+	(void)state;
+	int b = 10;
+	char *buff = NULL;
+	assert_null(buff);
+	buff = xsprintf("Today this is my %d with %s",b,"Adams");
+	assert_non_null(buff);
+	size_t sz = strlen(buff);
+	assert_true((sz > 0));
+	xfree(buff);
+}
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
@@ -147,6 +160,7 @@ int main(void)
 		cmocka_unit_test(port_conv_test),
 		cmocka_unit_test(port_conv_range_test),
 		cmocka_unit_test(valid_ip_test),
+		cmocka_unit_test(xsprintf_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

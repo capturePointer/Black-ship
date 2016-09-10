@@ -14,8 +14,6 @@
 
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
-#include <arpa/inet.h>
-#include <netdb.h>
 #include <string.h>
 #include <sys/types.h>
 
@@ -47,23 +45,20 @@ conn_t *conn_new(ip_t version)
 	return conn;
 }
 
-// conn_addr4_setup setup the underlying ipv4 addr struct of the conn_t
-void conn_addr4_setup(conn_t *conn, const char *host, const char *proto)
+// conn_addr4_setup 
+// setup the underlying ipv4 addr struct of the conn_t
+// will decorate it with the first valid socket and init with info about the addr type
+// that the socket will use in order to connect on that target.
+void conn_addr4_setup(conn_t *conn, conn_hints info)
 {
-	if (!conn)
+	if ((!conn) || (!conn->c4) || (!conn->c4->addr))
 		INFOEE("Please provide a valid conn ptr");
-	if (!conn->c4)
-		INFOEE("Please provide a valid conn4 ptr");
 
-	struct addrinfo hints, *servinfo, *p;
-	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family   = AF_INET;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = 0;			// auto
+	struct addrinfo *servinfo, *p;
 	int err, sk;
 
-	err = getaddrinfo(host, proto, &hints, &servinfo);
-	if (!err) {
+	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
+	if (err) {
 		INFOEE("Could'n not get the ip addr and init the addr info");
 	}
 
@@ -72,44 +67,46 @@ void conn_addr4_setup(conn_t *conn, const char *host, const char *proto)
 		if (!sk) {
 			continue;
 		} else {
-			conn->c4->addr->sin_port = port_conv(proto);
+			conn->c4->addr->sin_port = port_conv(info.proto);
+			// if proto_conv can't convert the port number assign it
+			// a default value.
 			if (err_this(ERRCONVPORT)) {
 				STATUS("Can't convert proto specified into a valid port number");
 				STATUS("Default port number assigned is 0.");
 				conn->c4->addr->sin_port = 0;
 			}
+
 			conn->c4->sock			   = sk;
 			conn->c4->addr->sin_family = (sa_family_t)p->ai_family;
-			conn->c4->addr			   = (addr4_t *)&p->ai_addr; // convert into addr4_t from sockaddr*
+			conn->c4->addr			   = (addr4_t *)p->ai_addr; // convert into addr4_t from sockaddr*
 		}
 		break;
 	}
+
+	freeaddrinfo(servinfo);
 	
 	// if p is NULL that means we looped off the end of the list
 	if (p == NULL) {
 		INFOEE("Can't find a valid ip4 address for the host you provided.");
 	}
 
-	freeaddrinfo(servinfo);
 }
 
-// conn_addr6_setup setup the underlying ipv6 addr struct of the conn_t
-void conn_addr6_setup(conn_t *conn, const char *host, const char *proto)
-{
-	if (!conn)
-		INFOEE("Please provide a valid conn ptr");
-	if (!conn->c4)
-		INFOEE("Please provide a valid conn6 ptr");
+// conn_addr6_setup 
+// setup the underlying ipv6 addr struct of the conn_t
+// will decorate it with the first valid socket and init with info about the addr type
+// that the socket will use in order to connect on that target.
 
-	struct addrinfo hints, *servinfo, *p;
-	memset(&hints, 0, sizeof(struct addrinfo));
-	hints.ai_family   = AF_INET6;
-	hints.ai_socktype = SOCK_STREAM;
-	hints.ai_protocol = 0;			// auto
+void conn_addr6_setup(conn_t *conn, conn_hints info)
+{
+	if ((!conn) || (!conn->c6) || (!conn->c6->addr))
+		INFOEE("Please provide a valid conn ptr");
+
+	struct addrinfo *servinfo, *p;
 	int err, sk;
 
-	err = getaddrinfo(host, proto, &hints, &servinfo);
-	if (!err) {
+	err = getaddrinfo(info.host,info.proto, &info.hints, &servinfo);
+	if (err) {
 		INFOEE("Could'n not get the ip addr and init the addr info");
 	}
 
@@ -118,7 +115,7 @@ void conn_addr6_setup(conn_t *conn, const char *host, const char *proto)
 		if (!sk) {
 			continue;
 		} else {
-			conn->c6->addr->sin6_port = port_conv(proto);
+			conn->c6->addr->sin6_port = port_conv(info.proto);
 			if (err_this(ERRCONVPORT)) {
 				STATUS("Can't convert proto specified into a valid port number");
 				STATUS("Default port number assigned is 0.");
@@ -126,15 +123,16 @@ void conn_addr6_setup(conn_t *conn, const char *host, const char *proto)
 			}
 			conn->c6->sock			    = sk;
 			conn->c6->addr->sin6_family = (sa_family_t)p->ai_family;
-			conn->c6->addr			    = (addr6_t *)&p->ai_addr; // convert into addr6_t from sockaddr*
+			conn->c6->addr			    = (addr6_t *)p->ai_addr; // convert into addr6_t from sockaddr*
 		}
 		break;
 	}
+
+	freeaddrinfo(servinfo);
 	
 	// if p is NULL that means we looped off the end of the list
 	if (p == NULL) {
 		INFOEE("Can't find a valid ip6 address for the host you provided.");
 	}
 
-	freeaddrinfo(servinfo);
 }

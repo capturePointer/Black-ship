@@ -11,13 +11,16 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 #ifndef CONN_H
 #define CONN_H
 
 #include <netinet/in.h>
 #include <sys/socket.h>
 #include <stdint.h>
-
+#include <arpa/inet.h>
+#include <netdb.h>
+#
 
 // define the sock_t type
 typedef int sock_t;
@@ -70,9 +73,19 @@ typedef enum ip_t {
 	IPV6,
 } ip_t;
 
+
+// conn_hints special type that will
+// provide aditional information about what
+// conn we want to establish.
+// this can be used  with the conn_addr_setup family functions
+typedef struct conn_hints{
+	const char *host;
+	const char *proto;
+	struct addrinfo hints;
+}conn_hints;
 // alloc new connection type ipv4 or ipv6.
 extern conn_t *conn_new(ip_t version);
-extern void conn_addr4_setup(conn_t *conn, const char *host, const char *proto);
-extern void conn_addr6_setup(conn_t *conn, const char *host, const char *proto);
+extern void conn_addr4_setup(conn_t *conn, conn_hints info);
+extern void conn_addr6_setup(conn_t *conn, conn_hints info);
 
 #endif /*CONN_H*/

@@ -21,6 +21,7 @@
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <stdarg.h>
 
 #include "err.h"
 #include "info.h"
@@ -92,6 +93,32 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 		*high = *high ^ *low;
 		*low  = *low ^ *high;
 	}
+}
+
+// xsprintf safe wrapper on sprintf
+// this function pre calculates how much bytes needs to alloc
+// in order to store into that buffer.
+// if the buffer is still to small it will print out and error
+// and terminate the program 
+// the func will return a ptr to that newly created message
+char *xsprintf(const char *fmt, ...) {
+	va_list args;
+	int n, m;
+	char *buff;
+	
+	// first we must count the number of bytes we need
+	// to alloc in order to store our buffer.
+	va_start(args, fmt);
+	n = vsnprintf(NULL,0, fmt, args);
+	va_end(args);
+
+	// alloc the buffer
+	buff = xzmalloc(sizeof(char)*(unsigned long)n);
+	va_start(args, fmt);
+	m = vsnprintf(buff, sizeof(char)*(unsigned long)n, fmt, args);
+	va_end(args);
+
+	return buff;
 }
 
 // valid_ip test if it's a valid ip(ipv4,ipv6) and return true
