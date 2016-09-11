@@ -33,6 +33,7 @@ typedef enum err_code {
 	ERRIPADDR,				// error invalid ip address
 	ERRTIMEOUT,				// error timing out connection
 	ERRHOSTUNREACHED,		// error host unreached
+	ERRENTROPY,				// error reading,writing entropy values
 	ERRCONVPORT,			// error conversion port
 	ERR_LAST, // NOT TO BE USED
 } err_code_t;

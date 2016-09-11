@@ -24,7 +24,7 @@ extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
 extern char *xsprintf(const char *fmt, ...);
 extern bool valid_ip(const char *ip);
 extern bool urandom_bytes(void *dest, size_t size);
-extern bool port_seeds(void);
+extern void port_seeds(void);
 extern uint16_t port_random(void);
 
 #endif /*UTIL_H*/

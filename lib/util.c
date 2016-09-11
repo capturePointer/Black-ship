@@ -160,17 +160,19 @@ bool urandom_bytes(void *dest, size_t size)
 
 static uint64_t seeds[2];
 
-// bool port_seeds(void)
+// void port_seeds(void)
 // seeds two 64 byes numbers, the state and the initseq
-// it returns false if the we can't read form the source of entropy
+// it returns ERRENTROPY if the we can't read form the source of entropy
 // the source of entropy that this functions uses is /dev/urandom.
-bool port_seeds(void) {
+void port_seeds(void) {
 	// read from /dev/urandom 128 bytes
-	if(!urandom_bytes(seeds, sizeof(seeds)))
-		return false;
-
+	if(!urandom_bytes(seeds, sizeof(seeds))) {
+		err_new("Can't read from /udev/random", ERRENTROPY, 0);
+		return;
+	}
+	
+	// init the seeds
 	pcg32_srandom(seeds[0], seeds[1]);
-	return true;
 }
 
 // uint16_t port_random(void)

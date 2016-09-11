@@ -123,6 +123,9 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		// assign random port option this will ignore all range port values
 		// and single port, it will send traffic to random ports
 		args->port.random = true;
+		port_seeds(); // start seeding immediately
+			if(err_this(ERRENTROPY))
+				return ARGP_KEY_ERROR;
 		break;
 
 	case LIST_ATTACKS:
