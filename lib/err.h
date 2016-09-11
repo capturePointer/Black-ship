@@ -28,7 +28,7 @@
 typedef enum err_code {
 	ERRUNKNOWN = 0,			// unknown error
 	ERRTCPCONN,				// error tcp conn
-	ERRATTACKUNSUPPORTED,	// attack unsuported
+	ERRATTACKUNSUPPORTED,   // error attack is unsupported
 	ERRUDPCONN,				// error udp conn
 	ERRIPADDR,				// error invalid ip address
 	ERRTIMEOUT,				// error timing out connection

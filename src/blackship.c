@@ -13,12 +13,9 @@
 // limitations under the License.
 
 #include <stdlib.h>
-// thic cmd tool uses argp as it's parser mechanism for the
-// command line arguments
 #include <argp.h>
 #include <argz.h>
 
-#include <lib/info.h>
 #include <lib/err.h>
 
 #include "opts.h"
@@ -31,14 +28,11 @@ int main(int argc, char **argv)
 	error_t err = 0;
 	arguments arg;
 	memset(&arg, 0, sizeof(arguments));
-	char msg[ERR_MSG_MAX] = {0};
-	err_code_t code_err;
 
 	err = argp_parse(&argp, argc, argv, 0, 0, &arg);
 	if (err == 0) {
 		run_cmd(arg);
 	} else if (err == ARGP_KEY_ERROR) {
-		err_last(&msg[0], &code_err, &errno);
 		err_dump();
 	}
 

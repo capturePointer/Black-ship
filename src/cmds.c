@@ -104,7 +104,7 @@ void run_cmd(arguments arg)
 	if ((strlen(arg.host) == 0) ||
 		(!arg.port.n) || 
 		(!arg.port.high)) {
-			INFO("[ERROR] Please set the host and port");
+			WSTATUS("Please set the host and port");
 			return;
 	}
 
