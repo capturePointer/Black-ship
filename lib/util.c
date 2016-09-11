@@ -16,17 +16,19 @@
 #include <errno.h>
 #include <limits.h>
 #include <linux/random.h>
-#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <stdarg.h>
 
+#include "pcg/pcg.h"
+
 #include "err.h"
 #include "info.h"
 #include "util.h"
 #include "mem.h"
+
 // filter_number filters all character in the block of mem and it tests
 // if we have in the block only digits and return true
 // if we have letters or other simbols just return false
@@ -103,7 +105,7 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 // the func will return a ptr to that newly created message
 char *xsprintf(const char *fmt, ...) {
 	va_list args;
-	int n, m;
+	int n;
 	char *buff;
 	
 	// first we must count the number of bytes we need
@@ -115,7 +117,7 @@ char *xsprintf(const char *fmt, ...) {
 	// alloc the buffer
 	buff = xzmalloc(sizeof(char)*(unsigned long)n);
 	va_start(args, fmt);
-	m = vsnprintf(buff, sizeof(char)*(unsigned long)n, fmt, args);
+	vsnprintf(buff, sizeof(char)*(unsigned long)n, fmt, args);
 	va_end(args);
 
 	return buff;
@@ -136,28 +138,44 @@ bool valid_ip(const char *ip)
 	return false;
 }
 
+// bool urandom_bytes
+// Use /dev/urandom to get some entropy bytes for seeding purposes.
+// 
+// If reading /dev/urandom fails(which ought to never happen), it returns
+// false, otherwise it return true.
+bool urandom_bytes(void *dest, size_t size)
+{
+	if (size == 0)
+		return false;
 
-// port_random
-// generates a valid port number from 0 to UINT16_MAX
+	int fd = open("/dev/urandom", O_RDONLY);
+	if(!fd)
+		return false;
+
+	ssize_t sz = read(fd, dest, size);
+	if(sz < (ssize_t)size)
+		return false;
+	return close(fd) == 0;
+}
+
+static uint64_t seeds[2];
+
+// bool port_seeds(void)
+// seeds two 64 byes numbers, the state and the initseq
+// it returns false if the we can't read form the source of entropy
+// the source of entropy that this functions uses is /dev/urandom.
+bool port_seeds(void) {
+	// read from /dev/urandom 128 bytes
+	if(!urandom_bytes(seeds, sizeof(seeds)))
+		return false;
+
+	pcg32_srandom(seeds[0], seeds[1]);
+	return true;
+}
+
+// uint16_t port_random(void)
+// generates a valid port number from 1 to UINT16_MAX
 uint16_t port_random(void)
 {
-	pcg_random_xorshit_seed(21931590123U);//TODO
-	uint16_t port = (uint16_t)pcg_random_xorshit_r() % UINT16_MAX;
-	return port;
-}
-
-// psg_seed
-static uint64_t psg_seed;
-
-// psg_random_xorshit_seed
-void pcg_random_xorshit_seed(uint64_t seed)
-{
-	psg_seed = seed;
-}
-//TODO
-// pcg_random_xorshit_r
-uint64_t pcg_random_xorshit_r(void) 
-{
-	uint64_t d = psg_seed * 1231241u;
-	return d;
+	return (uint16_t)pcg32_boundedrand(UINT16_MAX);
 }

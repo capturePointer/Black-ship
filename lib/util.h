@@ -11,20 +11,20 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 #ifndef UTIL_H
 #define UTIL_H
 
 #include <stdint.h>
+#include <stdio.h>
 #include <stdbool.h>
 
-extern char *xsprintf(const char *fmt, ...);
+extern bool filter_number(const char *arg);
 extern uint16_t port_conv(const char *arg);
 extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
-extern bool filter_number(const char *arg);
+extern char *xsprintf(const char *fmt, ...);
 extern bool valid_ip(const char *ip);
+extern bool urandom_bytes(void *dest, size_t size);
+extern bool port_seeds(void);
 extern uint16_t port_random(void);
-extern uint64_t pcg_random_xorshit_r(void);
-extern void pcg_random_xorshit_seed(uint64_t seed);
 
 #endif /*UTIL_H*/

@@ -123,6 +123,7 @@ void conn_addr6_setup(conn_t *conn, conn_hints info)
 			}
 			conn->c6->sock			    = sk;
 			conn->c6->addr->sin6_family = (sa_family_t)p->ai_family;
+			//TODO
 			conn->c6->addr			    = (addr6_t *)p->ai_addr; // convert into addr6_t from sockaddr*
 		}
 		break;
