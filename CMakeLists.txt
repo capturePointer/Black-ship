@@ -50,8 +50,8 @@ set (TARGET_MAIN src/blackship.c
 				lib/util.c
 				lib/util.h
 				lib/conn.c
-				lib/pcg/pcg.h
-				lib/pcg/pcg.c
+				lib/pcg.h
+				lib/pcg.c
 				lib/conn.h)
 
 add_executable(blackship ${TARGET_MAIN})

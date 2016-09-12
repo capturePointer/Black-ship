@@ -22,12 +22,11 @@
 #include <fcntl.h>
 #include <stdarg.h>
 
-#include "pcg/pcg.h"
-
 #include "err.h"
 #include "info.h"
 #include "util.h"
 #include "mem.h"
+#include "pcg.h"
 
 // filter_number filters all character in the block of mem and it tests
 // if we have in the block only digits and return true

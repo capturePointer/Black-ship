@@ -152,6 +152,25 @@ static void xsprintf_test(void **state)
 	xfree(buff);
 }
 
+static void port_random_test(void **state)
+{
+	(void)state;
+	bool f = false;
+	uint16_t n = 0;
+	port_seeds();
+	f = err_this(ERRENTROPY);
+	assert_false(f);
+	
+	for(int i = 0; i<10000000; i++) {
+		n = port_random();
+		if ((n >= 0) && (n < UINT16_MAX)) 
+			f = true; 
+		else 
+			f = false;
+		assert_true(f);
+	}
+}
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
@@ -161,6 +180,7 @@ int main(void)
 		cmocka_unit_test(port_conv_range_test),
 		cmocka_unit_test(valid_ip_test),
 		cmocka_unit_test(xsprintf_test),
+		cmocka_unit_test(port_random_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

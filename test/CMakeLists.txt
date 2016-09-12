@@ -30,7 +30,8 @@ set (UTIL_TEST_LIB ../lib/err.c
 				../lib/err.h
 				../lib/info.c 
 				../lib/info.h
-				../lib/util.h
+				../lib/pcg.c
+				../lib/pcg.h
 				../lib/mem.c
 				../lib/mem.h
 				../lib/util.c
@@ -45,6 +46,8 @@ set (BLACKSHIP_TEST_SRC ../src/cmds.h
 					../lib/err.c
 					../lib/info.c
 					../lib/info.h
+					../lib/pcg.c
+					../lib/pcg.h
 					../lib/util.c
 					../lib/mem.c
 					../lib/mem.h
@@ -57,6 +60,8 @@ set (CMDS_TEST_SRC ../src/cmds.h
 				../lib/err.c
 				../lib/info.c
 				../lib/info.h
+				../lib/pcg.c
+				../lib/pcg.h
 				../lib/util.c
 				../lib/mem.c
 				../lib/mem.h
@@ -75,6 +80,8 @@ set (CONN_TEST_LIB ../lib/err.h
 				../lib/info.c
 				../lib/info.h
 				../lib/util.c
+				../lib/pcg.c
+				../lib/pcg.h
 				../lib/mem.c
 				../lib/mem.h
 				../lib/conn.h
