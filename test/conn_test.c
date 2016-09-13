@@ -59,7 +59,7 @@ static void conn_addr4_setup_test(void **state)
 			.ai_flags = 0
 		}
 	};
-
+	//TODO
 	conn_addr4_setup(conn, info);
 	assert_true((conn->c4->addr->sin_port)>0);
 	assert_int_equal(conn->c4->addr->sin_family, AF_INET);

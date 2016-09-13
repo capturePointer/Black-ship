@@ -31,13 +31,13 @@ conn_t *conn_new(ip_t version)
 
 	switch (version) {
 	case IPV4:
-		conn = xzmalloc(sizeof(conn_t));
+		conn		   = xzmalloc(sizeof(conn_t));
 		conn->c4	   = xzmalloc(sizeof(conn4_t));
 		conn->c4->addr = xzmalloc(sizeof(addr4_t));
 		break;
 	case IPV6:
-		conn = xzmalloc(sizeof(conn_t));
-		conn->c6 = xzmalloc(sizeof(conn6_t));
+		conn		   = xzmalloc(sizeof(conn_t));
+		conn->c6	   = xzmalloc(sizeof(conn6_t));
 		conn->c6->addr = xzmalloc(sizeof(addr6_t));
 		break;
 	}
@@ -45,7 +45,7 @@ conn_t *conn_new(ip_t version)
 	return conn;
 }
 
-// conn_addr4_setup 
+// conn_addr4_setup
 // setup the underlying ipv4 addr struct of the conn_t
 // will decorate it with the first valid socket and init with info about the addr type
 // that the socket will use in order to connect on that target.
@@ -67,6 +67,8 @@ void conn_addr4_setup(conn_t *conn, conn_hints info)
 		if (!sk) {
 			continue;
 		} else {
+			conn->c4->sock			   = sk;
+			conn->c4->addr			   = (addr4_t *)p->ai_addr;
 			conn->c4->addr->sin_port = port_conv(info.proto);
 			// if proto_conv can't convert the port number assign it
 			// a default value.
@@ -75,24 +77,19 @@ void conn_addr4_setup(conn_t *conn, conn_hints info)
 				STATUS("Default port number assigned is 0.");
 				conn->c4->addr->sin_port = 0;
 			}
-
-			conn->c4->sock			   = sk;
-			conn->c4->addr->sin_family = (sa_family_t)p->ai_family;
-			conn->c4->addr			   = (addr4_t *)p->ai_addr; // convert into addr4_t from sockaddr*
 		}
 		break;
 	}
 
 	freeaddrinfo(servinfo);
-	
+
 	// if p is NULL that means we looped off the end of the list
 	if (p == NULL) {
 		INFOEE("Can't find a valid ip4 address for the host you provided.");
 	}
-
 }
 
-// conn_addr6_setup 
+// conn_addr6_setup
 // setup the underlying ipv6 addr struct of the conn_t
 // will decorate it with the first valid socket and init with info about the addr type
 // that the socket will use in order to connect on that target.
@@ -105,7 +102,7 @@ void conn_addr6_setup(conn_t *conn, conn_hints info)
 	struct addrinfo *servinfo, *p;
 	int err, sk;
 
-	err = getaddrinfo(info.host,info.proto, &info.hints, &servinfo);
+	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
 	if (err) {
 		INFOEE("Could'n not get the ip addr and init the addr info");
 	}
@@ -115,25 +112,22 @@ void conn_addr6_setup(conn_t *conn, conn_hints info)
 		if (!sk) {
 			continue;
 		} else {
+			conn->c6->sock				= sk;
+			conn->c6->addr = (addr6_t *)p->ai_addr;
 			conn->c6->addr->sin6_port = port_conv(info.proto);
 			if (err_this(ERRCONVPORT)) {
 				STATUS("Can't convert proto specified into a valid port number");
 				STATUS("Default port number assigned is 0.");
 				conn->c6->addr->sin6_port = 0;
 			}
-			conn->c6->sock			    = sk;
-			conn->c6->addr->sin6_family = (sa_family_t)p->ai_family;
-			//TODO
-			conn->c6->addr			    = (addr6_t *)p->ai_addr; // convert into addr6_t from sockaddr*
 		}
 		break;
 	}
 
 	freeaddrinfo(servinfo);
-	
+
 	// if p is NULL that means we looped off the end of the list
 	if (p == NULL) {
 		INFOEE("Can't find a valid ip6 address for the host you provided.");
 	}
-
 }
