@@ -54,31 +54,33 @@ void conn_addr4_setup(conn_t *conn, conn_hints info)
 	if ((!conn) || (!conn->c4) || (!conn->c4->addr))
 		INFOEE("Please provide a valid conn ptr");
 
-	struct addrinfo *servinfo, *p;
-	int err, sk;
+	struct addrinfo *servinfo = NULL;
+	struct addrinfo *p		  = NULL;
+	int err					  = 0;
+	int sk					  = 0;
 
 	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
 	if (err) {
 		INFOEE("Could'n not get the ip addr and init the addr info");
 	}
 
-	for (p = servinfo; p != NULL; p++) {
+	for (p = servinfo; p != NULL; p = p->ai_next) {
 		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		if (!sk) {
 			continue;
 		} else {
-			conn->c4->sock			   = sk;
-			conn->c4->addr			   = (addr4_t *)p->ai_addr;
+			conn->c4->sock = sk;
+			memcpy(conn->c4->addr, p->ai_addr, sizeof(addr4_t));
 			conn->c4->addr->sin_port = port_conv(info.proto);
-			// if proto_conv can't convert the port number assign it
-			// a default value.
+			// if proto_conv can't convert the port number
+			// assign it a default value.
 			if (err_this(ERRCONVPORT)) {
 				STATUS("Can't convert proto specified into a valid port number");
 				STATUS("Default port number assigned is 0.");
 				conn->c4->addr->sin_port = 0;
 			}
+			break;
 		}
-		break;
 	}
 
 	freeaddrinfo(servinfo);
@@ -99,29 +101,31 @@ void conn_addr6_setup(conn_t *conn, conn_hints info)
 	if ((!conn) || (!conn->c6) || (!conn->c6->addr))
 		INFOEE("Please provide a valid conn ptr");
 
-	struct addrinfo *servinfo, *p;
-	int err, sk;
+	struct addrinfo *servinfo = NULL;
+	struct addrinfo *p		  = NULL;
+	int err					  = 0;
+	int sk					  = 0;
 
 	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
 	if (err) {
 		INFOEE("Could'n not get the ip addr and init the addr info");
 	}
 
-	for (p = servinfo; p != NULL; p++) {
+	for (p = servinfo; p != NULL; p = p->ai_next) {
 		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		if (!sk) {
 			continue;
 		} else {
-			conn->c6->sock				= sk;
-			conn->c6->addr = (addr6_t *)p->ai_addr;
+			conn->c6->sock = sk;
+			memcpy(conn->c6->addr, p->ai_addr, sizeof(addr6_t));
 			conn->c6->addr->sin6_port = port_conv(info.proto);
 			if (err_this(ERRCONVPORT)) {
 				STATUS("Can't convert proto specified into a valid port number");
 				STATUS("Default port number assigned is 0.");
 				conn->c6->addr->sin6_port = 0;
 			}
+			break;
 		}
-		break;
 	}
 
 	freeaddrinfo(servinfo);
