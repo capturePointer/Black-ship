@@ -163,10 +163,7 @@ static void port_random_test(void **state)
 	
 	for(int i = 0; i<10000000; i++) {
 		n = port_random();
-		if ((n >= 0) && (n < UINT16_MAX)) 
-			f = true; 
-		else 
-			f = false;
+		f = ((n >= 0) && (n < UINT16_MAX))? true:false;
 		assert_true(f);
 	}
 }
