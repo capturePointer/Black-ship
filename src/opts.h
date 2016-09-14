@@ -69,6 +69,7 @@ typedef struct port_t {
 	bool random;
 
 } port_t;
+
 typedef enum other_t {
 	NO_LIST,
 	L_ATTACKS,	// list attacks

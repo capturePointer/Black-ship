@@ -20,7 +20,6 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 #include <netdb.h>
-#
 
 // define the sock_t type
 typedef int sock_t;
@@ -85,6 +84,7 @@ typedef struct conn_hints{
 }conn_hints;
 // alloc new connection type ipv4 or ipv6.
 extern conn_t *conn_new(ip_t version);
+extern void conn_free(conn_t *conn, ip_t version);
 extern void conn_addr4_setup(conn_t *conn, conn_hints info);
 extern void conn_addr6_setup(conn_t *conn, conn_hints info);
 

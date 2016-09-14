@@ -58,7 +58,6 @@ static void new_error_test(void **state)
 	err_code_t mkk;
 	int mk = -1;
 	
-	//TODO
 	// get the vars	that were sumbited
 	err_last(k, &mkk, &mk);
 

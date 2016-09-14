@@ -27,22 +27,45 @@
 // if a invalid version is passed the return will be NULL
 conn_t *conn_new(ip_t version)
 {
-	conn_t *conn = NULL;
-
+	conn_t *conn = xzmalloc(sizeof(conn_t));
 	switch (version) {
 	case IPV4:
-		conn		   = xzmalloc(sizeof(conn_t));
 		conn->c4	   = xzmalloc(sizeof(conn4_t));
 		conn->c4->addr = xzmalloc(sizeof(addr4_t));
 		break;
 	case IPV6:
-		conn		   = xzmalloc(sizeof(conn_t));
 		conn->c6	   = xzmalloc(sizeof(conn6_t));
 		conn->c6->addr = xzmalloc(sizeof(addr6_t));
 		break;
 	}
 
 	return conn;
+}
+
+// conn_free frees the new ipv4, ipv6 connection
+// if you pass a NULL on conn this will throw an error and 
+// it will exit.
+void conn_free(conn_t *conn, ip_t version)
+{
+	if (!conn)
+		INFOEE("Can't free a connection pointer that is NULL");
+
+	switch (version) {
+	case IPV4:
+		if ((!conn->c4) || (!conn->c4->addr)) 
+			INFOEE("Can't free members of the connection that is NULL");
+		xfree(conn->c4->addr);
+		xfree(conn->c4);
+		break;
+	case IPV6:
+		if((!conn->c6) || (!conn->c6->addr))
+			INFOEE("Can't free members of the connection that is NULL");
+		xfree(conn->c6->addr);
+		xfree(conn->c6);
+		break;
+	}
+
+	xfree(conn);
 }
 
 // conn_addr4_setup

@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// stdlib modules
 #include <errno.h>
 #include <stdbool.h>
 #include <stdint.h>
@@ -20,11 +19,9 @@
 #include <stdlib.h>
 #include <string.h>
 
-// extra modules
 #include "info.h"
 #include "mem.h"
 
-// err module
 #include "err.h"
 
 // define a reasonable amount of errors
@@ -58,12 +55,13 @@ typedef struct err_list_t {
 	uint8_t n;
 } err_list_t;
 
-// state of the circular list
+// err_list_t *err state of the circular list
 // singleton global error used by exported functions
 // to add, dump, release error
 static err_list_t *err;
 
-// err_list_new create new circular linked list
+// err_list_new 
+// create new circular linked list
 // also create the first node and assign info to it
 static err_list_t *err_list_new(const char *m, err_code_t c, int s)
 {

@@ -22,9 +22,7 @@ static void conn_new_test(void **state)
 	assert_non_null(conn->c4);
 	assert_non_null(conn->c4->addr);
 
-	xfree(conn->c4->addr);
-	xfree(conn->c4);
-	xfree(conn);
+	conn_free(conn, IPV4);
 	
 	//reset state of the connection
 	*(void**)(&conn) = NULL;
@@ -35,9 +33,7 @@ static void conn_new_test(void **state)
 	assert_non_null(conn->c6);
 	assert_non_null(conn->c6->addr);
 
-	xfree(conn->c6->addr);
-	xfree(conn->c6);
-	xfree(conn);
+	conn_free(conn, IPV6);
 }
 
 static void conn_addr4_setup_test(void **state)
@@ -64,9 +60,7 @@ static void conn_addr4_setup_test(void **state)
 	assert_int_equal(conn->c4->addr->sin_port, 21);
 	assert_int_equal(conn->c4->addr->sin_family, AF_INET);
 
-	xfree(conn->c4->addr);
-	xfree(conn->c4);
-	xfree(conn);
+	conn_free(conn, IPV4);
 	*(void**)&conn = NULL;
 	assert_null(conn);
 
@@ -90,9 +84,7 @@ static void conn_addr4_setup_test(void **state)
 	assert_int_equal(conn->c6->addr->sin6_port, 80);
 	assert_int_equal(conn->c6->addr->sin6_family, AF_INET6);
 
-	xfree(conn->c6->addr);
-	xfree(conn->c6);
-	xfree(conn);
+	conn_free(conn, IPV6);
 	*(void**)&conn = NULL;
 	assert_null(conn);
 }

@@ -16,7 +16,7 @@
 
 #include <lib/info.h>
 #include <lib/mem.h>
-#include <lib/conn.c>
+#include <lib/conn.h>
 
 #include "udp_flood.h"
 
@@ -50,12 +50,13 @@ void udp_flood(arguments args) {
 	// if random flag is set just alert user
 	// that the UDP Flood already uses random port option
 	// due to the nature of the attack
-	if (args.port.random) {
+	if (args.port.random)
 		STATUS("[ * ] UDP_FLOOD already uses the random flag.");
-	}
-	
 
+	conn_t *conn = NULL;
+	conn = conn_new(args.host_type);
 }
+
 
 
 
