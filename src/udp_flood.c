@@ -24,6 +24,7 @@
 
 #define PK_SIZE 256
 
+typedef int udp_err_t;
 /*
  * Udp flood
  *
@@ -58,19 +59,43 @@ void udp_flood(arguments args) {
 
 	conn_t *conn = NULL;
 	conn = conn_new(args.host_type);
-	
-	conn->c4->addr->sin_family = AF_INET;
-	conn->c4->addr->sin_port = htons(args.port.n);
-	memset(&conn->c4->addr->sin_addr, sizeof(conn->c4->addr->sin_addr), 0);
+	udp_err_t err;	
+	switch(args.host_type)
+	{
+		case IPV4:
+			conn->c4->buff = xzmalloc(PK_SIZE * sizeof(conn->c4->buff));
+			for(int i=0; i<PK_SIZE; i++) {
+				// fill up the buffer with random data.
+				urandom_bytes(&conn->c6->buff[i], sizeof(conn->c4->buff[i]));
+			}
 
+			err = ipv4(conn, args);
+			if (!err) {
+			}
+			break;
+		case IPV6:
+			conn->c6->buff = xzmalloc(PK_SIZE * sizeof(conn->c6->buff));
+			for(int i=0; i<PK_SIZE; i++) {
+				// fill up the buffer with random data.
+				urandom_bytes(&conn->c6->buff[i], sizeof(conn->c6->buff[i]));
+			}
+			err = ipv6(conn, args);
+			if(!err) {
+			}
+			break;
+
+	}
 }
 
-typedef int udp_err_t;
-
-static udp_err_t ipv4(conn4_t *conn)
+static udp_err_t ipv4(conn4_t *conn, arguments args)
 {
 	if (!conn)
 		INFOEE("Empty ipv4 conn pointer, please pass a non null conn");
+
+
+	conn->addr->sin_family = AF_INET;
+	conn->addr->sin_port = htons(args.port.n);
+	memset(&conn->addr->sin_addr, sizeof(conn->addr->sin_addr), 0);
 
 	conn->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
 	if (!conn->sock) {
@@ -78,11 +103,6 @@ static udp_err_t ipv4(conn4_t *conn)
 		return -1;
 	}
 
-	// fill up the buffer with random data.
-	conn->buff = xzmalloc(PK_SIZE * sizeof(conn->buff));
-	for(int i=0; i<PK_SIZE; i++) {
-		urandom_bytes(&conn->buff[i], sizeof(conn->buff[i]));
-	}
 
 	//TODO
 	ssize_t n = 0;
@@ -97,8 +117,16 @@ static udp_err_t ipv4(conn4_t *conn)
 	// todo	
 	return 0;
 }
+// TODO
+static udp_err_t ipv6(conn6_t *conn, arguments args)
+{
+	if(!conn)
+		INFOEE("Empty ipv6 conn pointer, please pass a non null conn");
 
+	conn->sock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
+	if(!conn->sock) {
+		WSTATUS("Could not create the udp6 socket");
+		return -1;
+	}
 
-
-
-
+}
