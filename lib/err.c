@@ -190,7 +190,7 @@ static bool err_list_free(err_list_t **l)
 void err_destroy(void)
 {
 	if (!err_list_free(&err))
-		INFOEE("Can't free error list, list was not initilized");
+		INFO("Internal error list is already empty");
 }
 
 // err_dump dump all the errors to stderr

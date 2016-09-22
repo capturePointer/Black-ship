@@ -41,6 +41,10 @@ set (UTIL_TEST_LIB ../lib/err.c
 set (BLACKSHIP_TEST_SRC ../src/cmds.h
 					../src/cmds.c
 					../src/opts.c
+					../src/udp_flood.c
+					../src/udp_flood.h
+					../lib/conn.c
+					../lib/conn.h
 					../src/opts.h
 					../lib/err.h
 					../lib/err.c
@@ -56,6 +60,8 @@ set (CMDS_TEST_SRC ../src/cmds.h
 				../src/cmds.c
 				../src/opts.c
 				../src/opts.h
+				../src/udp_flood.c
+				../src/udp_flood.h
 				../lib/err.h
 				../lib/err.c
 				../lib/info.c
@@ -65,6 +71,8 @@ set (CMDS_TEST_SRC ../src/cmds.h
 				../lib/util.c
 				../lib/mem.c
 				../lib/mem.h
+				../lib/conn.h
+				../lib/conn.c
 				cmds_test.c)
 
 set (MEM_TEST_LIB ../lib/mem.h
