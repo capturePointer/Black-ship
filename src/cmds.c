@@ -21,6 +21,7 @@
 #include <lib/info.h>
 
 #include "cmds.h"
+#include "udp_flood.h"
 
 // delcare here the list of attacks that the app will support
 // informative const list , this list will change over time
@@ -64,6 +65,7 @@ void list_attacks(void)
 // and return it as a flag
 ATTACK_SW valid_attack(const char *exploit)
 {
+	//TODO
 	uint8_t i = 0;
 	for (; i < N_ATTACKS; i++) {
 		if (!strcmp(exploit, doses[i]))
@@ -100,11 +102,8 @@ void run_cmd(arguments arg)
 		return;
 	}
 	
-	// test if the host port and range port are set
-	if ((strlen(arg.host) == 0) ||
-		(!arg.port.n) || 
-		(!arg.port.high)) {
-			WSTATUS("Please set the host and port");
+	if (strlen(arg.host) == 0) {
+			WSTATUS("Please set the host");
 			return;
 	}
 
@@ -112,6 +111,7 @@ void run_cmd(arguments arg)
 	// decide what attack we should launch
 	switch(arg.attack) {
 		case UDP_FLOOD:
+			STATUS("UDP");
 			//udp_flood(arg);
 			break;
 		case ICMP_FLOOD:
@@ -136,9 +136,9 @@ void run_cmd(arguments arg)
 	}
 
 	/*DEBUG*/	
-	printf("host : %s\n", arg.host);
-	printf("port: %d\n", arg.port.n);
-	printf("random: %d\n", (arg.port.random) ? 1 : 0);
-	printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
-	printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
+	/* printf("host : %s\n", arg.host); */
+	/* printf("port: %d\n", arg.port.n); */
+	/* printf("random: %d\n", (arg.port.random) ? 1 : 0); */
+	/* printf("low: %d , high: %d\n", arg.port.low, arg.port.high); */
+	/* printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0); */
 }
