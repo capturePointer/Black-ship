@@ -82,6 +82,7 @@ typedef struct conn_hints{
 	const char *proto;
 	struct addrinfo hints;
 }conn_hints;
+
 // alloc new connection type ipv4 or ipv6.
 extern conn_t *conn_new(ip_t version);
 extern void conn_free(conn_t *conn, ip_t version);

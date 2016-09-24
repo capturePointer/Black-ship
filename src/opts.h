@@ -41,9 +41,13 @@ extern const char *argp_program_bug_address;
 extern struct argp_option options[];
 extern struct argp argp;
 
-// list of attacks
+// list of attacks that the cmd line will support
+// we are using two sentinel values START_ATTACK and
+// END_ATTACK, they are there looping and conditional
+// testing purposes.
 enum ATTACK_SW {
-	UDP_FLOOD = 0,
+	START_ATTACK = 0, 
+	UDP_FLOOD,
 	ICMP_FLOOD,
 	IGMP_FLOOD,
 	SYN_FLOOD,
@@ -52,13 +56,11 @@ enum ATTACK_SW {
 	SOCKSTRESS,
 	HTTP_FLOOD,
 	DNS_FLOOD,
-
-	END_ATTACK,	// end do not use
+	END_ATTACK,	
 } ATTACK_LIST;
-
 typedef enum ATTACK_SW ATTACK_SW;
 
-
+// port_t type that will hold all flags and port numbers
 typedef struct port_t {
 	uint16_t n;	// default standard port
 	// range values ports
@@ -67,9 +69,10 @@ typedef struct port_t {
 	// flag for knowing that the port option
 	// is set to random/dynamic ports
 	bool random;
-
 } port_t;
 
+// other_t type that stores extra
+// options for the app
 typedef enum other_t {
 	NO_LIST,
 	L_ATTACKS,	// list attacks

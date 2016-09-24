@@ -35,6 +35,4 @@ int main(int argc, char **argv)
 	} else if (err == ARGP_KEY_ERROR) {
 		err_dump();
 	}
-
-	exit(EXIT_SUCCESS);
 }

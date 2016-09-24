@@ -15,12 +15,14 @@
 #include <stdio.h>
 #include <string.h>
 
-#include <lib/util.h>
 #include <lib/conn.h>
-#include <lib/mem.h>
 #include <lib/info.h>
+#include <lib/mem.h>
+#include <lib/util.h>
+#include <lib/err.h>
 
 #include "cmds.h"
+#include "udp_flood.h"
 
 // delcare here the list of attacks that the app will support
 // informative const list , this list will change over time
@@ -38,7 +40,6 @@ static const char *attacks[] = {
 	0,
 };
 
-#define N_ATTACKS 9
 static const char *doses[] = {
 	"udp", "icmp", "igmp",
 	"syn", "rst", "psh+ack",
@@ -46,6 +47,7 @@ static const char *doses[] = {
 	0,
 };
 
+#define N_ATTACKS 9
 
 void list_attacks(void)
 {
@@ -60,33 +62,33 @@ void list_attacks(void)
 }
 
 // valid_attack
-// test if the exploit is valid and supported
-// and return it as a flag
+// return the flag if the exploit is valid and supported
 ATTACK_SW valid_attack(const char *exploit)
 {
 	uint8_t i = 0;
 	for (; i < N_ATTACKS; i++) {
-		if (!strcmp(exploit, doses[i]))
-			switch(i) {
-				case 0:
-					return UDP_FLOOD;
-				case 1:
-					return ICMP_FLOOD;
-				case 2:
-					return IGMP_FLOOD;
-				case 4:
-					return  SYN_FLOOD;
-				case 5:
-					return RST_FLOOD;
-				case 6:
-					return PSH_ACK_FLOOD;
-				case 7:
-					return SOCKSTRESS;
-				case 8:
-					return HTTP_FLOOD;
-				case 9:
-					return DNS_FLOOD;
+		if (!strcmp(exploit, doses[i])) {
+			switch (i) {
+			case 0:
+				return UDP_FLOOD;
+			case 1:
+				return ICMP_FLOOD;
+			case 2:
+				return IGMP_FLOOD;
+			case 3:
+				return SYN_FLOOD;
+			case 4:
+				return RST_FLOOD;
+			case 5:
+				return PSH_ACK_FLOOD;
+			case 6:
+				return SOCKSTRESS;
+			case 7:
+				return HTTP_FLOOD;
+			case 8:
+				return DNS_FLOOD;
 			}
+		}
 	}
 	return END_ATTACK;
 }
@@ -95,50 +97,48 @@ ATTACK_SW valid_attack(const char *exploit)
 // what type of attack we want to start and launch it
 void run_cmd(arguments arg)
 {
-	if(arg.list_attacks) {
+	if (arg.list_attacks) {
 		list_attacks();
 		return;
 	}
-	
-	// test if the host port and range port are set
-	if ((strlen(arg.host) == 0) ||
-		(!arg.port.n) || 
-		(!arg.port.high)) {
-			WSTATUS("Please set the host and port");
-			return;
+
+	if (!arg.host) {
+		WSTATUS("Please set the host with a valid ip");
+		return;
 	}
 
 	STATUS("Blackship start sailing..");
 	// decide what attack we should launch
-	switch(arg.attack) {
-		case UDP_FLOOD:
-			//udp_flood(arg);
-			break;
-		case ICMP_FLOOD:
-			break;
-		case IGMP_FLOOD:
-			break;
-		case SYN_FLOOD:
-			break;
-		case RST_FLOOD:
-			break;
-		case PSH_ACK_FLOOD:
-			break;
-		case SOCKSTRESS:
-			break;
-		case HTTP_FLOOD:
-			break;
-		case DNS_FLOOD:
-			break;
-		// if we reached this point that means something bad happened.
-		case END_ATTACK:
-			INFOEE("Can't run this attack, something is wrong");
+	switch (arg.attack) {
+	case UDP_FLOOD:
+		udp_flood(arg);
+		break;
+	case ICMP_FLOOD:
+		break;
+	case IGMP_FLOOD:
+		break;
+	case SYN_FLOOD:
+		break;
+	case RST_FLOOD:
+		break;
+	case PSH_ACK_FLOOD:
+		break;
+	case SOCKSTRESS:
+		break;
+	case HTTP_FLOOD:
+		break;
+	case DNS_FLOOD:
+		break;
+	// if we reached this point that means something bad happened.
+	case START_ATTACK:
+	case END_ATTACK:
+		WSTATUS("Please set a valid attack that the app supports");	
 	}
 
-	/*DEBUG*/	
-	printf("host : %s\n", arg.host);
-	printf("port: %d\n", arg.port.n);
-	printf("random: %d\n", (arg.port.random) ? 1 : 0);
-	printf("low: %d , high: %d\n", arg.port.low, arg.port.high);
-	printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0);
+	/* #<{(|DEBUG|)}># */
+	/* printf("host : %s\n", arg.host); */
+	/* printf("port: %d\n", arg.port.n); */
+	/* printf("random: %d\n", (arg.port.random) ? 1 : 0); */
+	/* printf("low: %d , high: %d\n", arg.port.low, arg.port.high); */
+	/* printf("list_attacks: %d\n", (arg.list_attacks) ? 1 : 0); */
 }

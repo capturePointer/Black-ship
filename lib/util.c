@@ -34,6 +34,10 @@
 // this function exptects that the string is NULL terminated or it will fail
 bool filter_number(const char *arg)
 {
+	if (!arg) {
+		return false;
+	}
+
 	const char *p = arg;
 	for (; *p !='\0'; p++)
 		
@@ -54,14 +58,14 @@ uint16_t port_conv(const char *arg)
 
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0))					 // ports are 16 byte wide
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) // ports are 16 byte wide
 		goto err;
 
 	// it is safe is u is a value from 0 to UINT_MAX(65,535)
 	return (uint16_t)u;
 
 err:
-	err_new("[ERROR] Connot convert the number into a real port.", ERRCONVPORT, errno);
+	err_new("Connot convert the number into a real port.", ERRCONVPORT, errno);
 	return 0;
 }
 
@@ -69,11 +73,16 @@ err:
 // the function wraps port_conv for every token
 void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 {
+	if (!arg) {
+		err_new("Connot convert null arg into range ports.", ERRCONVPORT, 0);
+		return;
+	}
+
 	char delim[2] = "-";
 	char *t1, *t2;
 	t1 = strtok(arg, delim);
 	if (t1 == NULL) {
-		err_new("[ERROR] Connot convert numbers into range ports.", ERRCONVPORT, 0);
+		err_new("Connot convert first number into range ports.", ERRCONVPORT, 0);
 		return;
 	}
 	*low = port_conv(t1);
@@ -83,7 +92,7 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 	// NULL is passed as first arg
 	t2 = strtok(NULL, delim);
 	if (t2 == NULL) {
-		err_new("[Error] Connot convert numbers into range ports.", ERRCONVPORT, 0);
+		err_new("Connot convert second number into range ports.", ERRCONVPORT, 0);
 		return;
 	}
 	*high = port_conv(t2);
@@ -126,6 +135,9 @@ char *xsprintf(const char *fmt, ...) {
 // if it's not a valid ip return false
 bool valid_ip(const char *ip)
 {
+	if (!ip)
+		return false;
+
 	struct sockaddr_in in4;
 	struct sockaddr_in6 in6;
 
@@ -144,7 +156,7 @@ bool valid_ip(const char *ip)
 // false, otherwise it return true.
 bool urandom_bytes(void *dest, size_t size)
 {
-	if (size == 0)
+	if ((!dest) || (!size))
 		return false;
 
 	int fd = open("/dev/urandom", O_RDONLY);
