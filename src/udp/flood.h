@@ -11,7 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
+//
 #ifndef UDP_FLOOD_H
 #define UDP_FLOOD_H
 
@@ -28,6 +28,8 @@ typedef struct udp_atk {
 	void (*proc_cb)(void *);
 } udp_atk;
 
-extern void flood(arguments args);
+extern void flood(conn_t *conn);
+extern void flood_setup4(conn4_t *, const char *);
+extern void flood_attack4(conn4_t *);
 
 #endif /*UDP_FLOOD_H*/

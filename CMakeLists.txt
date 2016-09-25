@@ -52,6 +52,10 @@ set (TARGET_MAIN src/blackship.c
 				lib/conn.c
 				lib/pcg.h
 				lib/pcg.c
+				src/udp/udp.h
+				src/udp/udp.c
+				src/udp/flood.h
+				src/udp/flood.c
 				lib/conn.h)
 
 add_executable(blackship ${TARGET_MAIN})

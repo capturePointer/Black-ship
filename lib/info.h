@@ -38,10 +38,10 @@ extern void active_debug(const bool f);
 	status(message)
 
 #define DEBUGF(format, ...) \
-	debugf(message, __VA_ARGS__)
+	debugf(format, __VA_ARGS__)
 
-#define DEBUG(message)\
-	debug(message)
+#define DEBUG(msg)\
+	debug(msg)
 
 #define DEBUG_ON() \
 	active_debug(true);
