@@ -41,8 +41,6 @@ set (TARGET_MAIN src/blackship.c
 				src/cmds.c 
 				src/opts.c 
 				src/opts.h
-				src/udp_flood.h
-				src/udp_flood.c
 				lib/err.c 
 				lib/err.h
 				lib/mem.c

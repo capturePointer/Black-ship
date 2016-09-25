@@ -15,8 +15,19 @@
 #ifndef UDP_FLOOD_H
 #define UDP_FLOOD_H
 
-#include "opts.h"
+#include "../opts.h"
 
-extern void udp_flood(arguments args);
+#define PK_SIZE 256
+
+// udp_err_t type to retain errors from udp package
+typedef int udp_err_t;
+
+typedef struct udp_atk {
+	// depending on the args it will generate a proc_cb
+	// that will pe used to launch the attack.
+	void (*proc_cb)(void *);
+} udp_atk;
+
+extern void flood(arguments args);
 
 #endif /*UDP_FLOOD_H*/

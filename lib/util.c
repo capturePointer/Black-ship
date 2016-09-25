@@ -15,7 +15,6 @@
 #include <arpa/inet.h>
 #include <errno.h>
 #include <limits.h>
-#include <linux/random.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>

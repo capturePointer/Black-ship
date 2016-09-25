@@ -15,10 +15,15 @@
 #ifndef INFO_H
 #define INFO_H
 
+#include <stdbool.h>
+
 extern void info(const char *msg, const char *file, int line);
 extern void infoee(const char *msg, const char *file, int line);
 extern void wstatus(const char *msg);
 extern void status(const char *msg);
+extern void debug(const char *msg);
+extern void debugf(const char *fmt, ...);
+extern void active_debug(const bool f);
 
 #define INFO(message) \
 	info((message), __FILE__, __LINE__)
@@ -31,5 +36,17 @@ extern void status(const char *msg);
 
 #define STATUS(message) \
 	status(message)
+
+#define DEBUGF(format, ...) \
+	debugf(message, __VA_ARGS__)
+
+#define DEBUG(message)\
+	debug(message)
+
+#define DEBUG_ON() \
+	active_debug(true);
+
+#define DEBUG_OFF() \
+	active_debug(false);
 
 #endif /*INFO_H*/

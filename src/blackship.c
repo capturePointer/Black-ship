@@ -25,6 +25,9 @@
 // commnad line
 int main(int argc, char **argv)
 {
+	if (argc < 2)
+		return 0;
+
 	error_t err = 0;
 	arguments arg;
 	memset(&arg, 0, sizeof(arguments));

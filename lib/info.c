@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <stdarg.h>
 
 #include "info.h"
 #include "err.h"
@@ -42,4 +43,40 @@ inline void wstatus (const char *msg)
 inline void status (const char *msg)
 {
 	fprintf(stdout,"[ * ] %s\n" , msg);
+}
+
+
+// main singleton debug flag
+// default false
+static bool debug_flag;
+
+void active_debug(const bool f) {
+	debug_flag = f;
+}
+
+
+void debug(const char *msg)
+{
+	if (!debug_flag)
+		return;
+
+	fprintf(stdout, "[ DEBUG ] %s\n", msg);
+}
+
+void debugf(const char *fmt, ...) {
+	if (!debug_flag) 
+		return;
+
+	va_list args;
+	int n;
+
+	va_start(args, fmt);
+	n = vsnprintf(NULL, 0, fmt, args);
+	va_end(args);
+
+	char buff[n];
+	va_start(args, fmt);
+	vsnprintf(buff, sizeof(char)*(unsigned long)n, fmt, args);
+	va_end(args);
+	fprintf(stdout, "%s\n", buff);
 }

