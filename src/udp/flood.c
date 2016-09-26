@@ -43,9 +43,6 @@ void flood_setup4(conn4_t *conn, const char *host)
 	if (!conn->sock)
 		INFOEE("Could not create the upd socket");
 
-	if (!bind(conn->sock, (SA *)&conn->addr, sizeof(conn->addr)))
-		INFOEE("Could not bind the udp socket");
-
 	if (!connect(conn->sock, (SA*)&conn->addr, sizeof(conn->addr)))
 		INFOEE("Could not connect the udp socket");
 
@@ -58,15 +55,16 @@ void flood_setup4(conn4_t *conn, const char *host)
 void flood_attack4(conn4_t *c)
 {
 	ssize_t n = 0;
-
+	
 	STATUS("Guns are ready... Fire !");
-	for (;;) {
+	for (size_t i=0; i<1; i++) {
 		n = send(c->sock, c->buff, PK_SIZE * sizeof(c->buff), 0);
 		if (!n) {
 			WSTATUS("Could not send udp packet ...");
 			break;
 		}
-		DEBUGF("Send packet of size %d", n);
+		printf("Send packet of size %lu\n", n);
+		printf("Send this pkg %s\n", c->buff);
 	}
 }
 

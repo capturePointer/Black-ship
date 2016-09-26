@@ -16,81 +16,36 @@ cmake_policy(SET CMP0002 NEW)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_C_COMPILER "/usr/bin/gcc")
 
+SET(ALL_FILES ../lib/info.c
+			  ../lib/info.h
+			  ../lib/util.h
+			  ../lib/util.c
+			  ../lib/err.h
+			  ../lib/err.c
+			  ../lib/pcg.c
+			  ../lib/pcg.h
+			  ../lib/conn.c
+			  ../lib/conn.h
+			  ../lib/err.c
+			  ../lib/err.h
+			  ../lib/mem.h
+			  ../lib/mem.c
+			  ../src/udp/udp.c
+			  ../src/udp/udp.h
+			  ../src/udp/flood.h
+			  ../src/udp/flood.c
+			  ../src/cmds.h
+			  ../src/cmds.c
+			  ../src/opts.c
+			  ../src/opts.h)
+
 # add all files and push them to exec
-set (ERR_TEST_LIB ../lib/err.c 
-				../lib/err.h
-				../lib/info.c 
-				../lib/info.h
-				../lib/util.h
-				../lib/mem.c
-				../lib/mem.h
-				err_test.c)
-
-set (UTIL_TEST_LIB ../lib/err.c 
-				../lib/err.h
-				../lib/info.c 
-				../lib/info.h
-				../lib/pcg.c
-				../lib/pcg.h
-				../lib/mem.c
-				../lib/mem.h
-				../lib/util.c
-				../lib/util.h
-				util_test.c)
-
-set (BLACKSHIP_TEST_SRC ../src/cmds.h
-					../src/cmds.c
-					../src/opts.c
-					../lib/conn.c
-					../lib/conn.h
-					../src/opts.h
-					../lib/err.h
-					../lib/err.c
-					../lib/info.c
-					../lib/info.h
-					../lib/pcg.c
-					../lib/pcg.h
-					../lib/util.c
-					../lib/mem.c
-					../lib/mem.h
-					blackship_test.c)
-set (CMDS_TEST_SRC ../src/cmds.h
-				../src/cmds.c
-				../src/opts.c
-				../src/opts.h
-				../lib/err.h
-				../lib/err.c
-				../lib/info.c
-				../lib/info.h
-				../lib/pcg.c
-				../lib/pcg.h
-				../lib/util.c
-				../lib/mem.c
-				../lib/mem.h
-				../lib/conn.h
-				../lib/conn.c
-				cmds_test.c)
-
-set (MEM_TEST_LIB ../lib/mem.h
-				../lib/mem.c
-				../lib/info.h
-				../lib/info.c
-				../lib/err.h
-				../lib/err.c
-				  mem_test.c)
-
-set (CONN_TEST_LIB ../lib/err.h
-				../lib/err.c
-				../lib/info.c
-				../lib/info.h
-				../lib/util.c
-				../lib/pcg.c
-				../lib/pcg.h
-				../lib/mem.c
-				../lib/mem.h
-				../lib/conn.h
-				../lib/conn.c
-				conn_test.c)
+set (ERR_TEST_LIB err_test.c ${ALL_FILES})
+set (UTIL_TEST_LIB util_test.c ${ALL_FILES})
+set (BLACKSHIP_TEST_SRC blackship_test.c ${ALL_FILES})
+set (CMDS_TEST_SRC cmds_test.c ${ALL_FILES})
+set (MEM_TEST_LIB mem_test.c ${ALL_FILES})
+set (CONN_TEST_LIB conn_test.c ${ALL_FILES})
 
 add_executable(err_test ${ERR_TEST_LIB})
 add_executable(util_test ${UTIL_TEST_LIB})

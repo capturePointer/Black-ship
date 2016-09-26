@@ -42,7 +42,7 @@ typedef struct conn4_t {
 	addr4_t *addr;
 	// the underlying buffer that the socket
 	// will use for IO purposes
-	unsigned char *buff;
+	uint8_t *buff;
 } conn4_t;
 
 // define ipv6 connection
@@ -56,11 +56,11 @@ typedef struct conn6_t {
 	addr6_t *addr;
 	// the underlying buffer that the socket
 	// will use for IO purposes
-	unsigned char *buff;
+	uint8_t *buff;
 } conn6_t;
 
-// ipv4 or ipv6 connections
-typedef union conn_t {
+// ipv4 and ipv6 connections
+typedef struct conn_t {
 	conn6_t *c6;
 	conn4_t *c4;
 }conn_t;
@@ -83,9 +83,10 @@ typedef struct conn_hints{
 	struct addrinfo hints;
 }conn_hints;
 
-// alloc new connection type ipv4 or ipv6.
-extern conn_t *conn_new(ip_t version);
-extern void conn_free(conn_t *conn, ip_t version);
+// alloc new connection
+extern conn_t *conn_new(void);
+extern void conn_free(conn_t *conn);
+
 extern void conn_addr4_setup(conn_t *conn, conn_hints info);
 extern void conn_addr6_setup(conn_t *conn, conn_hints info);
 

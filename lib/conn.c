@@ -23,47 +23,41 @@
 #include "mem.h"
 #include "util.h"
 
-// conn_new alloc new ipv4, ipv6 connection
-// if a invalid version is passed the return will be NULL
-conn_t *conn_new(ip_t version)
+#define PK_SIZE 10 * sizeof(uint8_t) // 10 bytes of data
+
+// conn_new alloc a new conn_t struct
+conn_t *conn_new(void)
 {
 	conn_t *conn = xzmalloc(sizeof(conn_t));
-	switch (version) {
-	case IPV4:
-		conn->c4	   = xzmalloc(sizeof(conn4_t));
-		conn->c4->addr = xzmalloc(sizeof(addr4_t));
-		break;
-	case IPV6:
-		conn->c6	   = xzmalloc(sizeof(conn6_t));
-		conn->c6->addr = xzmalloc(sizeof(addr6_t));
-		break;
-	}
+
+	conn->c4	   = xzmalloc(sizeof(conn4_t));
+	conn->c4->buff = xzmalloc(PK_SIZE);
+	conn->c4->addr = xzmalloc(sizeof(addr4_t));
+
+	conn->c6	   = xzmalloc(sizeof(conn6_t));
+	conn->c6->buff = xzmalloc(PK_SIZE);
+	conn->c6->addr = xzmalloc(sizeof(addr6_t));
 
 	return conn;
 }
 
-// conn_free frees the new ipv4, ipv6 connection
-// if you pass a NULL on conn this will throw an error and 
-// it will exit.
-void conn_free(conn_t *conn, ip_t version)
+// conn_free frees the new ipv4/ipv6 connection
+void conn_free(conn_t *conn)
 {
 	if (!conn)
-		INFOEE("Can't free a connection pointer that is NULL");
+		INFOEE("Can't free a connection ptr that is NULL");
+	if((!conn->c4) || (!conn->c4->addr) || (!conn->c4->buff))
+		INFOEE("Can't free a connection4 ptr that is NULL");
+	if ((!conn->c6) || (!conn->c6->addr) || (!conn->c6->buff))
+		INFOEE("Can't free a connection6 ptr that is NULL");
 
-	switch (version) {
-	case IPV4:
-		if ((!conn->c4) || (!conn->c4->addr)) 
-			INFOEE("Can't free members of the connection that is NULL");
-		xfree(conn->c4->addr);
-		xfree(conn->c4);
-		break;
-	case IPV6:
-		if((!conn->c6) || (!conn->c6->addr))
-			INFOEE("Can't free members of the connection that is NULL");
-		xfree(conn->c6->addr);
-		xfree(conn->c6);
-		break;
-	}
+	xfree(conn->c4->addr);
+	xfree(conn->c4->buff);
+	xfree(conn->c4);
+
+	xfree(conn->c6->addr);
+	xfree(conn->c6->buff);
+	xfree(conn->c6);
 
 	xfree(conn);
 }

@@ -21,12 +21,10 @@ void udp_init(arguments args)
 
 
 	STATUS("UDP-FLOOD attack is starting.");
-	// 
-	conn = conn_new(args.host_type);
+	conn = conn_new();
 
 	flood_setup4(conn->c4, args.host);
 	flood(conn);
 	
-	//
-	conn_free(conn, args.host_type);
+	conn_free(conn);
 }
