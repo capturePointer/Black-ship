@@ -62,6 +62,6 @@ typedef struct conn_hints{
 
 // alloc new connection
 extern conn_t *conn_new(void);
-extern void conn_free(conn_t *conn);
-
+extern void conn_free(conn_t *);
+extern void conn_addr_setup(conn_t *, conn_hints);
 #endif /*CONN_H*/

@@ -44,8 +44,41 @@ void conn_free(conn_t *conn)
 		INFOEE("Can't free a connection pointer that is NULL");
 	if ((!conn->addr) || (!conn->buff))
 		INFOEE("Can't free a connection members that are NULL");
+
 	xfree(conn->addr);
 	xfree(conn->buff);
 	xfree(conn);
 }
 
+// conn_addr_setup
+// fill up the underlying addr of conn_t with the first valid dns lookup
+void conn_addr_setup(conn_t *conn, conn_hints info)
+{
+	if (!conn)
+		INFOEE("Can't use invalid connection, pointer is NULL");
+	struct addrinfo *servinfo = NULL;
+	struct addrinfo *p		  = NULL;
+	int err					  = 0;
+	int sk					  = 0;
+
+	err	= getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
+	if (err)
+		INFOEE("Can't get the ip addr from the dns lookup");
+
+	for (p = servinfo; p != NULL; p = p->ai_next) {
+		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
+		if (!sk)
+			continue;
+		else {
+			conn->sock			  = sk;
+			memcpy(conn->addr, p->ai_addr, p->ai_addrlen);
+			break;
+		}
+	}
+
+	freeaddrinfo(servinfo);
+	// if p is NULL that means we looped off the end of the list
+	if (p == NULL) {
+		INFOEE("Can't find a valid ip4 address for the host you provided.");
+	}
+}
