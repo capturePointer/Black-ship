@@ -25,7 +25,7 @@ static void conn_new_test(void **state)
 	assert_null(conn);
 }
 
-static void conn_addr_setup_test(void **state)
+static void conn_addr_setup_test_ivp4(void **state)
 {
 	(void)state;
 	conn_t *conn = conn_new();
@@ -39,7 +39,8 @@ static void conn_addr_setup_test(void **state)
 		.hints = {
 			.ai_family   = AF_INET,
 			.ai_socktype = SOCK_STREAM,
-			.ai_flags	= 0 }
+			.ai_flags	= 0
+		}
 	};
 
 	conn_addr_setup(conn, info4);
@@ -53,10 +54,44 @@ static void conn_addr_setup_test(void **state)
 	assert_non_null(err);
 	assert_string_equal(buff, "127.0.0.1");
 
-	
 	conn_free(conn);
 	*(void**)&conn = NULL;
 	assert_null(conn);
+}
+
+static void conn_addr_setup_test_ipv6(void **state)
+{
+	(void)state;
+	conn_t *conn = conn_new();
+	assert_non_null(conn);
+	assert_non_null(conn->addr);
+	assert_non_null(conn->buff);
+
+	conn_hints info6 = {
+		.proto = "80",
+		.host  = "::1",
+		.hints = {
+			.ai_family   = AF_INET6,
+			.ai_socktype = SOCK_STREAM,
+			.ai_flags	= 0
+		}
+	};
+
+	conn_addr_setup(conn, info6);
+	struct sockaddr_in6 *in;
+	in = (struct sockaddr_in6*)conn->addr;
+
+	assert_true((in->sin6_port > 0));
+	assert_int_equal(in->sin6_family, AF_INET6);
+	char buff[INET6_ADDRSTRLEN];
+	const char *err = inet_ntop(in->sin6_family, &(in->sin6_addr), buff, INET6_ADDRSTRLEN);
+	assert_non_null(err);
+	assert_string_equal(buff, "::1");
+
+	conn_free(conn);
+	*(void**)&conn = NULL;
+	assert_null(conn);
+
 }
 
 int main(void)
@@ -64,7 +99,8 @@ int main(void)
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(conn_new_test),
-		cmocka_unit_test(conn_addr_setup_test),
+		cmocka_unit_test(conn_addr_setup_test_ivp4),
+		cmocka_unit_test(conn_addr_setup_test_ipv6),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);
