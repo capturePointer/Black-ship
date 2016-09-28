@@ -22,8 +22,8 @@
 #include <lib/util.h>
 #include <lib/err.h>
 
-#include "udp/udp.h"
 #include "cmds.h"
+#include "udp_flood.h"
 
 // delcare here the list of attacks that the app will support
 // informative const list , this list will change over time
@@ -96,10 +96,10 @@ ATTACK_SW valid_attack(const char *exploit)
 
 // run_cmd is the entry point of the hole app , this will figure out
 // what type of attack we want to launch.
-void run_cmd(arguments arg)
+void run_cmd(arguments args)
 {
 	// if the list_attacks are set just echo and return
-	if (arg.list_attacks) {
+	if (args.list_attacks) {
 		list_attacks();
 		return;
 	}
@@ -108,23 +108,23 @@ void run_cmd(arguments arg)
 	// Every attack is different it requires different options 
 	// so we don't need to test them all here instead, we should 
 	// try to write independend code for every submodule to explicitly check for those.
-	
 	// we at least should check if the host is set or not at least
-	if (!arg.host) {
+	if (!args.host) {
 		WSTATUS("Please set the host with a valid ip");
 		return;
 	}
 	
 	STATUS("Blackship start sailing..");
 
+	conn_t *conn = conn_new();
+
 	// decide what attack we should launch
 	// for every case stmt there will be an entry point function
 	// with the name of <module-name>_attack
-	switch (arg.attack) {
+	switch (args.attack) {
 	case UDP_FLOOD:
 		DEBUG("UDP_FLOOD attack is activated");
-		// main enetry point for udp attacks
-		udp_init(arg);
+		udp_flood_init(conn, args);
 		break;
 	case ICMP_FLOOD:
 		DEBUG("ICMP_FLOOD attack is activated");
@@ -156,4 +156,6 @@ void run_cmd(arguments arg)
 	case END_ATTACK:
 		WSTATUS("Please set a valid attack that the app supports");	
 	}
+
+	conn_free(conn);
 }

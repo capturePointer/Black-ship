@@ -24,46 +24,23 @@
 // define the sock_t type
 typedef int sock_t;
 
-// redefine to make it simpler to interface
-typedef struct sockaddr_in addr4_t;
-typedef struct sockaddr_in6 addr6_t;
-
 // make is shorter for casts to this type
 #define SA struct sockaddr
 
 // define ipv4 connection
-typedef struct conn4_t {
-	// the underlying socket connection
-	sock_t sock;
-	// ptr to ipv4 socket addr struct
-	// for ipv4 connections
-	// this will hild all the info for special socket
-	// operations like bind, liste, accept, conn, etc.
-	addr4_t *addr;
-	// the underlying buffer that the socket
-	// will use for IO purposes
-	uint8_t *buff;
-} conn4_t;
-
-// define ipv6 connection
-typedef struct conn6_t {
-	// the underlying socket connection
-	sock_t sock;
-	// ptr to ipv6 socket addr struct
-	// for ipv6 connections
-	// this will hild all the info for special socket
-	// operations like bind, liste, accept, conn, etc.
-	addr6_t *addr;
-	// the underlying buffer that the socket
-	// will use for IO purposes
-	uint8_t *buff;
-} conn6_t;
-
-// ipv4 and ipv6 connections
 typedef struct conn_t {
-	conn6_t *c6;
-	conn4_t *c4;
-}conn_t;
+	// the underlying socket connection
+	sock_t sock;
+	// ptr to ipv4/ipv6 socket addr struct
+	// for ipv4/ipv6 connections
+	// this will hold all the info for special socket
+	// operations like bind, listen, accept, conn, etc.
+	struct sockaddr_storage *addr;
+	// the underlying buffer that the socket
+	// will use for IO purposes
+	uint8_t *buff;
+	uint8_t bufflen;
+} conn_t;
 
 // this type will be used for flag detection
 // in order to know if we are using IPV4 or IPV6 conn
@@ -86,8 +63,5 @@ typedef struct conn_hints{
 // alloc new connection
 extern conn_t *conn_new(void);
 extern void conn_free(conn_t *conn);
-
-extern void conn_addr4_setup(conn_t *conn, conn_hints info);
-extern void conn_addr6_setup(conn_t *conn, conn_hints info);
 
 #endif /*CONN_H*/

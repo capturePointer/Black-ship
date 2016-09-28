@@ -30,10 +30,8 @@ SET(ALL_FILES ../lib/info.c
 			  ../lib/err.h
 			  ../lib/mem.h
 			  ../lib/mem.c
-			  ../src/udp/udp.c
-			  ../src/udp/udp.h
-			  ../src/udp/flood.h
-			  ../src/udp/flood.c
+			  ../src/udp_flood.c
+			  ../src/udp_flood.h
 			  ../src/cmds.h
 			  ../src/cmds.c
 			  ../src/opts.c

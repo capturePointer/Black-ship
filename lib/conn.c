@@ -23,20 +23,16 @@
 #include "mem.h"
 #include "util.h"
 
-#define PK_SIZE 10 * sizeof(uint8_t) // 10 bytes of data
+#define PK_SIZE 10 * sizeof(uint8_t)
 
 // conn_new alloc a new conn_t struct
 conn_t *conn_new(void)
 {
 	conn_t *conn = xzmalloc(sizeof(conn_t));
 
-	conn->c4	   = xzmalloc(sizeof(conn4_t));
-	conn->c4->buff = xzmalloc(PK_SIZE);
-	conn->c4->addr = xzmalloc(sizeof(addr4_t));
-
-	conn->c6	   = xzmalloc(sizeof(conn6_t));
-	conn->c6->buff = xzmalloc(PK_SIZE);
-	conn->c6->addr = xzmalloc(sizeof(addr6_t));
+	conn->bufflen = PK_SIZE;
+	conn->buff	= xzmalloc(conn->bufflen);
+	conn->addr	= xzmalloc(sizeof(struct sockaddr_storage));
 
 	return conn;
 }
@@ -45,110 +41,11 @@ conn_t *conn_new(void)
 void conn_free(conn_t *conn)
 {
 	if (!conn)
-		INFOEE("Can't free a connection ptr that is NULL");
-	if((!conn->c4) || (!conn->c4->addr) || (!conn->c4->buff))
-		INFOEE("Can't free a connection4 ptr that is NULL");
-	if ((!conn->c6) || (!conn->c6->addr) || (!conn->c6->buff))
-		INFOEE("Can't free a connection6 ptr that is NULL");
-
-	xfree(conn->c4->addr);
-	xfree(conn->c4->buff);
-	xfree(conn->c4);
-
-	xfree(conn->c6->addr);
-	xfree(conn->c6->buff);
-	xfree(conn->c6);
-
+		INFOEE("Can't free a connection pointer that is NULL");
+	if ((!conn->addr) || (!conn->buff))
+		INFOEE("Can't free a connection members that are NULL");
+	xfree(conn->addr);
+	xfree(conn->buff);
 	xfree(conn);
 }
 
-// conn_addr4_setup
-// setup the underlying ipv4 addr struct of the conn_t
-// will decorate it with the first valid socket and init with info about the addr type
-// that the socket will use in order to connect on that target.
-void conn_addr4_setup(conn_t *conn, conn_hints info)
-{
-	if ((!conn) || (!conn->c4) || (!conn->c4->addr))
-		INFOEE("Please provide a valid conn ptr");
-
-	struct addrinfo *servinfo = NULL;
-	struct addrinfo *p		  = NULL;
-	int err					  = 0;
-	int sk					  = 0;
-
-	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
-	if (err) {
-		INFOEE("Could'n not get the ip addr and init the addr info");
-	}
-
-	for (p = servinfo; p != NULL; p = p->ai_next) {
-		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-		if (!sk) {
-			continue;
-		} else {
-			conn->c4->sock = sk;
-			memcpy(conn->c4->addr, p->ai_addr, sizeof(addr4_t));
-			conn->c4->addr->sin_port = port_conv(info.proto);
-			// if proto_conv can't convert the port number
-			// assign it a default value.
-			if (err_this(ERRCONVPORT)) {
-				STATUS("Can't convert proto specified into a valid port number");
-				STATUS("Default port number assigned is 0.");
-				conn->c4->addr->sin_port = 0;
-			}
-			break;
-		}
-	}
-
-	freeaddrinfo(servinfo);
-
-	// if p is NULL that means we looped off the end of the list
-	if (p == NULL) {
-		INFOEE("Can't find a valid ip4 address for the host you provided.");
-	}
-}
-
-// conn_addr6_setup
-// setup the underlying ipv6 addr struct of the conn_t
-// will decorate it with the first valid socket and init with info about the addr type
-// that the socket will use in order to connect on that target.
-
-void conn_addr6_setup(conn_t *conn, conn_hints info)
-{
-	if ((!conn) || (!conn->c6) || (!conn->c6->addr))
-		INFOEE("Please provide a valid conn ptr");
-
-	struct addrinfo *servinfo = NULL;
-	struct addrinfo *p		  = NULL;
-	int err					  = 0;
-	int sk					  = 0;
-
-	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
-	if (err) {
-		INFOEE("Could'n not get the ip addr and init the addr info");
-	}
-
-	for (p = servinfo; p != NULL; p = p->ai_next) {
-		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
-		if (!sk) {
-			continue;
-		} else {
-			conn->c6->sock = sk;
-			memcpy(conn->c6->addr, p->ai_addr, sizeof(addr6_t));
-			conn->c6->addr->sin6_port = port_conv(info.proto);
-			if (err_this(ERRCONVPORT)) {
-				STATUS("Can't convert proto specified into a valid port number");
-				STATUS("Default port number assigned is 0.");
-				conn->c6->addr->sin6_port = 0;
-			}
-			break;
-		}
-	}
-
-	freeaddrinfo(servinfo);
-
-	// if p is NULL that means we looped off the end of the list
-	if (p == NULL) {
-		INFOEE("Can't find a valid ip6 address for the host you provided.");
-	}
-}

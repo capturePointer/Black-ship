@@ -29,7 +29,8 @@ enum {
 	ATTACK		 = 'a',
 	RANGE_PORTS  = 'P',
 	HOST		 = 'h',
-	I4			 = 16,
+	I4			 = 14,
+	I6			 = 16,
 	RANDOM		 = 'r',
 	DEBUG		 = 'd',
 };
@@ -58,7 +59,9 @@ struct argp_option options[] = {
 	  "Specify the ipv4 address.",
 	  0 },
 	{ "i4", I4, 0, 0,
-	  "Ipv4 address.The reason this option exists it's because in the future the attacks will support ipv6 addr", 0 },
+	  "Ipv4 address.", 0 },
+	{ "i6", I6, 0, 0,
+	   "Ipv6 address.", 0},
 	{ "debug", DEBUG, 0, 0,
 		"Make use of the debug system", 0},
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
@@ -151,9 +154,14 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		// assign ip
 		args->host = arg;
 		break;
+
 	case I4:
 		// use ip version 4
 		args->host_type = IPV4;
+		break;
+
+	case I6:
+		args->host_type = IPV6;
 		break;
 	default:
 		// not a valid option
