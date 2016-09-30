@@ -34,7 +34,7 @@ static void conn_addr_setup_test_ivp4(void **state)
 	assert_non_null(conn->buff);
 
 	conn_hints info4 = {
-		.proto = "21",
+		.proto = "http",
 		.host  = "127.0.0.1",
 		.hints = {
 			.ai_family   = AF_INET,
@@ -68,7 +68,7 @@ static void conn_addr_setup_test_ipv6(void **state)
 	assert_non_null(conn->buff);
 
 	conn_hints info6 = {
-		.proto = "80",
+		.proto = "ssh",
 		.host  = "::1",
 		.hints = {
 			.ai_family   = AF_INET6,

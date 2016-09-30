@@ -125,6 +125,7 @@ void run_cmd(arguments args)
 	case UDP_FLOOD:
 		DEBUG("UDP_FLOOD attack is activated");
 		udp_flood_init(conn, args);
+		udp_flood_attack();
 		break;
 	case ICMP_FLOOD:
 		DEBUG("ICMP_FLOOD attack is activated");

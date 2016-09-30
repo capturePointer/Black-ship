@@ -56,6 +56,7 @@ void conn_addr_setup(conn_t *conn, conn_hints info)
 {
 	if (!conn)
 		INFOEE("Can't use invalid connection, pointer is NULL");
+
 	struct addrinfo *servinfo = NULL;
 	struct addrinfo *p		  = NULL;
 	int err					  = 0;
@@ -69,16 +70,14 @@ void conn_addr_setup(conn_t *conn, conn_hints info)
 		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		if (!sk)
 			continue;
-		else {
-			conn->sock			  = sk;
+		else 
 			memcpy(conn->addr, p->ai_addr, p->ai_addrlen);
 			break;
-		}
 	}
 
 	freeaddrinfo(servinfo);
 	// if p is NULL that means we looped off the end of the list
 	if (p == NULL) {
-		INFOEE("Can't find a valid ip4 address for the host you provided.");
+		INFOEE("Can't find a valid ip4 address for the info you provided");
 	}
 }

