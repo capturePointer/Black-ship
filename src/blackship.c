@@ -11,18 +11,13 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-
-#include <stdlib.h>
-#include <argp.h>
 #include <argz.h>
 
 #include <lib/err.h>
 
 #include "opts.h"
 #include "cmds.h"
-// here we should treat all the command line parsing
-// logic and init all the other func with in this
-// commnad line
+
 int main(int argc, char **argv)
 {
 	if (argc < 2)

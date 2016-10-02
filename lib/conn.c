@@ -70,9 +70,10 @@ void conn_addr_setup(conn_t *conn, conn_hints info)
 		sk = socket(p->ai_family, p->ai_socktype, p->ai_protocol);
 		if (!sk)
 			continue;
-		else 
+		else {
 			memcpy(conn->addr, p->ai_addr, p->ai_addrlen);
 			break;
+		}
 	}
 
 	freeaddrinfo(servinfo);

