@@ -14,23 +14,32 @@
 //
 #include <arpa/inet.h>
 #include <errno.h>
+#include <fcntl.h>
 #include <limits.h>
+#include <stdarg.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
-#include <fcntl.h>
-#include <stdarg.h>
 
 #include "err.h"
 #include "info.h"
-#include "util.h"
 #include "mem.h"
 #include "pcg.h"
+#include "util.h"
 
-// filter_number filters all character in the block of mem and it tests
-// if we have in the block only digits and return true
-// if we have letters or other simbols just return false
-// this function exptects that the string is NULL terminated or it will fail
+
+static bool is_zero(const char *);
+
+/*
+ * filter_number 
+ * @arg - string null terminated
+ * 
+ * filters all character and test if we have only digits 
+ *
+ * Return:
+ *	if we have only digits return true
+ *	if we have letters or other simbols just return false
+ */
 bool filter_number(const char *arg)
 {
 	if (!arg) {
@@ -38,8 +47,8 @@ bool filter_number(const char *arg)
 	}
 
 	const char *p = arg;
-	for (; *p !='\0'; p++)
-		
+	for (; *p != '\0'; p++)
+
 		// if it's not in this interval
 		if (!(*p >= 0x30 && (*p <= 0x39)))
 			return false;
@@ -57,7 +66,7 @@ uint16_t port_conv(const char *arg)
 
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) // ports are 16 byte wide
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0))					 // ports are 16 byte wide
 		goto err;
 
 	// it is safe is u is a value from 0 to UINT_MAX(65,535)
@@ -108,23 +117,24 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 // this function pre calculates how much bytes needs to alloc
 // in order to store into that buffer.
 // if the buffer is still to small it will print out and error
-// and terminate the program 
+// and terminate the program
 // the func will return a ptr to that newly created message
-char *xsprintf(const char *fmt, ...) {
+char *xsprintf(const char *fmt, ...)
+{
 	va_list args;
 	int n;
 	char *buff;
-	
+
 	// first we must count the number of bytes we need
 	// to alloc in order to store our buffer.
 	va_start(args, fmt);
-	n = vsnprintf(NULL,0, fmt, args);
+	n = vsnprintf(NULL, 0, fmt, args);
 	va_end(args);
 
 	// alloc the buffer
-	buff = xzmalloc(sizeof(char)*(unsigned long)n);
+	buff = xzmalloc(sizeof(char) * (unsigned long)n);
 	va_start(args, fmt);
-	vsnprintf(buff, sizeof(char)*(unsigned long)n, fmt, args);
+	vsnprintf(buff, sizeof(char) * (unsigned long)n, fmt, args);
 	va_end(args);
 
 	return buff;
@@ -150,7 +160,7 @@ bool valid_ip(const char *ip)
 
 // bool urandom_bytes
 // Use /dev/urandom to get some entropy bytes for seeding purposes.
-// 
+//
 // If reading /dev/urandom fails(which ought to never happen), it returns
 // false, otherwise it return true.
 bool urandom_bytes(void *dest, size_t size)
@@ -159,11 +169,11 @@ bool urandom_bytes(void *dest, size_t size)
 		return false;
 
 	int fd = open("/dev/urandom", O_RDONLY);
-	if(!fd)
+	if (!fd)
 		return false;
 
 	ssize_t sz = read(fd, dest, size);
-	if(sz < (ssize_t)size)
+	if (sz < (ssize_t)size)
 		return false;
 	return close(fd) == 0;
 }
@@ -174,13 +184,14 @@ static uint64_t seeds[2];
 // seeds two 64 byes numbers, the state and the initseq
 // it returns ERRENTROPY if the we can't read form the source of entropy
 // the source of entropy that this functions uses is /dev/urandom.
-void port_seeds(void) {
+void port_seeds(void)
+{
 	// read from /dev/urandom 128 bytes
-	if(!urandom_bytes(seeds, sizeof(seeds))) {
+	if (!urandom_bytes(seeds, sizeof(seeds))) {
 		err_new("Can't read from /udev/random", ERRENTROPY, 0);
 		return;
 	}
-	
+
 	// init the seeds
 	pcg32_srandom(seeds[0], seeds[1]);
 }
@@ -190,4 +201,43 @@ void port_seeds(void) {
 uint16_t port_random(void)
 {
 	return (uint16_t)pcg32_boundedrand(UINT16_MAX);
+}
+
+/* 
+ * strconv
+ * convert the string n to a specific format byte
+ * @n	 - the string
+ * @base - the base number
+ *
+ * Side note: very important that n ends with '\0' or this will have very bad side effects
+ *
+ * Return:
+ *	if the conversion fails due to invalid @base or invalid @n string it will
+ *	return 0 and ERRCONV into the err circular list.
+ *	if the conversion succeeds it will return a valid number
+ */
+uint64_t strconv(const char *n, uint8_t base)
+{
+	if (is_zero(n))
+		return 0;
+
+	uint64_t result = 0;
+
+	result = strtoull(n, NULL, base);
+	if (((errno == ERANGE) && (result == ULLONG_MAX)) || (errno == EINVAL) ||(result == 0))
+		goto fail;
+	
+	return result;
+
+fail:
+	err_new("Invalid string or invalid base, the string must contain only numbers", ERRCONV, 0);
+	return 0;
+}
+
+static bool is_zero(const char *n) {
+	if(strlen(n) == 1) {
+		if (strncmp(n, "0", 1) == 0) 
+			return true;
+	}
+	return false;
 }

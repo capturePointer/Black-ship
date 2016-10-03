@@ -11,21 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#ifndef UTIL_H
-#define UTIL_H
+//
 
-#include <stdint.h>
-#include <stdio.h>
-#include <stdbool.h>
-
-extern bool filter_number(const char *);
-extern uint16_t port_conv(const char *);
-extern void port_conv_range(char *, uint16_t *, uint16_t *);
-extern char *xsprintf(const char *, ...);
-extern bool valid_ip(const char *);
-extern bool urandom_bytes(void *dest, size_t);
-extern void port_seeds(void);
-extern uint16_t port_random(void);
-extern uint64_t strconv(const char *, uint8_t);
-
-#endif /*UTIL_H*/
+#include <thread.h>

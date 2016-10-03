@@ -114,6 +114,12 @@ void run_cmd(arguments args)
 		return;
 	}
 	
+	if ((args.port.n == 0) && (args.port.low == 0) && 
+		(args.port.high == 0) && (!args.port.random)) {
+		WSTATUS("Empty port number and port options, please set a valid one");
+		return;
+	}
+
 	STATUS("Blackship start sailing..");
 
 	conn_t *conn = conn_new();

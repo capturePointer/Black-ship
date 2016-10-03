@@ -85,6 +85,7 @@ typedef struct arguments {
 	ATTACK_SW attack;	
 	ip_t host_type;
 	port_t port;
+	uint64_t packets;
 	other_t list_attacks;
 } arguments;
 

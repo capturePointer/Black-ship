@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <cmocka.h>
-
+#include <stdint.h>
 #include <lib/err.h>
 #include <lib/mem.h>
 #include <lib/util.h>
@@ -168,6 +168,46 @@ static void port_random_test(void **state)
 	}
 }
 
+static void strconv_test(void **state)
+{
+	(void)state;
+
+	char max_test[] = "18446744073709551615ULL";
+	char max_test_fail[] = "18446744073709551321321615ULL";
+	char normal_test[] = "12398175918273";
+	char hex_test[] = "0x521Af";
+	char string_test[] = "dsuhfiudsahgiudshaiahfiudshgfsadf";
+	char zero_test[] = "0";
+
+	uint64_t u = strconv(max_test, 10);
+	assert_int_equal(u, ULLONG_MAX);
+	assert_true(err_empty());
+	
+	u = strconv(zero_test, 10);
+	assert_int_equal(u, 0);
+	assert_true(err_empty());
+
+	u = strconv(hex_test, 16);
+	assert_int_equal(u, 0x521AF);
+	assert_true(err_empty());
+	
+	u = strconv(string_test, 10);
+	assert_int_equal(u, 0);
+	assert_false(err_empty());
+	assert_true(err_this(ERRCONV));
+	err_destroy();	
+
+	u = strconv(normal_test, 10);
+	assert_int_equal(u, 12398175918273);
+	assert_true(err_empty());
+
+	u = strconv(max_test_fail, 10);
+	assert_false(err_empty());
+	bool flag = err_this(ERRCONV);
+	assert_true(flag);
+
+	err_destroy();
+}
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
@@ -178,6 +218,7 @@ int main(void)
 		cmocka_unit_test(valid_ip_test),
 		cmocka_unit_test(xsprintf_test),
 		cmocka_unit_test(port_random_test),
+		cmocka_unit_test(strconv_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

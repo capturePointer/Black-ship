@@ -183,6 +183,7 @@ static bool err_list_free(err_list_t **l)
 	(*l)->n = 0;
 	xfree(*l);
 	*l = NULL;
+
 	return true;
 }
 

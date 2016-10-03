@@ -35,6 +35,7 @@ typedef enum err_code {
 	ERRHOSTUNREACHED,		// error host unreached
 	ERRENTROPY,				// error reading,writing entropy values
 	ERRCONVPORT,			// error conversion port
+	ERRCONV,				// error conversion number, invalid byte format
 	ERR_LAST, // NOT TO BE USED
 } err_code_t;
 

@@ -33,6 +33,7 @@ enum {
 	I6			 = 16,
 	RANDOM		 = 'r',
 	DEBUG		 = 'd',
+	PACKETS		 = 17,
 };
 
 // this array of options will be checked by the callback parse_opt
@@ -58,6 +59,9 @@ struct argp_option options[] = {
 	{ "host", HOST, "ip_addr", 0,
 	  "Specify the ipv4 address.",
 	  0 },
+	{ "packets",PACKETS, "n", 0,
+		"Number of packets that will be send to the host",
+		0},
 	{ "i4", I4, 0, 0,
 	  "Ipv4 address.", 0 },
 	{ "i6", I6, 0, 0,
@@ -98,7 +102,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	arguments *args   = state->input;
 	state->err_stream = stderr;
 	state->out_stream = stdout;
-
+	
 	switch (key) {
 
 	case ATTACK:
@@ -139,6 +143,13 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		DEBUG_ON();
 		break;
 
+	case PACKETS:
+		args->packets = strconv(arg, 10);
+		printf("args->packets = %lu\n", args->packets);
+		if (err_this(ERRCONV))
+			return ARGP_KEY_ERROR;
+		break;
+
 	case LIST_ATTACKS:
 		// print out the list of attacks
 		args->list_attacks = L_ATTACKS;
@@ -163,6 +174,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	case I6:
 		args->host_type = IPV6;
 		break;
+
 	default:
 		// not a valid option
 		return ARGP_ERR_UNKNOWN;
