@@ -15,6 +15,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <signal.h>
 
 #include <lib/conn.h>
 #include <lib/info.h>
@@ -104,6 +105,12 @@ void run_cmd(arguments args)
 		return;
 	}
 	
+	// if write failures occures we want to handle them where the error
+	// occurs rather than in a sigpipe handler.
+
+	if (treat_signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+		INFOEE("Failed to ingore the signal pipe");
+
 	// All things that is global we should handle here.
 	// Every attack is different it requires different options 
 	// so we don't need to test them all here instead, we should 

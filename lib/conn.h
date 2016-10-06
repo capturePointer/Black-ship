@@ -42,14 +42,6 @@ typedef struct conn_t {
 	uint8_t bufflen;
 } conn_t;
 
-// this type will be used for flag detection
-// in order to know if we are using IPV4 or IPV6 conn
-typedef enum ip_t {
-	IPV4,
-	IPV6,
-} ip_t;
-
-
 // conn_hints special type that will
 // provide aditional information about what
 // conn we want to establish.

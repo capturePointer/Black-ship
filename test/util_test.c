@@ -8,6 +8,8 @@
 #include <string.h>
 #include <cmocka.h>
 #include <stdint.h>
+#include <signal.h>
+#include <unistd.h>
 #include <lib/err.h>
 #include <lib/mem.h>
 #include <lib/util.h>
@@ -208,6 +210,36 @@ static void strconv_test(void **state)
 
 	err_destroy();
 }
+
+static bool sig_test_flag;
+
+static void signal_test_cb(int sig)
+{
+	(void)sig;
+	sig_test_flag = true;
+}
+
+static void signal_test(void **state)
+{
+	(void)state;
+	pid_t pid = getpid();
+	assert_false(sig_test_flag);
+
+	// handle SIGALRM
+	treat_signal(SIGALRM, signal_test_cb);
+	alarm(1);
+	sleep(1);
+	assert_true(sig_test_flag);
+
+	sig_test_flag = false; // restart
+	
+	// handle SIGPIPE
+	treat_signal(SIGPIPE, signal_test_cb);
+	kill(pid, SIGPIPE);
+	assert_true(sig_test_flag);
+
+	sig_test_flag = false; // restart
+}
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
@@ -219,6 +251,7 @@ int main(void)
 		cmocka_unit_test(xsprintf_test),
 		cmocka_unit_test(port_random_test),
 		cmocka_unit_test(strconv_test),
+		cmocka_unit_test(signal_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

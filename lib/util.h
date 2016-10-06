@@ -18,6 +18,9 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+// singfn more convinient way to write signal handlers
+typedef void (*sigfn)(int);
+
 extern bool filter_number(const char *);
 extern uint16_t port_conv(const char *);
 extern void port_conv_range(char *, uint16_t *, uint16_t *);
@@ -27,5 +30,5 @@ extern bool urandom_bytes(void *dest, size_t);
 extern void port_seeds(void);
 extern uint16_t port_random(void);
 extern uint64_t strconv(const char *, uint8_t);
-
+extern sigfn treat_signal(int, sigfn fn);
 #endif /*UTIL_H*/

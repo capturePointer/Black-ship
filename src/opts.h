@@ -21,25 +21,29 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#include <lib/conn.h>
-
 typedef struct argp_state argp_state;
 typedef struct argp_option argp_option;
 
-#define DOC "This tool should be used just for educational \
-purpose but I don't care(in the end) what you do \
-with the code. I hope this will be a fine experience \
-for me as a C developer and hope other guys in the \
-future will contribute on this project to make it \
-much cooler.So my main idea is to write a friendly \
-command line Dos(Denial of service) tool."
-
 extern const char *doc;
-extern int parse_opt(int, char *, argp_state *);
+extern error_t parse_opt(int, char *, argp_state *);
 extern const char *argp_program_version;
 extern const char *argp_program_bug_address;
 extern struct argp_option options[];
 extern struct argp argp;
+
+// define each key here
+enum {
+	LIST_ATTACKS = 10,
+	PORT		 = 'p',
+	ATTACK		 = 'a',
+	RANGE_PORTS  = 'P',
+	HOST		 = 'h',
+	I4			 = 14,
+	I6			 = 16,
+	RANDOM		 = 'r',
+	DEBUG		 = 'd',
+	PACKETS		 = 17,
+};
 
 // list of attacks that the cmd line will support
 // we are using two sentinel values START_ATTACK and
@@ -70,6 +74,13 @@ typedef struct port_t {
 	// is set to random/dynamic ports
 	bool random;
 } port_t;
+
+// this type will be used for flag detection
+// in order to know if we are using IPV4 or IPV6 conn
+typedef enum ip_t {
+	IPV4,
+	IPV6,
+} ip_t;
 
 // other_t type that stores extra
 // options for the app

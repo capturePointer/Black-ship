@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <argz.h>
 #include <stdlib.h>
+#include <argz.h>
 
 #include <lib/info.h>
 #include <lib/err.h>
@@ -21,20 +21,6 @@
 
 #include "cmds.h"
 #include "opts.h"
-
-// define each key here
-enum {
-	LIST_ATTACKS = 10,
-	PORT		 = 'p',
-	ATTACK		 = 'a',
-	RANGE_PORTS  = 'P',
-	HOST		 = 'h',
-	I4			 = 14,
-	I6			 = 16,
-	RANDOM		 = 'r',
-	DEBUG		 = 'd',
-	PACKETS		 = 17,
-};
 
 // this array of options will be checked by the callback parse_opt
 // in order to execute some special handlers on every interations
@@ -77,7 +63,16 @@ const char *argp_program_version = "0.1";
 // set the email dest addr for bug reports
 const char *argp_program_bug_address = "hoenirvili@gmail.com";
 
+
 #define USAGE_DOC "HOST PORT TYPE_OF_ATTACK EXTRA-OPTIONS"
+
+#define DOC "This tool should be used just for educational \
+	purpose but I don't care(in the end) what you do \
+with the code. I hope this will be a fine experience \
+for me as a C developer and hope other guys in the \
+future will contribute on this project to make it \
+much cooler.So my main idea is to write a friendly \
+command line Dos(Denial of service) tool."
 
 // here we add all the option declared above this struct
 // this struct is the main configuration for the argp

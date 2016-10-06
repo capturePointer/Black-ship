@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 #include <netinet/in.h>
-#include <signal.h>
 #include <string.h>
 #include <unistd.h>
 
@@ -65,11 +64,6 @@ static void single4_port(void)
 	//struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
 	ssize_t n;
 	struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
-
-	// if write failures occures we want to handle them where the error
-	// occurs rather than in a sigpipe handler.
-	if (signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-		INFOEE("Failed to ingore the signal pipe");
 
 	DEBUG("Udp4 flood attack is staring using single port");
 	// this does not result in anything like a tcp connection.

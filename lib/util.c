@@ -20,6 +20,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <signal.h>
 
 #include "err.h"
 #include "info.h"
@@ -240,4 +241,49 @@ static bool is_zero(const char *n) {
 			return true;
 	}
 	return false;
+}
+
+/*
+ * treat_signal
+ * friendly wrapper around sigaction
+ *
+ * function allows the calling process to specify the action 
+ * to be associated with a specific signal.
+ *
+ * @signo - specifies the signal values define in <signal.h>
+ * @fn - pointer to a signal-catching function or one of the macros
+ * SIG_IGN or SIG_DFL.
+ *
+ */
+sigfn treat_signal(int signo, sigfn fn)
+{
+	struct sigaction act, oact;
+	memset(&act, 0, sizeof(act));
+	memset(&oact, 0, sizeof(oact));
+
+	act.sa_handler = fn;
+	// set sa_mask to be emptyset, meaning no aditional
+	// signals are blocked other than the signal being caught
+	sigemptyset(&act.sa_mask);
+
+	// if a system call is interrupted by this signal
+	// will be automatically restarted by the kernel.
+	if (signo == SIGALRM) {
+#ifdef SA_INTERRUPT
+		// when generating SIGALRM normally places a timeout on an
+		// I/O operation, in which case, we want the blocked system call to be
+		// interrupted by this signal.
+		// Some older system notably SunOS 4.x, automatically restart an interrupted system call
+		// by default and then define the complement of this flag as SA_INTERRUPT.
+		act.sa_flags |= SA_INTERRUPT; 
+#endif
+	} else {
+#ifdef SA_RESTART
+		act.sa_flags |= SA_RESTART;
+#endif
+	}
+	if (!sigaction(signo, &act, &oact))
+		return SIG_ERR;
+
+	return oact.sa_handler;
 }
