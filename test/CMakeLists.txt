@@ -44,7 +44,6 @@ set (BLACKSHIP_TEST_SRC blackship_test.c ${ALL_FILES})
 set (CMDS_TEST_SRC cmds_test.c ${ALL_FILES})
 set (MEM_TEST_LIB mem_test.c ${ALL_FILES})
 set (CONN_TEST_LIB conn_test.c ${ALL_FILES})
-set (OPTS_TEST_SRC opts_test.c ${ALL_FILES})
 
 add_executable(err_test ${ERR_TEST_LIB})
 add_executable(util_test ${UTIL_TEST_LIB})
@@ -52,7 +51,6 @@ add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
 add_executable(cmds_test ${CMDS_TEST_SRC})
 add_executable(mem_test ${MEM_TEST_LIB})
 add_executable(conn_test ${CONN_TEST_LIB})
-add_executable(opts_test ${OPTS_TEST_SRC})
 
 target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
@@ -60,7 +58,6 @@ target_link_libraries(blackship_test cmocka)
 target_link_libraries(cmds_test cmocka)
 target_link_libraries(mem_test cmocka)
 target_link_libraries(conn_test cmocka)
-target_link_libraries(opts_test cmocka)
 
 
 message(STATUS "[*] Verifying external libraries")

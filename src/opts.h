@@ -92,7 +92,7 @@ typedef enum other_t {
 // arguments retains all info from the parse_opt command
 // when it finishes
 typedef struct arguments {
-	char *host;
+	const char *host;
 	ATTACK_SW attack;	
 	ip_t host_type;
 	port_t port;
