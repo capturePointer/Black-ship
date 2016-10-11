@@ -140,7 +140,6 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 
 	case PACKETS:
 		args->packets = strconv(arg, 10);
-		printf("args->packets = %lu\n", args->packets);
 		if (err_this(ERRCONV))
 			return ARGP_KEY_ERROR;
 		break;

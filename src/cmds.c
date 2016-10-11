@@ -107,9 +107,8 @@ void run_cmd(arguments args)
 	
 	// if write failures occures we want to handle them where the error
 	// occurs rather than in a sigpipe handler.
-
-	if (treat_signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-		INFOEE("Failed to ingore the signal pipe");
+	//TODO(segfault)
+	treat_signal(SIGPIPE, SIG_IGN);
 
 	// All things that is global we should handle here.
 	// Every attack is different it requires different options 

