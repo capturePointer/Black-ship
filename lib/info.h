@@ -21,7 +21,7 @@ extern void info(const char *msg, const char *file, int line);
 extern void infoee(const char *msg, const char *file, int line);
 extern void wstatus(const char *msg);
 extern void status(const char *msg);
-extern void debug(const char *msg);
+extern void debug(const char *msg, const char *file, int line);
 extern void debugf(const char *fmt, ...);
 extern void active_debug(const bool f);
 
@@ -41,7 +41,7 @@ extern void active_debug(const bool f);
 	debugf(format, __VA_ARGS__)
 
 #define DEBUG(msg)\
-	debug(msg)
+	debug((msg), __FILE__, __LINE__)
 
 #define DEBUG_ON() \
 	active_debug(true);

@@ -55,12 +55,12 @@ void active_debug(const bool f) {
 }
 
 
-void debug(const char *msg)
+void debug(const char *msg, const char *file, int line)
 {
 	if (!debug_flag)
 		return;
 
-	fprintf(stdout, "[ DEBUG ] %s\n", msg);
+	fprintf(stdout, "%s line %d [ DEBUG ] %s\n", file, line, msg);
 }
 
 void debugf(const char *fmt, ...) {

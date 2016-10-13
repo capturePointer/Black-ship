@@ -58,7 +58,7 @@ typedef struct err_list_t {
 // err_list_t *err state of the circular list
 // singleton global error used by exported functions
 // to add, dump, release error
-static err_list_t *err;
+static err_list_t *err = NULL;
 
 // err_list_new 
 // create new circular linked list
@@ -169,7 +169,7 @@ void err_last(char *msg, err_code_t *code, int *save)
 // if we sucessfully free the list return true
 static bool err_list_free(err_list_t **l)
 {
-	if (!l) {
+	if (!*l) {
 		return false;
 	}
 
