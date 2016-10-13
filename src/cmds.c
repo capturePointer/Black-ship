@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <stdio.h>
-#include <string.h>
-#include <stdlib.h>
 #include <signal.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include <lib/conn.h>
+#include <lib/err.h>
 #include <lib/info.h>
 #include <lib/mem.h>
 #include <lib/util.h>
-#include <lib/err.h>
 
 #include "cmds.h"
 #include "udp_flood.h"
@@ -95,6 +95,15 @@ ATTACK_SW valid_attack(const char *exploit)
 	return END_ATTACK;
 }
 
+//TODO
+static void release_cb(int signo)
+{
+	if (signo == SIGINT)
+		INFO("Reciving Ctr-C, terminating the program");
+	err_destroy();
+	exit(EXIT_SUCCESS);
+}
+
 // run_cmd is the entry point of the hole app , this will figure out
 // what type of attack we want to launch.
 void run_cmd(arguments args)
@@ -104,24 +113,20 @@ void run_cmd(arguments args)
 		list_attacks();
 		return;
 	}
-	
-	// if write failures occures we want to handle them where the error
-	// occurs rather than in a sigpipe handler.
-	//TODO(segfault)
-	treat_signal(SIGPIPE, SIG_IGN);
 
+	treat_signal(SIGPIPE, SIG_IGN);
+	treat_signal(SIGINT, release_cb); // on CTR-C release resources
 	// All things that is global we should handle here.
-	// Every attack is different it requires different options 
-	// so we don't need to test them all here instead, we should 
+	// Every attack is different it requires different options
+	// so we don't need to test them all here instead, we should
 	// try to write independend code for every submodule to explicitly check for those.
 	// we at least should check if the host is set or not at least
 	if (!args.host) {
 		WSTATUS("Please set the host with a valid ip");
 		return;
 	}
-	
-	if ((args.port.n == 0) && (args.port.low == 0) && 
-		(args.port.high == 0) && (!args.port.random)) {
+
+	if ((args.port.n == 0) && (args.port.low == 0) && (args.port.high == 0) && (!args.port.random)) {
 		WSTATUS("Empty port number and port options, please set a valid one");
 		return;
 	}
@@ -163,11 +168,11 @@ void run_cmd(arguments args)
 	case DNS_FLOOD:
 		DEBUG("DNS_FLOOD attack is activated");
 		break;
-	// if we reached this point that 
+	// if we reached this point that
 	// means something we the user passed invalid or unsupported attack
 	case START_ATTACK:
 	case END_ATTACK:
-		WSTATUS("Please set a valid attack that the app supports");	
+		WSTATUS("Please set a valid attack that the app supports");
 	}
 
 	conn_free(conn);

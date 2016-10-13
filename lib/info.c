@@ -12,13 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
 
 #include "info.h"
-#include "err.h"
 
 // info prints out to stdout the msg, file and line number
 inline void info(const char *msg, const char *file, int line)
@@ -31,40 +30,39 @@ inline void info(const char *msg, const char *file, int line)
 inline void infoee(const char *msg, const char *file, int line)
 {
 	fprintf(stderr, "[ ! ] %s %s %d\n", msg, file, line);
-	err_destroy();
 	exit(EXIT_FAILURE);
 }
 
-inline void wstatus (const char *msg)
+inline void wstatus(const char *msg)
 {
 	fprintf(stdout, "[ ! ] %s\n", msg);
 }
 
-inline void status (const char *msg)
+inline void status(const char *msg)
 {
-	fprintf(stdout,"[ * ] %s\n" , msg);
+	fprintf(stdout, "[ * ] %s\n", msg);
 }
-
 
 // main singleton debug flag
 // default false
 static bool debug_flag;
 
-void active_debug(const bool f) {
+void active_debug(const bool f)
+{
 	debug_flag = f;
 }
-
 
 void debug(const char *msg, const char *file, int line)
 {
 	if (!debug_flag)
 		return;
 
-	fprintf(stdout, "%s line %d [ DEBUG ] %s\n", file, line, msg);
+	fprintf(stdout, "[ DEBUG ] %s %s %d\n", msg, file, line);
 }
 
-void debugf(const char *fmt, ...) {
-	if (!debug_flag) 
+void debugf(const char *fmt, ...)
+{
+	if (!debug_flag)
 		return;
 
 	va_list args;
@@ -76,7 +74,7 @@ void debugf(const char *fmt, ...) {
 
 	char buff[n];
 	va_start(args, fmt);
-	vsnprintf(buff, sizeof(char)*(unsigned long)n, fmt, args);
+	vsnprintf(buff, sizeof(char) * (unsigned long)n, fmt, args);
 	va_end(args);
 	fprintf(stdout, "%s\n", buff);
 }

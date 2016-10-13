@@ -35,7 +35,7 @@ typedef struct err_t {
 	int errno_state;
 } err_t;
 
-// node type of circular linked list
+// err_node_t type of circular linked list
 typedef struct err_node_t {
 	err_t error;
 	struct err_node_t *next;
@@ -174,7 +174,7 @@ static bool err_list_free(err_list_t **l)
 	}
 
 	uint8_t i = 0;
-	for (i = 0; i < (*l)->n; i++) {
+	for (; i < (*l)->n; i++) {
 		(*l)->head = (*l)->tail->next;
 		xfree((*l)->tail);
 		(*l)->tail = (*l)->head;
@@ -190,8 +190,8 @@ static bool err_list_free(err_list_t **l)
 // err_destroy wrapper around err_list_free()
 void err_destroy(void)
 {
-	if (!err_list_free(&err))
-		INFO("Internal error list is already empty");
+	if (err_list_free(&err))
+		DEBUG("Internal error list is empty");
 }
 
 // err_dump dump all the errors to stderr
