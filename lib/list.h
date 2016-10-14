@@ -13,23 +13,28 @@
 // limitations under the License.
 //
 
+#include <stdbool.h>
 #include <stdint.h>
 
-typedef struct data_t {
+typedef struct node_t {
 	void *blk;
 	uint64_t sz;
-}data_t;
-
-typedef struct node_t {
-	data_t data;
 	struct node_t *next;
-}node_t;
+} node_t;
 
-typedef struct list_t{
+typedef struct list_t {
 	node_t *head;
 	node_t *tail;
 	uint64_t n;
-}list_t;
+} list_t;
+
+typedef bool (*compare_cb)(void *n, void *m, uint64_t sz);
+typedef void (*free_blk_cb)(void *blk);
 
 extern list_t *list_new(uint64_t);
 extern void list_free(list_t **);
+extern void list_add(list_t *, void *, uint64_t);
+extern void list_rm_n(list_t *, uint64_t);
+extern void list_rm(list_t *l, void *, uint64_t);
+extern void cmp_init(compare_cb);
+extern void freeblk_init(free_blk_cb);
