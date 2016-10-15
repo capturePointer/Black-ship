@@ -41,7 +41,8 @@ typedef struct list_t {
 	free_fn_t free;
 } list_t;
 
-// Alloc a new empty linked list setuping cmp and free methods
-extern list_t *list_new(cmp_fn_t cmp, free_fn_t free);
-// Free the linked list
-extern void list_free(list_t **);
+// alloc a new empty linked list setuping cmp and free methods
+extern list_t *list_new(uint64_t size, cmp_fn_t cmp, free_fn_t free);
+// free the linked list
+extern void list_free(list_t **list);
+extern void list_add(list_t *list, void *blk);

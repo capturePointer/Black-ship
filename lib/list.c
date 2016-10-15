@@ -24,16 +24,44 @@
 /*
  * list_new(uint64_t n)
  *
+ * @cmp - ptr to compare function
+ * @free - ptr to free function
+ * @size - size of the data that the node will hold
+ *
  * Allocs a new empty linked list
  */
-list_t *list_new(cmp_fn_t cmp, free_fn_t free)
+list_t *list_new(uint64_t size, cmp_fn_t cmp, free_fn_t free)
 {
 	list_t *list = xzmalloc(sizeof(*list));
 	list->cmp = cmp;
 	list->free = free;
+	list->sz_blk = size;
 	return list;
 }
 
+/*
+ * list_add(list_t *l, void *blk)
+ *
+ * @l - ptr to linked list
+ * @blk - block of mem, the data in the node
+ * 
+ * Add @blk to the next node in the linked list @l
+ */
+void list_add(list_t *l, void *blk)
+{
+	if ((!l->head) && (!l->tail)) {
+		l->head = xmalloc(sizeof(node_t));
+		l->head->blk = blk;
+		l->tail = l->head;
+		l->n = 1;
+		return;
+	}
+
+	l->tail->next = xmalloc(sizeof(node_t));
+	l->tail->next->blk = blk;
+	l->tail = l->tail->next;
+	l->n++;
+}
 /*
  * list_free
  *
@@ -48,18 +76,31 @@ void list_free(list_t **l)
 	if (!*l)
 		INFOEE("Could not release NULL list");
 	if (!(*l)->free)
-		INFOEE("Could not use free NULL fn");
+		INFOEE("Could not use NULL ptr free fn");
+	if ((*l)->head == NULL)
+		goto ret;
 
-	while ((*l)->head != NULL) {
-		node_t *p = (*l)->head->next;
-
-		if ((*l)->head->blk)
-			(*l)->free((*l)->head->blk);
-
-		xfree((*l)->head);
-		(*l)->head = p;
+	node_t *head = (*l)->head;
+	// if we have just one node.
+	if (!head->next) {
+		if (head->blk)
+			(*l)->free(head->blk);
+		xfree(head);
+		goto ret;
 	}
 
-	xfree((*l));
+	// if we have more than just one node.
+	node_t *next = NULL;
+	while(head) {
+		next = head->next;
+		if(head->blk)
+			(*l)->free(head->blk);
+		xfree(head);
+		head = next;
+	}
+
+ret:
+	xfree(*l);
 	*l = NULL;
 }
+
