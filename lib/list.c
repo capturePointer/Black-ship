@@ -62,6 +62,7 @@ void list_add(list_t *l, void *blk)
 	l->tail = l->tail->next;
 	l->n++;
 }
+
 /*
  * list_free
  *
@@ -91,12 +92,13 @@ void list_free(list_t **l)
 
 	// if we have more than just one node.
 	node_t *next = NULL;
-	while(head) {
+	while((*l)->n) {
 		next = head->next;
 		if(head->blk)
 			(*l)->free(head->blk);
 		xfree(head);
 		head = next;
+		(*l)->n--;
 	}
 
 ret:

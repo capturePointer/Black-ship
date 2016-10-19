@@ -11,7 +11,7 @@
 
 #include <lib/list.h>
 
-#define N 1
+#define N 10
 
 typedef struct data_t {
 	double a;
@@ -38,9 +38,9 @@ static data_t *data_new()
 
 static void data_free(void *data)
 {
-	data_t *d = (data_t*)data;
+	data_t *d = data;
 	free(d->mem_info);
-	free(data);
+	free(d);
 }
 
 static list_t *new_list_test(void)
@@ -85,11 +85,8 @@ static void list_add_test(void **state)
 		blob[i].mem_info = strdup("This mem is is the mem");
 		assert_non_null(blob[i].mem_info);
 
-		list_add(link_list, blob);
+		list_add(link_list, &blob[i]);
 	}
-	
-	printf("N %lu\n", link_list->n);
-	free_list_test(&link_list);
 }
 int main(void)
 {
