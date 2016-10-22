@@ -21,14 +21,15 @@
 // singfn more convinient way to write signal handlers
 typedef void (*sigfn)(int);
 
-extern bool filter_number(const char *);
-extern uint16_t port_conv(const char *);
-extern void port_conv_range(char *, uint16_t *, uint16_t *);
-extern char *xsprintf(const char *, ...);
-extern bool valid_ip(const char *);
-extern bool urandom_bytes(void *dest, size_t);
+extern bool filter_number(const char *arg);
+extern uint16_t port_conv(const char *arg);
+extern void port_conv_range(char *arg, uint16_t *low, uint16_t *high);
+extern char *xsprintf(const char *fmt, ...);
+extern bool valid_ip(const char *ip);
+extern bool urandom_bytes(void *dest, size_t size);
 extern void port_seeds(void);
 extern uint16_t port_random(void);
-extern uint64_t strconv(const char *, uint8_t);
+extern uint64_t strconv(const char *n, uint8_t base);
 extern sigfn treat_signal(int, sigfn fn);
+
 #endif /*UTIL_H*/

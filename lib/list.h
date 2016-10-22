@@ -45,4 +45,4 @@ typedef struct list_t {
 extern list_t *list_new(uint64_t size, cmp_fn_t cmp, free_fn_t free);
 // free the linked list
 extern void list_free(list_t **list);
-extern void list_add(list_t *list, void *blk);
+extern void list_add(list_t *list, void **blk);

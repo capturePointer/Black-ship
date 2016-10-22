@@ -47,18 +47,18 @@ list_t *list_new(uint64_t size, cmp_fn_t cmp, free_fn_t free)
  * 
  * Add @blk to the next node in the linked list @l
  */
-void list_add(list_t *l, void *blk)
+void list_add(list_t *l, void **blk)
 {
 	if ((!l->head) && (!l->tail)) {
 		l->head = xmalloc(sizeof(node_t));
-		l->head->blk = blk;
+		l->head->blk = &blk;
 		l->tail = l->head;
 		l->n = 1;
 		return;
 	}
 
 	l->tail->next = xmalloc(sizeof(node_t));
-	l->tail->next->blk = blk;
+	l->tail->next->blk = &blk;
 	l->tail = l->tail->next;
 	l->n++;
 }

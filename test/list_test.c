@@ -38,9 +38,8 @@ static data_t *data_new()
 
 static void data_free(void *data)
 {
-	data_t *d = data;
-	free(d->mem_info);
-	free(d);
+	free(((data_t*)(*(char**)data))->mem_info);
+	free(*(char**)data);
 }
 
 static list_t *new_list_test(void)
@@ -85,9 +84,12 @@ static void list_add_test(void **state)
 		blob[i].mem_info = strdup("This mem is is the mem");
 		assert_non_null(blob[i].mem_info);
 
-		list_add(link_list, &blob[i]);
+		list_add(link_list, (void**)&blob[i]);
 	}
+	
+	list_free(&link_list);
 }
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
