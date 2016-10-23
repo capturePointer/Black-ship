@@ -175,5 +175,6 @@ void run_cmd(arguments args)
 		WSTATUS("Please set a valid attack that the app supports");
 	}
 
+	conn_buff_free(conn);
 	conn_free(conn);
 }

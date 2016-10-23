@@ -23,31 +23,39 @@
 #include "mem.h"
 #include "util.h"
 
-#define PK_SIZE 10 * sizeof(uint8_t)
-
-// conn_new alloc a new conn_t struct
 conn_t *conn_new(void)
 {
 	conn_t *conn = xzmalloc(sizeof(conn_t));
-
-	conn->bufflen = PK_SIZE;
-	conn->buff	= xzmalloc(conn->bufflen);
-	conn->addr	= xzmalloc(sizeof(struct sockaddr_storage));
+	conn->addr   = xzmalloc(sizeof(struct sockaddr_storage));
 
 	return conn;
 }
 
-// conn_free frees the new ipv4/ipv6 connection
 void conn_free(conn_t *conn)
 {
 	if (!conn)
 		INFOEE("Can't free a connection pointer that is NULL");
-	if ((!conn->addr) || (!conn->buff))
+	if ((!conn->addr))
 		INFOEE("Can't free a connection members that are NULL");
 
 	xfree(conn->addr);
-	xfree(conn->buff);
 	xfree(conn);
+}
+
+void conn_buff_new(conn_t *conn, uint16_t sz)
+{
+	if (!(conn))
+		INFOEE("Could alloc underlying buff of conn NULL");
+	
+	conn->bufflen = sz;
+	conn->buff = xmalloc(sizeof(conn->buff) * conn->bufflen);
+}
+
+void conn_buff_free(conn_t *conn)
+{
+	if (!(conn))
+		INFOEE("Could not free underlying buff of conn NULL");
+	xfree(conn->buff);
 }
 
 // conn_addr_setup
@@ -62,7 +70,7 @@ void conn_addr_setup(conn_t *conn, conn_hints info)
 	int err					  = 0;
 	int sk					  = 0;
 
-	err	= getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
+	err = getaddrinfo(info.host, info.proto, &info.hints, &servinfo);
 	if (err)
 		INFOEE("Can't get the ip addr from the dns lookup");
 

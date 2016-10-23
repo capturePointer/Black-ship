@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
 #include <arpa/inet.h>
 #include <errno.h>
 #include <fcntl.h>
@@ -33,6 +34,7 @@ static bool is_zero(const char *);
 
 /*
  * filter_number 
+ *
  * @arg - string null terminated
  * 
  * filters all character and test if we have only digits 
@@ -57,9 +59,14 @@ bool filter_number(const char *arg)
 	return true;
 }
 
-// port_conv convert from a char* representation to port number
-// ports are defined as uint16_t because are 16 byte wide.
-// max value for a port should be UINT_MAX
+/*
+ * port_conv 
+ *
+ * convert from a char* representation to port number
+ * ports are defined as uint16_t because are 16 byte wide.
+ * max value for a port should be UINT_MAX
+ *
+ */
 uint16_t port_conv(const char *arg)
 {
 	if (!filter_number(arg))
@@ -78,8 +85,13 @@ err:
 	return 0;
 }
 
-// port_conv_range converts a string reperesentatio of two numbers x-y delim with "-"
-// the function wraps port_conv for every token
+/*
+ * port_conv_range
+ *
+ * converts a string reperesentatio of two numbers x-y delim with "-"
+ * the function wraps port_conv for every token
+ *
+ */
 void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 {
 	if (!arg) {
@@ -114,12 +126,17 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 	}
 }
 
-// xsprintf safe wrapper on sprintf
-// this function pre calculates how much bytes needs to alloc
-// in order to store into that buffer.
-// if the buffer is still to small it will print out and error
-// and terminate the program
-// the func will return a ptr to that newly created message
+/*
+ * xsprintf 
+ *
+ * safe wrapper on sprintf
+ * this function pre calculates how much bytes needs to alloc
+ * in order to store into that buffer.
+ * if the buffer is still to small it will print out and error
+ * and terminate the program
+ * the func will return a ptr to that newly created message
+ *
+ */
 char *xsprintf(const char *fmt, ...)
 {
 	va_list args;
@@ -141,8 +158,13 @@ char *xsprintf(const char *fmt, ...)
 	return buff;
 }
 
-// valid_ip test if it's a valid ip(ipv4,ipv6) and return true
-// if it's not a valid ip return false
+/*
+ * valid_ip 
+ *
+ * test if it's a valid ip(ipv4,ipv6) and return true
+ * if it's not a valid ip return false
+ *
+ */
 bool valid_ip(const char *ip)
 {
 	if (!ip)
@@ -159,11 +181,20 @@ bool valid_ip(const char *ip)
 	return false;
 }
 
-// bool urandom_bytes
-// Use /dev/urandom to get some entropy bytes for seeding purposes.
-//
-// If reading /dev/urandom fails(which ought to never happen), it returns
-// false, otherwise it return true.
+/*
+ * urandom_bytes
+ *
+ * Use /dev/urandom to get some entropy bytes for seeding purposes.
+ *
+ * @dest - ptr to destination where we should start to fill up the random bytes
+ * @size - the size of chunk that the @dest has.
+ *
+ * The maximum size that can be the @dest should not be larger than 65535
+ *
+ * If reading /dev/urandom fails(which ought to never happen), it returns
+ * false, otherwise it return true.
+ *
+ */
 bool urandom_bytes(void *dest, size_t size)
 {
 	if ((!dest) || (!size))
@@ -181,10 +212,13 @@ bool urandom_bytes(void *dest, size_t size)
 
 static uint64_t seeds[2];
 
-// void port_seeds(void)
-// seeds two 64 byes numbers, the state and the initseq
-// it returns ERRENTROPY if the we can't read form the source of entropy
-// the source of entropy that this functions uses is /dev/urandom.
+/**
+ * port_seeds
+ *
+ * seeds two 64 byes numbers, the state and the initseq
+ * it returns ERRENTROPY if the we can't read form the source of entropy
+ * the source of entropy that this functions uses is /dev/urandom.
+ */
 void port_seeds(void)
 {
 	// read from /dev/urandom 128 bytes
@@ -197,8 +231,11 @@ void port_seeds(void)
 	pcg32_srandom(seeds[0], seeds[1]);
 }
 
-// uint16_t port_random(void)
-// generates a valid port number from 1 to UINT16_MAX
+/**
+ * port_random
+ *
+ * generates a valid port number from 1 to UINT16_MAX
+ */
 uint16_t port_random(void)
 {
 	return (uint16_t)pcg32_boundedrand(UINT16_MAX);
@@ -206,6 +243,7 @@ uint16_t port_random(void)
 
 /* 
  * strconv
+ *
  * convert the string n to a specific format byte
  * @n	 - the string
  * @base - the base number
@@ -245,14 +283,16 @@ static bool is_zero(const char *n) {
 
 /*
  * treat_signal
+ *
+ * @signo - specifies the signal values define in <signal.h>
+ * @fn - pointer to a signal-catching function or one of the macros
+ * SIG_IGN or SIG_DFL.
+ *
  * friendly wrapper around sigaction
  *
  * function allows the calling process to specify the action 
  * to be associated with a specific signal.
  *
- * @signo - specifies the signal values define in <signal.h>
- * @fn - pointer to a signal-catching function or one of the macros
- * SIG_IGN or SIG_DFL.
  *
  */
 sigfn treat_signal(int signo, sigfn fn)

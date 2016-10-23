@@ -17,9 +17,11 @@ static void conn_new_test(void **state)
 	(void)state;
 	// create new ipv4 conn
 	conn_t *conn = conn_new();
+	conn_buff_new(conn, UINT16_MAX);
 	assert_non_null(conn);
 	assert_non_null(conn->addr);
 	assert_non_null(conn->buff);
+	conn_buff_free(conn);
 	conn_free(conn);
 	*(void**)&conn = NULL;
 	assert_null(conn);
@@ -29,6 +31,7 @@ static void conn_addr_setup_test_ivp4(void **state)
 {
 	(void)state;
 	conn_t *conn = conn_new();
+	conn_buff_new(conn, UINT16_MAX);
 	assert_non_null(conn);
 	assert_non_null(conn->addr);
 	assert_non_null(conn->buff);
@@ -54,6 +57,7 @@ static void conn_addr_setup_test_ivp4(void **state)
 	assert_non_null(err);
 	assert_string_equal(buff, "127.0.0.1");
 
+	conn_buff_free(conn);
 	conn_free(conn);
 	*(void**)&conn = NULL;
 	assert_null(conn);
@@ -63,6 +67,7 @@ static void conn_addr_setup_test_ipv6(void **state)
 {
 	(void)state;
 	conn_t *conn = conn_new();
+	conn_buff_new(conn, UINT16_MAX);
 	assert_non_null(conn);
 	assert_non_null(conn->addr);
 	assert_non_null(conn->buff);
@@ -88,6 +93,7 @@ static void conn_addr_setup_test_ipv6(void **state)
 	assert_non_null(err);
 	assert_string_equal(buff, "::1");
 
+	conn_buff_free(conn);
 	conn_free(conn);
 	*(void**)&conn = NULL;
 	assert_null(conn);

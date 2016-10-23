@@ -39,8 +39,10 @@ typedef struct conn_t {
 	// the underlying buffer that the socket
 	// will use for IO purposes
 	uint8_t *buff;
-	uint8_t bufflen;
+	uint16_t bufflen; // max value 1<<16
 } conn_t;
+
+#define MAXBUFF 1<<16
 
 // conn_hints special type that will
 // provide aditional information about what
@@ -56,4 +58,7 @@ typedef struct conn_hints{
 extern conn_t *conn_new(void);
 extern void conn_free(conn_t *conn);
 extern void conn_addr_setup(conn_t *conn, conn_hints hints);
+extern void conn_buff_new(conn_t *conn, uint16_t sz);
+extern void conn_buff_free(conn_t *conn);
+
 #endif /*CONN_H*/

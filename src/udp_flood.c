@@ -186,6 +186,7 @@ void udp_flood_init(conn_t *conn, arguments args)
 		break;
 	}
 
+	conn_buff_new(conn, UINT16_MAX);
 	// fill up the buffer with random data
 	urandom_bytes(conn->buff, conn->bufflen);
 	if (err_this(ERRENTROPY))
