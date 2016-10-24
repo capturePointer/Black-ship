@@ -43,6 +43,7 @@ enum {
 	RANDOM		 = 'r',
 	DEBUG		 = 'd',
 	PACKETS		 = 17,
+	PACKETS_SZ   = 19,
 };
 
 // list of attacks that the cmd line will support
@@ -89,6 +90,11 @@ typedef enum other_t {
 	L_ATTACKS,	// list attacks
 } other_t;
 
+typedef struct packet_t {
+	uint64_t n;
+	uint16_t size; // max size 1<<16
+}packet_t;
+
 // arguments retains all info from the parse_opt command
 // when it finishes
 typedef struct arguments {
@@ -96,7 +102,7 @@ typedef struct arguments {
 	ATTACK_SW attack;	
 	ip_t host_type;
 	port_t port;
-	uint64_t packets;
+	packet_t packet;
 	other_t list_attacks;
 } arguments;
 

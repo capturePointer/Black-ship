@@ -48,6 +48,9 @@ struct argp_option options[] = {
 	{ "packets",PACKETS, "n", 0,
 		"Number of packets that will be send to the host",
 		0},
+	{ "packet-size", PACKETS_SZ, "size", 0,
+		"Specify the size of the packet. Max size 1<<16",
+		0},
 	{ "i4", I4, 0, 0,
 	  "Ipv4 address.", 0 },
 	{ "i6", I6, 0, 0,
@@ -139,7 +142,13 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		break;
 
 	case PACKETS:
-		args->packets = strconv(arg, 10);
+		args->packet.n = strconv(arg, 10);
+		if (err_this(ERRCONV))
+			return ARGP_KEY_ERROR;
+		break;
+
+	case PACKETS_SZ:
+		args->packet.size = (uint16_t)strconv(arg, 10);
 		if (err_this(ERRCONV))
 			return ARGP_KEY_ERROR;
 		break;

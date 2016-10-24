@@ -186,10 +186,7 @@ void udp_flood_init(conn_t *conn, arguments args)
 		break;
 	}
 
-	conn_buff_new(conn, UINT16_MAX);
-	// fill up the buffer with random data
-	urandom_bytes(conn->buff, conn->bufflen);
-	if (err_this(ERRENTROPY))
+		if (err_this(ERRENTROPY))
 		INFOEE("Can't insert content into connection buffer");
 
 	// create upd socket based on args.host_type
@@ -199,7 +196,7 @@ void udp_flood_init(conn_t *conn, arguments args)
 
 	// assign singleton with the new connection
 	connection = conn;
-	packets	= args.packets;
+	packets	= args.packet.n;
 	// now we should test if we are dealing with single,range or random port attack
 	if (args.port.random) {
 		DEBUG("Udp flood is choosing random port attack implementation");

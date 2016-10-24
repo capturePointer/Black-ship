@@ -134,6 +134,8 @@ void run_cmd(arguments args)
 	STATUS("Blackship start sailing..");
 
 	conn_t *conn = conn_new();
+	conn_buff_new(conn, args.packet.size);
+	urandom_bytes(conn->buff, conn->bufflen); // fill up the buffer with random data
 
 	// decide what attack we should launch
 	// for every case stmt there will be an entry point function

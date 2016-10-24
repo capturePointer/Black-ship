@@ -27,7 +27,6 @@ typedef int sock_t;
 // make is shorter for casts to this type
 #define SA struct sockaddr
 
-// define ipv4 connection
 typedef struct conn_t {
 	// the underlying socket connection
 	sock_t sock;
