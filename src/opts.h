@@ -24,6 +24,7 @@
 typedef struct argp_state argp_state;
 typedef struct argp_option argp_option;
 
+// argp func and globals that need to be exported
 extern const char *doc;
 extern error_t parse_opt(int, char *, argp_state *);
 extern const char *argp_program_version;
@@ -41,7 +42,6 @@ enum {
 	I4			 = 14,
 	I6			 = 16,
 	RANDOM		 = 'r',
-	DEBUG		 = 'd',
 	PACKETS		 = 17,
 	PACKETS_SZ   = 19,
 };
@@ -52,15 +52,7 @@ enum {
 // testing purposes.
 enum ATTACK_SW {
 	START_ATTACK = 0, 
-	UDP_FLOOD,
-	ICMP_FLOOD,
-	IGMP_FLOOD,
-	SYN_FLOOD,
-	RST_FLOOD,
-	PSH_ACK_FLOOD,
 	SOCKSTRESS,
-	HTTP_FLOOD,
-	DNS_FLOOD,
 	END_ATTACK,	
 } ATTACK_LIST;
 typedef enum ATTACK_SW ATTACK_SW;

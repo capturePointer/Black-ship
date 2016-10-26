@@ -16,7 +16,7 @@
 static void valid_attack_test(void **state)
 {
 	(void)state;
-	char *p1 = strdup("udp");
+	char *p1 = strdup("stress");
 	assert_non_null(p1);
 
 	char *p2 = strdup("uhdusad");
@@ -24,14 +24,14 @@ static void valid_attack_test(void **state)
 
 	ATTACK_SW ret;
 	ret = valid_attack(p1);
-	assert_true((ret == UDP_FLOOD));
+	assert_true((ret == SOCKSTRESS));
 	ret = valid_attack(p2);
 	assert_true((ret == END_ATTACK));
-
 
 	xfree(p1);
 	xfree(p2);
 }
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);

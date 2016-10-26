@@ -10,7 +10,6 @@
 #include <stdint.h>
 #include <signal.h>
 #include <unistd.h>
-#include <lib/err.h>
 #include <lib/mem.h>
 #include <lib/util.h>
 
@@ -18,72 +17,61 @@ static void port_conv_test(void **state)
 {
 	(void)state;
 
+	int16_t p = 0;
 	const char *p1 = "5213";
 	const char *p2 = "-3213";
 	const char *p3 = "70000";
 	const char *p4 = "ufiusahfs";
 
-	uint16_t r1 = port_conv(p1);
-	assert_int_equal(r1, 5213);
-	assert_true(err_empty());
+	p = port_conv(p1);
+	assert_int_equal(p, 5213);
 
-	uint16_t r2 = port_conv(p2);
-	assert_int_equal(r2, 0);
-	assert_false(err_empty());
-	assert_true(err_prev_code_is(ERRCONVPORT));
+	p = port_conv(p2);
+	assert_int_equal(p, -1);
 
-	uint16_t r3 = port_conv(p3);
-	assert_int_equal(r3, 0);
-	assert_false(err_empty());
-	assert_true(err_prev_code_is(ERRCONVPORT));
+	p = port_conv(p3);
+	assert_int_equal(p, -1);
 
-	uint16_t r4 = port_conv(p4);
-	assert_int_equal(r4, 0);
-	assert_false(err_empty());
-	assert_true(err_prev_code_is(ERRCONVPORT));
-
-	err_destroy();
-	//test for error
+	p = port_conv(p4);
+	assert_int_equal(p, -1);
 }
+
+
 static void port_conv_range_test(void **state)
 {
 	(void)state;
 	uint16_t r1 = 0, r2 = 0;
-
+	int8_t err;
 	char *p1 = strdup("100-200");
 	char *p2 = strdup("5000-10000");
 	char *p3 = strdup("231-100");
 	char *p4 = strdup("1jhas-diajsudja");
 	char *p5 = strdup("0000-0000");
 
-	// p1
-	port_conv_range(p1, &r1, &r2);
+	err = port_conv_range(p1, &r1, &r2);
+	assert_int_equal(err, 0);
 	assert_int_equal(r1, 100);
 	assert_int_equal(r2, 200);
-	assert_true(err_empty());
 
-	// p2
-	port_conv_range(p2, &r1, &r2);
+	err = port_conv_range(p2, &r1, &r2);
+	assert_int_equal(err, 0);
 	assert_int_equal(r1, 5000);
 	assert_int_equal(r2, 10000);
-	assert_true(err_empty());
 
-	// p3
-	port_conv_range(p3, &r1, &r2);
+	err = port_conv_range(p3, &r1, &r2);
+	assert_int_equal(err, 0);
 	assert_int_equal(r1, 100);
 	assert_int_equal(r2, 231);
-	assert_true(err_empty());
 
-	// p4
-	port_conv_range(p4, &r1, &r2);
-	assert_int_equal(r1, r2);
-	assert_false(err_empty());
-	assert_true(err_prev_code_is(ERRCONVPORT));
+	err = port_conv_range(p4, &r1, &r2);
+	assert_int_equal(err, -1);
 
-	// p5
-	port_conv_range(p5, &r1, &r2);
+
+	err = port_conv_range(p5, &r1, &r2);
+	assert_int_equal(err, 0);
 	assert_int_equal(r1, 0);
 	assert_int_equal(r2, 0);
+	assert_int_equal(r1, r2);
 
 	xfree(p1);
 	xfree(p2);
@@ -91,7 +79,6 @@ static void port_conv_range_test(void **state)
 	xfree(p4);
 	xfree(p5);
 
-	err_destroy();
 }
 
 static void filter_number_test(void **state)
@@ -141,18 +128,6 @@ static void valid_ip_test(void **state)
 	xfree(p4);
 }
 
-static void xsprintf_test(void **state)
-{
-	(void)state;
-	int b = 10;
-	char *buff = NULL;
-	assert_null(buff);
-	buff = xsprintf("Today this is my %d with %s",b,"Adams");
-	assert_non_null(buff);
-	size_t sz = strlen(buff);
-	assert_true((sz > 0));
-	xfree(buff);
-}
 
 static void port_random_test(void **state)
 {
@@ -160,9 +135,7 @@ static void port_random_test(void **state)
 	bool f = false;
 	uint16_t n = 0;
 	port_seeds();
-	f = err_this(ERRENTROPY);
-	assert_false(f);
-	
+
 	for(int i = 0; i<10000000; i++) {
 		n = port_random();
 		f = ((n >= 0) && (n < UINT16_MAX))? true:false;
@@ -174,41 +147,34 @@ static void strconv_test(void **state)
 {
 	(void)state;
 
-	char max_test[] = "18446744073709551615ULL";
+	char max_test[] = "18446744073709551615";
 	char max_test_fail[] = "18446744073709551321321615ULL";
 	char normal_test[] = "12398175918273";
 	char hex_test[] = "0x521Af";
 	char string_test[] = "dsuhfiudsahgiudshaiahfiudshgfsadf";
 	char zero_test[] = "0";
 
-	uint64_t u = strconv(max_test, 10);
+
+	int64_t u = strconv(max_test, 10);
 	assert_int_equal(u, ULLONG_MAX);
-	assert_true(err_empty());
-	
+
 	u = strconv(zero_test, 10);
+	assert_true(u != -1);
 	assert_int_equal(u, 0);
-	assert_true(err_empty());
 
 	u = strconv(hex_test, 16);
+	assert_true(u != -1);
 	assert_int_equal(u, 0x521AF);
-	assert_true(err_empty());
-	
+
 	u = strconv(string_test, 10);
-	assert_int_equal(u, 0);
-	assert_false(err_empty());
-	assert_true(err_this(ERRCONV));
-	err_destroy();	
+	assert_int_equal(u, -1);
 
 	u = strconv(normal_test, 10);
+	assert_true(u != -1);
 	assert_int_equal(u, 12398175918273);
-	assert_true(err_empty());
 
 	u = strconv(max_test_fail, 10);
-	assert_false(err_empty());
-	bool flag = err_this(ERRCONV);
-	assert_true(flag);
-
-	err_destroy();
+	assert_int_equal(u, -1);
 }
 
 static bool sig_test_flag;
@@ -227,13 +193,13 @@ static void signal_test(void **state)
 
 	// handle SIGALRM
 	assert_int_equal(treat_signal(SIGALRM, signal_test_cb), SIG_ERR);
-	
+
 	alarm(1);
 	sleep(1);
 	assert_true(sig_test_flag);
 
 	sig_test_flag = false; // restart
-	
+
 	// handle SIGPIPE
 	treat_signal(SIGPIPE, signal_test_cb);
 	kill(pid, SIGPIPE);
@@ -241,6 +207,7 @@ static void signal_test(void **state)
 
 	sig_test_flag = false; // restart
 }
+
 int main(void)
 {
 	cmocka_set_message_output(CM_OUTPUT_STDOUT);
@@ -249,7 +216,6 @@ int main(void)
 		cmocka_unit_test(port_conv_test),
 		cmocka_unit_test(port_conv_range_test),
 		cmocka_unit_test(valid_ip_test),
-		cmocka_unit_test(xsprintf_test),
 		cmocka_unit_test(port_random_test),
 		cmocka_unit_test(strconv_test),
 		cmocka_unit_test(signal_test),

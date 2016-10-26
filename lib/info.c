@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
 #include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,62 +20,20 @@
 
 #include "info.h"
 
-// info prints out to stdout the msg, file and line number
-inline void info(const char *msg, const char *file, int line)
+inline void inf(const char *msg, const char *file, int line, INFO_OPT opt)
 {
-	fprintf(stdout, "[ * ] %s %s %d\n", msg, file, line);
-}
-
-// info prints out to stdout the message, file and the line number
-// after the message is writed to stdout, it exits the program
-inline void infoee(const char *msg, const char *file, int line)
-{
-	fprintf(stderr, "[ ! ] %s %s %d\n", msg, file, line);
-	exit(EXIT_FAILURE);
-}
-
-inline void wstatus(const char *msg)
-{
-	fprintf(stdout, "[ ! ] %s\n", msg);
-}
-
-inline void status(const char *msg)
-{
-	fprintf(stdout, "[ * ] %s\n", msg);
-}
-
-// main singleton debug flag
-// default false
-static bool debug_flag;
-
-void active_debug(const bool f)
-{
-	debug_flag = f;
-}
-
-void debug(const char *msg, const char *file, int line)
-{
-	if (!debug_flag)
-		return;
-
-	fprintf(stdout, "[ DEBUG ] %s %s %d\n", msg, file, line);
-}
-
-void debugf(const char *fmt, ...)
-{
-	if (!debug_flag)
-		return;
-
-	va_list args;
-	int n;
-
-	va_start(args, fmt);
-	n = vsnprintf(NULL, 0, fmt, args);
-	va_end(args);
-
-	char buff[n];
-	va_start(args, fmt);
-	vsnprintf(buff, sizeof(char) * (unsigned long)n, fmt, args);
-	va_end(args);
-	fprintf(stdout, "%s\n", buff);
+	switch (opt) {
+		case ERR_EX:
+			fprintf(stderr, "[ ERR ] %s - %s %d\n", msg, file, line);
+			exit(EXIT_FAILURE);
+		case WA:
+			fprintf(stdout, "[ WAR ] %s\n", msg);
+			break;
+		case INF:
+			fprintf(stdout, "[ INFO ] %s %s %d\n", msg, file, line);
+			break;
+		case STAT:
+			fprintf(stdout, "[ STATUS ] %s\n", msg);
+			break;
+	}
 }

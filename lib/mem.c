@@ -23,9 +23,6 @@
 
 #define ALLOC_RETRY 5
 
-// mem_malloc wrapper for the std lib allocation funciton malloc
-// tests if the alloc returned NULL will output
-// a nicely formated error and will exit after 5 times retrying
 void *mem_malloc(size_t n)
 {
 	void *p   = NULL;
@@ -47,9 +44,6 @@ retry:
 	return p;
 }
 
-// mem_malloc wrapper for the std lib allocation funciton calloc
-// tests if the alloc returned NULL will output
-// a nicely formated error and will exit after 5 times retrying
 void *mem_calloc(size_t count, size_t n)
 {
 	void *p   = NULL;
@@ -71,7 +65,6 @@ retry:
 	return p;
 }
 
-// mem_zmalloc wrpper for the std lib function malloc but it zero all the mem
 void *mem_zmalloc(size_t n)
 {
 	void *p   = NULL;
@@ -97,8 +90,6 @@ retry:
 	return p;
 }
 
-// xfree wrapper for the stdlib free function
-// declared this way just to make it consistenly with the xmalloc wrapper
 void mem_free(void *p)
 {
 	if (!p)

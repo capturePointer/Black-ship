@@ -13,7 +13,7 @@
 // limitations under the License.
 #include <argz.h>
 
-#include <lib/err.h>
+#include <lib/info.h>
 
 #include "opts.h"
 #include "cmds.h"
@@ -28,9 +28,9 @@ int main(int argc, char **argv)
 	memset(&arg, 0, sizeof(arguments));
 
 	err = argp_parse(&argp, argc, argv, 0, 0, &arg);
-	if (err == 0) {
+	if (err == 0)
 		run_cmd(arg);
-	} else if (err == ARGP_KEY_ERROR) {
-		err_dump();
-	}
+	else 
+		if (err == ARGP_KEY_ERROR)
+			INFOEE("Bad argument input");
 }

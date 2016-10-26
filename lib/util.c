@@ -11,7 +11,6 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-//
 
 #include <arpa/inet.h>
 #include <errno.h>
@@ -32,17 +31,6 @@
 
 static bool is_zero(const char *);
 
-/*
- * filter_number 
- *
- * @arg - string null terminated
- * 
- * filters all character and test if we have only digits 
- *
- * Return:
- *	if we have only digits return true
- *	if we have letters or other simbols just return false
- */
 bool filter_number(const char *arg)
 {
 	if (!arg) {
@@ -59,64 +47,52 @@ bool filter_number(const char *arg)
 	return true;
 }
 
-/*
- * port_conv 
- *
- * convert from a char* representation to port number
- * ports are defined as uint16_t because are 16 byte wide.
- * max value for a port should be UINT_MAX
- *
- */
-uint16_t port_conv(const char *arg)
+int16_t port_conv(const char *arg)
 {
 	if (!filter_number(arg))
-		goto err;
+		return -1;
 
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0))					 // ports are 16 byte wide
-		goto err;
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) // ports are 16 byte wide
+		return -1;
 
-	// it is safe is u is a value from 0 to UINT_MAX(65,535)
-	return (uint16_t)u;
-
-err:
-	err_new("Connot convert the number into a real port.", ERRCONVPORT, errno);
-	return 0;
+	return (int16_t)u;
 }
 
-/*
- * port_conv_range
- *
- * converts a string reperesentatio of two numbers x-y delim with "-"
- * the function wraps port_conv for every token
- *
- */
-void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
+int8_t port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 {
 	if (!arg) {
-		err_new("Connot convert null arg into range ports.", ERRCONVPORT, 0);
-		return;
+		return -1;
 	}
 
 	char delim[2] = "-";
 	char *t1, *t2;
 	t1 = strtok(arg, delim);
-	if (t1 == NULL) {
-		err_new("Connot convert first number into range ports.", ERRCONVPORT, 0);
-		return;
+	if (t1 == NULL)
+		return -1;
+
+	int16_t p = 0;
+
+	if ((p = port_conv(t1)) == -1) {
+		return -1;
 	}
-	*low = port_conv(t1);
+
+	*low = (uint16_t)p;
 
 	// in order to get the next token
 	// and to continue with the same string
 	// NULL is passed as first arg
 	t2 = strtok(NULL, delim);
 	if (t2 == NULL) {
-		err_new("Connot convert second number into range ports.", ERRCONVPORT, 0);
-		return;
+		return -1;
 	}
-	*high = port_conv(t2);
+	
+	if ((p = port_conv(t2)) == -1) {
+		return -1;
+	}
+
+	*high = (uint16_t)p;
 
 	// swap values if their are in descent order
 	if (*low > *high) {
@@ -124,47 +100,10 @@ void port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 		*high = *high ^ *low;
 		*low  = *low ^ *high;
 	}
+
+	return 0;
 }
 
-/*
- * xsprintf 
- *
- * safe wrapper on sprintf
- * this function pre calculates how much bytes needs to alloc
- * in order to store into that buffer.
- * if the buffer is still to small it will print out and error
- * and terminate the program
- * the func will return a ptr to that newly created message
- *
- */
-char *xsprintf(const char *fmt, ...)
-{
-	va_list args;
-	int n;
-	char *buff;
-
-	// first we must count the number of bytes we need
-	// to alloc in order to store our buffer.
-	va_start(args, fmt);
-	n = vsnprintf(NULL, 0, fmt, args);
-	va_end(args);
-
-	// alloc the buffer
-	buff = xzmalloc(sizeof(char) * (unsigned long)n);
-	va_start(args, fmt);
-	vsnprintf(buff, sizeof(char) * (unsigned long)n, fmt, args);
-	va_end(args);
-
-	return buff;
-}
-
-/*
- * valid_ip 
- *
- * test if it's a valid ip(ipv4,ipv6) and return true
- * if it's not a valid ip return false
- *
- */
 bool valid_ip(const char *ip)
 {
 	if (!ip)
@@ -173,28 +112,15 @@ bool valid_ip(const char *ip)
 	struct sockaddr_in in4;
 	struct sockaddr_in6 in6;
 
-	if (inet_pton(AF_INET, ip, &in4.sin_addr))
-		return true;
-	if (inet_pton(AF_INET6, ip, &in6.sin6_addr))
+	if (inet_pton(AF_INET, ip, &in4.sin_addr) ||
+		inet_pton(AF_INET6, ip, &in6.sin6_addr))
 		return true;
 
 	return false;
 }
 
-/*
- * urandom_bytes
- *
- * Use /dev/urandom to get some entropy bytes for seeding purposes.
- *
- * @dest - ptr to destination where we should start to fill up the random bytes
- * @size - the size of chunk that the @dest has.
- *
- * The maximum size that can be the @dest should not be larger than 65535
- *
- * If reading /dev/urandom fails(which ought to never happen), it returns
- * false, otherwise it return true.
- *
- */
+static uint64_t seeds[2];
+
 bool urandom_bytes(void *dest, size_t size)
 {
 	if ((!dest) || (!size))
@@ -210,67 +136,35 @@ bool urandom_bytes(void *dest, size_t size)
 	return close(fd) == 0;
 }
 
-static uint64_t seeds[2];
 
-/**
- * port_seeds
- *
- * seeds two 64 byes numbers, the state and the initseq
- * it returns ERRENTROPY if the we can't read form the source of entropy
- * the source of entropy that this functions uses is /dev/urandom.
- */
 void port_seeds(void)
 {
 	// read from /dev/urandom 128 bytes
-	if (!urandom_bytes(seeds, sizeof(seeds))) {
-		err_new("Can't read from /udev/random", ERRENTROPY, 0);
-		return;
-	}
+	if (!urandom_bytes(seeds, sizeof(seeds)))
+		INFOEE("Could not find /udev/random to use as a source of entropy");
 
 	// init the seeds
 	pcg32_srandom(seeds[0], seeds[1]);
 }
 
-/**
- * port_random
- *
- * generates a valid port number from 1 to UINT16_MAX
- */
 uint16_t port_random(void)
 {
 	return (uint16_t)pcg32_boundedrand(UINT16_MAX);
 }
 
-/* 
- * strconv
- *
- * convert the string n to a specific format byte
- * @n	 - the string
- * @base - the base number
- *
- * Side note: very important that n ends with '\0' or this will have very bad side effects
- *
- * Return:
- *	if the conversion fails due to invalid @base or invalid @n string it will
- *	return 0 and ERRCONV into the err circular list.
- *	if the conversion succeeds it will return a valid number
- */
-uint64_t strconv(const char *n, uint8_t base)
+int64_t strconv(const char *n, uint8_t base)
 {
 	if (is_zero(n))
 		return 0;
 
-	uint64_t result = 0;
 
-	result = strtoull(n, NULL, base);
-	if (((errno == ERANGE) && (result == ULLONG_MAX)) || (errno == EINVAL) ||(result == 0))
-		goto fail;
+	int64_t result = strtoll(n, NULL, base);
+	if (((errno == ERANGE) && (result == LLONG_MAX)) || 
+			(errno == EINVAL) || (result == 0))
+		return -1;
 	
 	return result;
 
-fail:
-	err_new("Invalid string or invalid base, the string must contain only numbers", ERRCONV, 0);
-	return 0;
 }
 
 static bool is_zero(const char *n) {
@@ -281,20 +175,6 @@ static bool is_zero(const char *n) {
 	return false;
 }
 
-/*
- * treat_signal
- *
- * @signo - specifies the signal values define in <signal.h>
- * @fn - pointer to a signal-catching function or one of the macros
- * SIG_IGN or SIG_DFL.
- *
- * friendly wrapper around sigaction
- *
- * function allows the calling process to specify the action 
- * to be associated with a specific signal.
- *
- *
- */
 sigfn treat_signal(int signo, sigfn fn)
 {
 	struct sigaction act, oact;

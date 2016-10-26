@@ -12,41 +12,45 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
 #ifndef INFO_H
 #define INFO_H
 
 #include <stdbool.h>
 
-extern void info(const char *msg, const char *file, int line);
-extern void infoee(const char *msg, const char *file, int line);
-extern void wstatus(const char *msg);
-extern void status(const char *msg);
-extern void debug(const char *msg, const char *file, int line);
-extern void debugf(const char *fmt, ...);
-extern void active_debug(const bool f);
+// INFO_OPT
+//
+// string format options
+typedef enum INFO_OPT {
+	ERR_EX,		// print in a error format and exit the program
+	WA,			// print in a warning format
+	INF,		// print in a info format
+	STAT,		// print in a status format
+} INFO_OPT;
+
+/**
+ * inf
+ *
+ * @msg - string message format
+ * @file - usually it's used in conjunction with __FILE__ macro
+ * @line - usually it's used in conjunction with __LINE_ macro
+ * @opt - one of the extra option on how you want the string to be formated
+ *
+ * writes to stdout the msg plus the file and line 
+ * where the inf is called
+ */
+extern void inf(const char *msg, const char *file, int line, INFO_OPT opt);
 
 #define INFO(message) \
-	info((message), __FILE__, __LINE__)
+	inf((message), __FILE__, __LINE__, INF)
 
 #define INFOEE(message) \
-	infoee((message), __FILE__, __LINE__)
+	inf((message), __FILE__, __LINE__, ERR_EX)
 
 #define WSTATUS(message) \
-	wstatus(message)
+	inf((message), "" , 0, WA)
 
 #define STATUS(message) \
-	status(message)
-
-#define DEBUGF(format, ...) \
-	debugf(format, __VA_ARGS__)
-
-#define DEBUG(msg)\
-	debug((msg), __FILE__, __LINE__)
-
-#define DEBUG_ON() \
-	active_debug(true);
-
-#define DEBUG_OFF() \
-	active_debug(false);
+	inf((message), "", 0, STAT)
 
 #endif /*INFO_H*/
