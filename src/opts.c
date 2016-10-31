@@ -111,7 +111,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 
 	case PORT: {
 		int16_t p = port_conv(arg);
-		if (!p) 
+		if (p == -1)
 			return ARGP_KEY_ERROR;
 		args->port.n = (uint16_t)p;
 		break;
@@ -119,7 +119,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 
 	case RANGE_PORTS: {
 		int16_t err = port_conv_range(arg, &args->port.low, &args->port.high);
-		if(!err)
+		if(err == -1)
 			return ARGP_KEY_ERROR;
 		break;
 	}
@@ -132,7 +132,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 
 	case PACKETS: {
 		int64_t packet = strconv(arg, 10);
-		if (!packet)
+		if (packet == -1)
 			return ARGP_KEY_ERROR;
 		args->packet.n  = (uint64_t)packet;
 		break;
@@ -140,7 +140,7 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 
 	case PACKETS_SZ: {
 		int64_t sz = strconv(arg, 10);
-		if(!sz) 
+		if(sz == -1)
 			return ARGP_KEY_ERROR;
 		args->packet.size = (uint16_t)sz;
 		break;
@@ -156,7 +156,6 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 			return ARGP_KEY_ERROR;
 		args->host = arg;
 		break;
-
 	}
 
 	case I4: {

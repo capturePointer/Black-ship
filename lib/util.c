@@ -202,7 +202,8 @@ sigfn treat_signal(int signo, sigfn fn)
 		act.sa_flags |= SA_RESTART;
 #endif
 	}
-	if (!sigaction(signo, &act, &oact))
+
+	if (sigaction(signo, &act, &oact) == -1)
 		return SIG_ERR;
 
 	return oact.sa_handler;

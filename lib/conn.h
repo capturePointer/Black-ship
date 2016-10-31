@@ -44,6 +44,10 @@ typedef struct conn_t {
 
 #define MAXBUFF 1<<16
 
+// IP_SPEC
+// helper macro for deciding upon which AF_* to choose
+#define IP_SPEC(ipv) ((ipv == IPV4) ? AF_INET : AF_INET6)
+
 // conn_hints special type that will
 // provide aditional information about what
 // conn we want to establish.
@@ -54,11 +58,49 @@ typedef struct conn_hints{
 	struct addrinfo hints;
 }conn_hints;
 
-// alloc new connection
+/**
+ * conn_new
+ *
+ * construct a new empty connection
+ */
 extern conn_t *conn_new(void);
+
+/**
+ * conn_free
+ *
+ * @conn - the connection you wish to free
+ *
+ * free up the connection @conn
+ */
 extern void conn_free(conn_t *conn);
+
+/**
+ * conn_add_setup
+ * @conn - the conneciton you wish to setup
+ * @hints - arguments on how the connection should be set up.
+ *
+ * Set up a conneciton bases on @hints, in @hints you could specify
+ * the aditional options
+ */
 extern void conn_addr_setup(conn_t *conn, conn_hints hints);
+
+/**
+ * conn_buff_new
+ *
+ * @conn - conneciton you wish to set up the internal buffer
+ * @sz - the size of the buffer you wish to set up
+ *
+ * alloc the internal buffer of the connection @conn suplied
+ */
 extern void conn_buff_new(conn_t *conn, uint16_t sz);
+
+/*
+ * conn_buff_free
+ *
+ * @conn - the intenral buffer of the connection you wish to free
+ *
+ * free up the internal buffer of the conneciton
+ */
 extern void conn_buff_free(conn_t *conn);
 
 #endif /*CONN_H*/

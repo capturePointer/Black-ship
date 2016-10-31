@@ -14,6 +14,7 @@
 
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
+
 #ifndef OPTS_H
 #define OPTS_H
 

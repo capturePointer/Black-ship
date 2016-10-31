@@ -18,6 +18,19 @@
 
 #include <stdbool.h>
 
+// define list of colors
+// this is just temrinal friendly
+#define KNRM  "\x1B[0m"
+#define KRED  "\x1B[31m"
+#define KGRN  "\x1B[32m"
+#define KYEL  "\x1B[33m"
+#define KBLU  "\x1B[34m"
+#define KMAG  "\x1B[35m"
+#define KCYN  "\x1B[36m"
+#define KWHT  "\x1B[37m"
+#define RESET "\033[0m"
+
+
 // INFO_OPT
 //
 // string format options
@@ -39,7 +52,7 @@ typedef enum INFO_OPT {
  * writes to stdout the msg plus the file and line 
  * where the inf is called
  */
-extern void inf(const char *msg, const char *file, int line, INFO_OPT opt);
+extern void inf(const char *msg,const char *file, int line, INFO_OPT opt);
 
 #define INFO(message) \
 	inf((message), __FILE__, __LINE__, INF)
@@ -52,5 +65,12 @@ extern void inf(const char *msg, const char *file, int line, INFO_OPT opt);
 
 #define STATUS(message) \
 	inf((message), "", 0, STAT)
+
+#ifdef DEBUG_MODE
+#define DEBUG(message)	\
+		do {			\
+			fprintf(stdout, KGRN"[ DEBUG ]" KWT "%s\n" RESET); \
+		}while(0)
+#endif
 
 #endif /*INFO_H*/

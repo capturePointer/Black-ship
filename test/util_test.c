@@ -192,7 +192,7 @@ static void signal_test(void **state)
 	assert_false(sig_test_flag);
 
 	// handle SIGALRM
-	assert_int_equal(treat_signal(SIGALRM, signal_test_cb), SIG_ERR);
+	assert_int_equal(treat_signal(SIGALRM, signal_test_cb), 0);
 
 	alarm(1);
 	sleep(1);
