@@ -48,16 +48,6 @@ typedef struct conn_t {
 // helper macro for deciding upon which AF_* to choose
 #define IP_SPEC(ipv) ((ipv == IPV4) ? AF_INET : AF_INET6)
 
-// conn_hints special type that will
-// provide aditional information about what
-// conn we want to establish.
-// this can be used  with the conn_addr_setup family functions
-typedef struct conn_hints{
-	const char *host;
-	const char *proto;
-	struct addrinfo hints;
-}conn_hints;
-
 /**
  * conn_new
  *
@@ -73,16 +63,6 @@ extern conn_t *conn_new(void);
  * free up the connection @conn
  */
 extern void conn_free(conn_t *conn);
-
-/**
- * conn_add_setup
- * @conn - the conneciton you wish to setup
- * @hints - arguments on how the connection should be set up.
- *
- * Set up a conneciton bases on @hints, in @hints you could specify
- * the aditional options
- */
-extern void conn_addr_setup(conn_t *conn, conn_hints hints);
 
 /**
  * conn_buff_new

@@ -41,16 +41,18 @@ set (TARGET_MAIN src/blackship.c
 				src/cmds.c 
 				src/opts.c 
 				src/opts.h
+				src/sockstress.c
+				src/sockstress.h
 				lib/mem.c
 				lib/mem.h
 				lib/info.c 
 				lib/info.h
 				lib/util.c
 				lib/util.h
-				lib/conn.c
+				lib/net.c
 				lib/pcg.h
 				lib/pcg.c
-				lib/conn.h)
+				lib/net.h)
 
 add_executable(blackship ${TARGET_MAIN})
 

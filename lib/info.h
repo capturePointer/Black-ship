@@ -39,6 +39,7 @@ typedef enum INFO_OPT {
 	WA,			// print in a warning format
 	INF,		// print in a info format
 	STAT,		// print in a status format
+	DBG,        // print in a debug format
 } INFO_OPT;
 
 /**
@@ -68,9 +69,7 @@ extern void inf(const char *msg,const char *file, int line, INFO_OPT opt);
 
 #ifdef DEBUG_MODE
 #define DEBUG(message)	\
-		do {			\
-			fprintf(stdout, KGRN"[ DEBUG ]" KWT "%s\n" RESET); \
-		}while(0)
+		inf((message, __FILE_, __LINE__, DBG);
 #endif
 
 #endif /*INFO_H*/

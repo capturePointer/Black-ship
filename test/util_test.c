@@ -1,23 +1,23 @@
 #include <errno.h>
+#include <lib/mem.h>
+#include <lib/util.h>
 #include <limits.h>
 #include <setjmp.h>
+#include <signal.h>
 #include <stdarg.h>
 #include <stddef.h>
+#include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <cmocka.h>
-#include <stdint.h>
-#include <signal.h>
 #include <unistd.h>
-#include <lib/mem.h>
-#include <lib/util.h>
+#include <cmocka.h>
 
 static void port_conv_test(void **state)
 {
 	(void)state;
 
-	int16_t p = 0;
+	int16_t p	  = 0;
 	const char *p1 = "5213";
 	const char *p2 = "-3213";
 	const char *p3 = "70000";
@@ -35,7 +35,6 @@ static void port_conv_test(void **state)
 	p = port_conv(p4);
 	assert_int_equal(p, -1);
 }
-
 
 static void port_conv_range_test(void **state)
 {
@@ -66,7 +65,6 @@ static void port_conv_range_test(void **state)
 	err = port_conv_range(p4, &r1, &r2);
 	assert_int_equal(err, -1);
 
-
 	err = port_conv_range(p5, &r1, &r2);
 	assert_int_equal(err, 0);
 	assert_int_equal(r1, 0);
@@ -78,7 +76,6 @@ static void port_conv_range_test(void **state)
 	xfree(p3);
 	xfree(p4);
 	xfree(p5);
-
 }
 
 static void filter_number_test(void **state)
@@ -128,17 +125,16 @@ static void valid_ip_test(void **state)
 	xfree(p4);
 }
 
-
 static void port_random_test(void **state)
 {
 	(void)state;
-	bool f = false;
+	bool f	 = false;
 	uint16_t n = 0;
 	port_seeds();
 
-	for(int i = 0; i<10000000; i++) {
+	for (int i = 0; i < 10000000; i++) {
 		n = port_random();
-		f = ((n >= 0) && (n < UINT16_MAX))? true:false;
+		f = ((n >= 0) && (n < UINT16_MAX)) ? true : false;
 		assert_true(f);
 	}
 }
@@ -147,13 +143,12 @@ static void strconv_test(void **state)
 {
 	(void)state;
 
-	char max_test[] = "18446744073709551615";
+	char max_test[]		 = "18446744073709551615";
 	char max_test_fail[] = "18446744073709551321321615ULL";
-	char normal_test[] = "12398175918273";
-	char hex_test[] = "0x521Af";
-	char string_test[] = "dsuhfiudsahgiudshaiahfiudshgfsadf";
-	char zero_test[] = "0";
-
+	char normal_test[]   = "12398175918273";
+	char hex_test[]		 = "0x521Af";
+	char string_test[]   = "dsuhfiudsahgiudshaiahfiudshgfsadf";
+	char zero_test[]	 = "0";
 
 	int64_t u = strconv(max_test, 10);
 	assert_int_equal(u, ULLONG_MAX);
@@ -198,14 +193,34 @@ static void signal_test(void **state)
 	sleep(1);
 	assert_true(sig_test_flag);
 
-	sig_test_flag = false; // restart
+	sig_test_flag = false;					  // restart
 
 	// handle SIGPIPE
 	treat_signal(SIGPIPE, signal_test_cb);
 	kill(pid, SIGPIPE);
 	assert_true(sig_test_flag);
 
-	sig_test_flag = false; // restart
+	sig_test_flag = false;					  // restart
+}
+
+static void array_size_macro_test(void **state)
+{
+	(void)state;
+
+	const char *arr[] = {
+		"a",
+		"b",
+		"c",
+		"k",
+		"l",
+		"m",
+	};
+
+	const int narr[] = { 1, 2, 5, 42, 31, 26, 21, 6, 12, 6, 23, 0, 312 };
+
+	assert_int_equal(ARRAY_SIZE(arr), 6);
+	assert_int_equal(ARRAY_SIZE(narr), 13);
+
 }
 
 int main(void)
@@ -219,6 +234,7 @@ int main(void)
 		cmocka_unit_test(port_random_test),
 		cmocka_unit_test(strconv_test),
 		cmocka_unit_test(signal_test),
+		cmocka_unit_test(array_size_macro_test),
 	};
 
 	return cmocka_run_group_tests(tests, NULL, NULL);

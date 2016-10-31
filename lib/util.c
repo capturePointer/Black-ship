@@ -22,7 +22,6 @@
 #include <unistd.h>
 #include <signal.h>
 
-#include "err.h"
 #include "info.h"
 #include "mem.h"
 #include "pcg.h"

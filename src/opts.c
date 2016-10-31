@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <stdlib.h>
 #include <argz.h>
+#include <stdlib.h>
 
 #include <lib/info.h>
 #include <lib/util.h>
@@ -44,16 +44,6 @@ struct argp_option options[] = {
 	{ "host", HOST, "ip_addr", 0,
 	  "Specify the ipv4 address.",
 	  0 },
-	{ "packets",PACKETS, "n", 0,
-		"Number of packets that will be send to the host",
-		0},
-	{ "packet-size", PACKETS_SZ, "size", 0,
-		"Specify the size of the packet. Max size 1<<16",
-		0},
-	{ "i4", I4, 0, 0,
-	  "Ipv4 address.", 0 },
-	{ "i6", I6, 0, 0,
-	   "Ipv6 address.", 0},
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
@@ -62,7 +52,6 @@ struct argp_option options[] = {
 const char *argp_program_version = "0.1";
 // set the email dest addr for bug reports
 const char *argp_program_bug_address = "hoenirvili@gmail.com";
-
 
 #define USAGE_DOC "HOST PORT TYPE_OF_ATTACK EXTRA-OPTIONS"
 
@@ -97,9 +86,8 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	arguments *args   = state->input;
 	state->err_stream = stderr;
 	state->out_stream = stdout;
-	
-	switch (key) {
 
+	switch (key) {
 	case ATTACK: {
 		// test if the attack is valid
 		args->attack = valid_attack(arg);
@@ -119,30 +107,14 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 
 	case RANGE_PORTS: {
 		int16_t err = port_conv_range(arg, &args->port.low, &args->port.high);
-		if(err == -1)
+		if (err == -1)
 			return ARGP_KEY_ERROR;
 		break;
 	}
 
 	case RANDOM: {
 		args->port.random = true;
-		port_seeds(); // start seeding immediately
-		break;
-	}
-
-	case PACKETS: {
-		int64_t packet = strconv(arg, 10);
-		if (packet == -1)
-			return ARGP_KEY_ERROR;
-		args->packet.n  = (uint64_t)packet;
-		break;
-	}
-
-	case PACKETS_SZ: {
-		int64_t sz = strconv(arg, 10);
-		if(sz == -1)
-			return ARGP_KEY_ERROR;
-		args->packet.size = (uint16_t)sz;
+		port_seeds();					 // start seeding immediately
 		break;
 	}
 
@@ -155,16 +127,6 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 		if (!valid_ip(arg))
 			return ARGP_KEY_ERROR;
 		args->host = arg;
-		break;
-	}
-
-	case I4: {
-		args->host_type = IPV4;
-		break;
-	}
-
-	case I6: {
-		args->host_type = IPV6;
 		break;
 	}
 

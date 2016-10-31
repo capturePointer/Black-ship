@@ -18,6 +18,8 @@
 #include <stdio.h>
 #include <stdbool.h>
 
+#define ARRAY_SIZE(arr) (sizeof(arr) / sizeof(arr[0]))
+
 // singfn more convinient way to write signal handlers
 typedef void (*sigfn)(int);
 

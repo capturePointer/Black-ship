@@ -23,17 +23,23 @@
 inline void inf(const char *msg, const char *file, int line, INFO_OPT opt)
 {
 	switch (opt) {
-		case ERR_EX:
-			fprintf(stderr, "[ ERR ] %s - %s %d\n", msg, file, line);
-			exit(EXIT_FAILURE);
-		case WA:
-			fprintf(stdout, "[ WAR ] %s\n", msg);
-			break;
-		case INF:
-			fprintf(stdout, "[ INFO ] %s %s %d\n", msg, file, line);
-			break;
-		case STAT:
-			fprintf(stdout, "[ STATUS ] %s\n", msg);
-			break;
+	case ERR_EX:
+		fprintf(stderr, KRED "[ ERR ]" RESET "  %s - %s %d\n", msg, file, line);
+		exit(EXIT_FAILURE);
+	case WA:
+		fprintf(stdout, KYEL "[ WAR ]" RESET "  %s\n", msg);
+		break;
+	case INF:
+		fprintf(stdout, KBLU "[ INFO ]" RESET " %s %s %d\n", msg, file, line);
+		break;
+	case STAT:
+		fprintf(stdout, "[ *** ] %s\n", msg);
+		break;
+	case DBG:
+		fprintf(stdout, KGRN "[ DEBUG ]" KWHT "%s:%d - %s\n" RESET, file, line, msg);
+		break;
+	default:
+		fprintf(stdout, "%s\n", msg);
+		break;
 	}
 }

@@ -18,46 +18,35 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <lib/conn.h>
+#include <lib/net.h>
 #include <lib/info.h>
 #include <lib/mem.h>
 #include <lib/util.h>
 
 #include "cmds.h"
+#include "sockstress.h"
 
-// delcare here the list of attacks that the app will support
-// informative const list , this list will change over time
-// on the course of dev/mantaining this cmd app
 static const char *attacks[] = {
 	"stress	 - sockstress type attack",
-	0,
 };
 
 static const char *doses[] = {
 	"stress",
-	0,
 };
 
-#define N_ATTACKS 1
 
 void list_attacks(void)
 {
-	const char **p = attacks;
 	fprintf(stdout, "\n");
 	STATUS("This pirate ship suports this attacks");
-	while (*p != 0) {
-		fprintf(stdout, "%s\n", *p);
-		p++;
-	}
-	fprintf(stdout, "\n");
+	for(uint8_t i=0; i<ARRAY_SIZE(attacks); i++)
+		fprintf(stdout, "%s\n", attacks[i]);
 }
 
-// valid_attack
-// return the flag if the exploit is valid and supported
 ATTACK_SW valid_attack(const char *exploit)
 {
 	uint8_t i = 0;
-	for (; i < N_ATTACKS; i++) {
+	for (; i < ARRAY_SIZE(doses); i++) {
 		if (!strcmp(exploit, doses[i])) {
 			switch (i) {
 				case 0:
@@ -68,23 +57,32 @@ ATTACK_SW valid_attack(const char *exploit)
 	return END_ATTACK;
 }
 
+static conn_t *conn;
 
-// run_cmd is the entry point of the hole app , this will figure out
-// what type of attack we want to launch.
+static void sigint_handler (int signo)
+{
+	if (signo != SIGINT)
+		INFOEE("could not treat any signal different from SIGINT");
+	STATUS("Closing connection and freeing up the memory");	
+
+	conn_buff_free(conn);
+	conn_free(conn);
+	exit(EXIT_SUCCESS);
+}
+
 void run_cmd(arguments args)
 {
-	// if the list_attacks are set just echo and return
 	if (args.list_attacks) {
 		list_attacks();
 		return;
 	}
 
-	treat_signal(SIGPIPE, SIG_IGN);
-	// All things that is global we should handle here.
-	// Every attack is different it requires different options
-	// so we don't need to test them all here instead, we should
-	// try to write independend code for every submodule to explicitly check for those.
-	// we at least should check if the host is set or not at least
+	if (treat_signal(SIGPIPE, SIG_IGN) == SIG_ERR)
+		INFOEE("could not set signal handler for SIGPIPE");
+
+	if (treat_signal(SIGINT, sigint_handler) == SIG_ERR)
+		INFOEE("could not set the signal handler for SIGINT");
+
 	if (!args.host) {
 		WSTATUS("Please set the host with a valid ip");
 		return;
@@ -97,23 +95,17 @@ void run_cmd(arguments args)
 
 	STATUS("Blackship start sailing..");
 
-	conn_t *conn = conn_new();
-	conn_buff_new(conn, args.packet.size);
-	urandom_bytes(conn->buff, conn->bufflen); // fill up the buffer with random data
+	conn = conn_new();
 
-	// decide what attack we should launch
-	// for every case stmt there will be an entry point function
-	// with the name of <module-name>_attack
 	switch (args.attack) {
 	case SOCKSTRESS:
+		sockstress_init(conn, args);
+		sockstress_attack();
 		break;
-	// if we reached this point that
-	// means something we the user passed invalid or unsupported attack
 	case START_ATTACK:
 	case END_ATTACK:
 		WSTATUS("Please set a valid attack that the app supports");
 	}
 
-	conn_buff_free(conn);
 	conn_free(conn);
 }

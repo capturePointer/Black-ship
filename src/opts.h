@@ -14,7 +14,6 @@
 
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
-
 #ifndef OPTS_H
 #define OPTS_H
 
@@ -40,11 +39,7 @@ enum {
 	ATTACK		 = 'a',
 	RANGE_PORTS  = 'P',
 	HOST		 = 'h',
-	I4			 = 14,
-	I6			 = 16,
 	RANDOM		 = 'r',
-	PACKETS		 = 17,
-	PACKETS_SZ   = 19,
 };
 
 // list of attacks that the cmd line will support
@@ -69,13 +64,6 @@ typedef struct port_t {
 	bool random;
 } port_t;
 
-// this type will be used for flag detection
-// in order to know if we are using IPV4 or IPV6 conn
-typedef enum ip_t {
-	IPV4,
-	IPV6,
-} ip_t;
-
 // other_t type that stores extra
 // options for the app
 typedef enum other_t {
@@ -83,19 +71,12 @@ typedef enum other_t {
 	L_ATTACKS,	// list attacks
 } other_t;
 
-typedef struct packet_t {
-	uint64_t n;
-	uint16_t size; // max size 1<<16
-}packet_t;
-
 // arguments retains all info from the parse_opt command
 // when it finishes
 typedef struct arguments {
 	const char *host;
 	ATTACK_SW attack;	
-	ip_t host_type;
 	port_t port;
-	packet_t packet;
 	other_t list_attacks;
 } arguments;
 
