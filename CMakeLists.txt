@@ -41,8 +41,6 @@ set (TARGET_MAIN src/blackship.c
 				src/cmds.c 
 				src/opts.c 
 				src/opts.h
-				lib/err.c 
-				lib/err.h
 				lib/mem.c
 				lib/mem.h
 				lib/info.c 
@@ -52,8 +50,6 @@ set (TARGET_MAIN src/blackship.c
 				lib/conn.c
 				lib/pcg.h
 				lib/pcg.c
-				src/udp_flood.c
-				src/udp_flood.h
 				lib/conn.h)
 
 add_executable(blackship ${TARGET_MAIN})

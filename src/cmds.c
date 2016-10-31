@@ -11,6 +11,7 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
+//
 
 #include <signal.h>
 #include <stdio.h>
@@ -18,38 +19,26 @@
 #include <string.h>
 
 #include <lib/conn.h>
-#include <lib/err.h>
 #include <lib/info.h>
 #include <lib/mem.h>
 #include <lib/util.h>
 
 #include "cmds.h"
-#include "udp_flood.h"
 
 // delcare here the list of attacks that the app will support
 // informative const list , this list will change over time
 // on the course of dev/mantaining this cmd app
 static const char *attacks[] = {
-	"udp	 - upd flood",
-	"icmp	 - icmp flood",
-	"igmp	 - igmp flood",
-	"syn	 - tcp syn flood",
-	"rst	 - tcp rst flood",
-	"psh+ack  - tcp PSH-ACK flood",
 	"stress	 - sockstress type attack",
-	"http	 - http flood",
-	"dns	 - dns flood",
 	0,
 };
 
 static const char *doses[] = {
-	"udp", "icmp", "igmp",
-	"syn", "rst", "psh+ack",
-	"stress", "http", "dns",
+	"stress",
 	0,
 };
 
-#define N_ATTACKS 9
+#define N_ATTACKS 1
 
 void list_attacks(void)
 {
@@ -71,38 +60,14 @@ ATTACK_SW valid_attack(const char *exploit)
 	for (; i < N_ATTACKS; i++) {
 		if (!strcmp(exploit, doses[i])) {
 			switch (i) {
-			case 0:
-				return UDP_FLOOD;
-			case 1:
-				return ICMP_FLOOD;
-			case 2:
-				return IGMP_FLOOD;
-			case 3:
-				return SYN_FLOOD;
-			case 4:
-				return RST_FLOOD;
-			case 5:
-				return PSH_ACK_FLOOD;
-			case 6:
-				return SOCKSTRESS;
-			case 7:
-				return HTTP_FLOOD;
-			case 8:
-				return DNS_FLOOD;
+				case 0:
+					return SOCKSTRESS;
 			}
 		}
 	}
 	return END_ATTACK;
 }
 
-//TODO
-static void release_cb(int signo)
-{
-	if (signo == SIGINT)
-		INFO("Reciving Ctr-C, terminating the program");
-	err_destroy();
-	exit(EXIT_SUCCESS);
-}
 
 // run_cmd is the entry point of the hole app , this will figure out
 // what type of attack we want to launch.
@@ -115,7 +80,6 @@ void run_cmd(arguments args)
 	}
 
 	treat_signal(SIGPIPE, SIG_IGN);
-	treat_signal(SIGINT, release_cb); // on CTR-C release resources
 	// All things that is global we should handle here.
 	// Every attack is different it requires different options
 	// so we don't need to test them all here instead, we should
@@ -141,34 +105,7 @@ void run_cmd(arguments args)
 	// for every case stmt there will be an entry point function
 	// with the name of <module-name>_attack
 	switch (args.attack) {
-	case UDP_FLOOD:
-		DEBUG("UDP_FLOOD attack is activated");
-		udp_flood_init(conn, args);
-		udp_flood_attack();
-		break;
-	case ICMP_FLOOD:
-		DEBUG("ICMP_FLOOD attack is activated");
-		break;
-	case IGMP_FLOOD:
-		DEBUG("IGCMP_FLOOD attack is activated");
-		break;
-	case SYN_FLOOD:
-		DEBUG("SYN_FLOOD attack is activated");
-		break;
-	case RST_FLOOD:
-		DEBUG("RST_FLOOD attack is activated");
-		break;
-	case PSH_ACK_FLOOD:
-		DEBUG("PSH_ACK_FLOOD attack is activated");
-		break;
 	case SOCKSTRESS:
-		DEBUG("SOCKSTRESS attack is activated");
-		break;
-	case HTTP_FLOOD:
-		DEBUG("HTTP_FLOOD attack is activated");
-		break;
-	case DNS_FLOOD:
-		DEBUG("DNS_FLOOD attack is activated");
 		break;
 	// if we reached this point that
 	// means something we the user passed invalid or unsupported attack

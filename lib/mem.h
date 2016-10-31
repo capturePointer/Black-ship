@@ -17,12 +17,50 @@
 
 #include <stdio.h>
 
+/**
+ * mem_malloc 
+ *
+ * @sz - the size of mem you wish to alloc
+ *
+ * wrapper for the std lib allocation funciton malloc
+*/
 extern void *mem_malloc(size_t sz);
+
+/**
+ * mem_calloc 
+ *
+ * @n -  number of elements to be allocated
+ * @sz - the size of elements
+ * 
+ * wrapper for the std lib allocation function calloc
+ *
+ */
 extern void *mem_calloc(size_t n, size_t sz);
+
+/**
+ * mem_zmalloc 
+ *
+ * sz - the size of the block of mem you wish to alloc
+ * 
+ * wrpper for the std lib function malloc but it zeros the mem also
+ */
+
 extern void *mem_zmalloc(size_t sz);
-extern void mem_free(void *block);
+/**
+ * mem_free 
+ * 
+ * @blk- ptr to that block of mem
+ *
+ * wrapper for the stdlib free function
+ *
+ */
+extern void mem_free(void *blk);
 
 
+/**
+ * just friendly renames of the funcs
+ * to provide a better interface
+ */
 #define xmalloc(sz) \
 	mem_malloc((sz))
 

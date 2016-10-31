@@ -17,8 +17,30 @@
 
 #include "opts.h"
 
+/*
+ * list_attacks
+ *
+ * write all supported attacks in stdout
+ */
 extern void list_attacks(void);
+
+/*
+ * run_cmd
+ * 
+ * @arg - structure populated by argp_parse func
+ *
+ * will run the attack based on the @arg
+ *
+ */
 extern void run_cmd(arguments arg);
+
+/**
+ * valid_attack
+ *
+ * @exploit - 
+ *
+ * checker function if the attack suplied @exploit in the cmd is valid or not.
+ */
 extern ATTACK_SW valid_attack(const char *exploit);
 
 #endif

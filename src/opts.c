@@ -16,7 +16,6 @@
 #include <argz.h>
 
 #include <lib/info.h>
-#include <lib/err.h>
 #include <lib/util.h>
 
 #include "cmds.h"
@@ -55,8 +54,6 @@ struct argp_option options[] = {
 	  "Ipv4 address.", 0 },
 	{ "i6", I6, 0, 0,
 	   "Ipv6 address.", 0},
-	{ "debug", DEBUG, 0, 0,
-		"Make use of the debug system", 0},
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
@@ -103,85 +100,80 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	
 	switch (key) {
 
-	case ATTACK:
+	case ATTACK: {
 		// test if the attack is valid
 		args->attack = valid_attack(arg);
 		if (args->attack == END_ATTACK) {
-			err_new("This attack is unsupported or invalid,"
-					"please try --list-attacks.", ERRATTACKUNSUPPORTED, 0);
 			return ARGP_KEY_ERROR;
 		}
 		break;
+	}
 
-	case PORT:
-		// select the single port and convert the string value into uint16_t
-		args->port.n = port_conv(arg);
-		if (err_this(ERRCONVPORT))
+	case PORT: {
+		int16_t p = port_conv(arg);
+		if (!p) 
+			return ARGP_KEY_ERROR;
+		args->port.n = (uint16_t)p;
+		break;
+	}
+
+	case RANGE_PORTS: {
+		int16_t err = port_conv_range(arg, &args->port.low, &args->port.high);
+		if(!err)
 			return ARGP_KEY_ERROR;
 		break;
+	}
 
-	case RANGE_PORTS:
-		// convert range port values into uint16_t
-		port_conv_range(arg, &args->port.low, &args->port.high);
-		// if there is error retun it to the parser
-		if (err_this(ERRCONVPORT))
-			return ARGP_KEY_ERROR;
-		break;
-
-	case RANDOM:
-		// assign random port option this will ignore all range port values
-		// and single port, it will send traffic to random ports
+	case RANDOM: {
 		args->port.random = true;
 		port_seeds(); // start seeding immediately
-			if(err_this(ERRENTROPY))
-				return ARGP_KEY_ERROR;
 		break;
+	}
 
-	case DEBUG:
-		DEBUG_ON();
-		break;
-
-	case PACKETS:
-		args->packet.n = strconv(arg, 10);
-		if (err_this(ERRCONV))
+	case PACKETS: {
+		int64_t packet = strconv(arg, 10);
+		if (!packet)
 			return ARGP_KEY_ERROR;
+		args->packet.n  = (uint64_t)packet;
 		break;
+	}
 
-	case PACKETS_SZ:
-		args->packet.size = (uint16_t)strconv(arg, 10);
-		if (err_this(ERRCONV))
+	case PACKETS_SZ: {
+		int64_t sz = strconv(arg, 10);
+		if(!sz) 
 			return ARGP_KEY_ERROR;
+		args->packet.size = (uint16_t)sz;
 		break;
+	}
 
-	case LIST_ATTACKS:
-		// print out the list of attacks
+	case LIST_ATTACKS: {
 		args->list_attacks = L_ATTACKS;
 		break;
+	}
 
-	case HOST:
-		// if it's not a valid ip addr
-		if (!valid_ip(arg)) {
-			err_new("Invalid ip address. Not a valid IPv4 Ipv6 addr",
-					ERRIPADDR, 0);
+	case HOST: {
+		if (!valid_ip(arg))
 			return ARGP_KEY_ERROR;
-		}
-		// assign ip
 		args->host = arg;
 		break;
 
-	case I4:
-		// use ip version 4
+	}
+
+	case I4: {
 		args->host_type = IPV4;
 		break;
+	}
 
-	case I6:
+	case I6: {
 		args->host_type = IPV6;
 		break;
+	}
 
-	default:
+	default: {
 		// not a valid option
 		return ARGP_ERR_UNKNOWN;
 	}
+	} /*switch*/
 
 	return 0;
 }

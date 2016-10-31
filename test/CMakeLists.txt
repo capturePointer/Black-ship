@@ -20,39 +20,30 @@ SET(ALL_FILES ../lib/info.c
 			  ../lib/info.h
 			  ../lib/util.h
 			  ../lib/util.c
-			  ../lib/err.h
-			  ../lib/err.c
 			  ../lib/pcg.c
 			  ../lib/pcg.h
 			  ../lib/conn.c
 			  ../lib/conn.h
-			  ../lib/err.c
-			  ../lib/err.h
 			  ../lib/mem.h
 			  ../lib/mem.c
-			  ../src/udp_flood.c
-			  ../src/udp_flood.h
 			  ../src/cmds.h
 			  ../src/cmds.c
 			  ../src/opts.c
 			  ../src/opts.h)
 
 # add all files and push them to exec
-set (ERR_TEST_LIB err_test.c ${ALL_FILES})
 set (UTIL_TEST_LIB util_test.c ${ALL_FILES})
 set (BLACKSHIP_TEST_SRC blackship_test.c ${ALL_FILES})
 set (CMDS_TEST_SRC cmds_test.c ${ALL_FILES})
 set (MEM_TEST_LIB mem_test.c ${ALL_FILES})
 set (CONN_TEST_LIB conn_test.c ${ALL_FILES})
 
-add_executable(err_test ${ERR_TEST_LIB})
 add_executable(util_test ${UTIL_TEST_LIB})
 add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
 add_executable(cmds_test ${CMDS_TEST_SRC})
 add_executable(mem_test ${MEM_TEST_LIB})
 add_executable(conn_test ${CONN_TEST_LIB})
 
-target_link_libraries(err_test cmocka)
 target_link_libraries(util_test cmocka)
 target_link_libraries(blackship_test cmocka)
 target_link_libraries(cmds_test cmocka)

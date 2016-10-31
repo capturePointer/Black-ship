@@ -26,7 +26,7 @@ static void argp_parse_test1(void **state)
 	argv[3] = strdup("-p");
 	argv[4] = strdup("4423");
 	argv[5] = strdup("-a");
-	argv[6] = strdup("udp");
+	argv[6] = strdup("testunknowattack");
 	argv[7] = NULL;
 
 	for (uint8_t i = 0; i < N_ARGS; i++) {
@@ -41,13 +41,15 @@ static void argp_parse_test1(void **state)
 	argp_parse(&argp, (int)N_ARGS, argv, 0, 0, &arg);
 
 	assert_string_equal(arg.host, "192.168.122.122");
-	assert_int_equal(arg.attack, UDP_FLOOD);
 	assert_int_equal(arg.list_attacks, NO_LIST);
+	assert_int_equal(arg.attack, END_ATTACK);
 	assert_int_equal(arg.port.low, 0);
 	assert_int_equal(arg.port.high, 0);
 	assert_int_equal(arg.port.n, 4423);
 	assert_int_equal(arg.port.random, 0);
 	assert_int_equal(arg.host_type, IPV4);
+	assert_int_equal(arg.packet.n, 0);
+	assert_int_equal(arg.packet.size, 0);
 
 	for (uint8_t i = 0; i < N_ARGS; i++) {
 		xfree(argv[i]);
@@ -69,7 +71,7 @@ static void argp_parse_test2(void **state)
 	argv[3] = strdup("-p");
 	argv[4] = strdup("4423");
 	argv[5] = strdup("-a");
-	argv[6] = strdup("udp");
+	argv[6] = strdup("stress");
 	argv[7] = strdup("--i6");
 	argv[8] = strdup("--packets=231312");
 	argv[9] = NULL;
@@ -86,7 +88,7 @@ static void argp_parse_test2(void **state)
 	argp_parse(&argp, (int)N_ARGS, argv, 0, 0, &arg);
 
 	assert_string_equal(arg.host, "192.168.122.122");
-	assert_int_equal(arg.attack, UDP_FLOOD);
+	assert_int_equal(arg.attack, SOCKSTRESS);
 	assert_int_equal(arg.list_attacks, NO_LIST);
 	assert_int_equal(arg.port.low, 0);
 	assert_int_equal(arg.port.high, 0);
@@ -94,7 +96,7 @@ static void argp_parse_test2(void **state)
 	assert_int_equal(arg.port.random, 0);
 	assert_int_equal(arg.host_type, IPV6); // this time test if ipv6 is set
 
-	assert_int_equal(arg.packets, 231312);
+	assert_int_equal(arg.packet.n, 231312);
 	for (uint8_t i = 0; i < N_ARGS; i++) {
 		xfree(argv[i]);
 	}
@@ -108,7 +110,7 @@ int main(void)
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(argp_parse_test1),
 		cmocka_unit_test(argp_parse_test2),
-	};
 
+	};
 	return cmocka_run_group_tests(tests, NULL, NULL);
 }
