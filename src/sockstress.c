@@ -11,14 +11,14 @@ typedef void (*sockstress_attack_fn)(void);
 
 void sockstress_init(conn_t *conn, arguments args)
 {
-	//TODO
 	(void)args;
 	if (!conn)
 		INFOEE("Invalid connection pointer passed");
-
+	
 }
 
 
 extern void sockstress_attack(void)
 {
+
 }

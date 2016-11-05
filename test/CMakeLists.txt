@@ -59,7 +59,7 @@ find_library(CMAKE_LIB
 	HINTS "/usr/include /usr/lib /usr/local/lib /usr/local/include"
 )
 if(NOT ${CMOCKA_LIB})
-	message(FATAL_ERROR "[!} PLEASE INSTALL MISSING LIBRARY")
+	message(FATAL_ERROR "[!] PLEASE INSTALL MISSING LIBRARY")
 else()
 	message(STATUS "[+] Cmoka library - found")
 endif()

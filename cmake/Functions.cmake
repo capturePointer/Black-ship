@@ -12,6 +12,15 @@ function(check_libs)
 	CHECK_INCLUDE_FILE("stddef.h" STDDEF_H)
 	CHECK_INCLUDE_FILE("setjmp.h" SETJMP_H)
 	CHECK_INCLUDE_FILE("argz.h" ARGZ_H)
+	CHECK_INCLUDE_FILE("stdlib.h" STDLIB_H)
+	CHECK_INCLUDE_FILE("fcntl.h" FCNTL_H)
+	CHECK_INCLUDE_FILE("signal.h" SIGNAL_H)
+	CHECK_INCLUDE_FILE("limits.h" LIMITS_H)
+	CHECK_INCLUDE_FILE("unistd.h" UNISTD_H)
+	CHECK_INCLUDE_FILE("arpa/inet.h" ARPAINET_H)
+	CHECK_INCLUDE_FILE("sys/types.h" SYSTYPES_H)
+	CHECK_INCLUDE_FILE("inttypes.h" INTTYPES_H)
+	CHECK_INCLUDE_FILE("stdio.h" STDIO_H)
 	set (ALL_H ${ARGP_H}
 		${STDBOOL_H}
 		${STRING_H}
@@ -21,6 +30,15 @@ function(check_libs)
 		${STDDEF_H}
 		${SETJMP_H}
 		${ARGZ_H}
+		${STDLIB_H}
+		${FCNTL_H}
+		${SIGNAL_H}
+		${LIMITS_H}
+		${UNISTD_H}
+		${ARPAINET_H}
+		${SYSTYPES_H}
+		${INTTYPES_H}
+		${STDIO_H}
 	)
 	foreach(HEADER ${ALL_H})
 		if(NOT ${HEADER})

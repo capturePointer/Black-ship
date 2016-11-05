@@ -11,8 +11,8 @@
 // WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 // See the License for the specific language governing permissions and
 // limitations under the License.
-#include <argz.h>
 
+#include <argz.h>
 #include <lib/info.h>
 
 #include "opts.h"
@@ -20,8 +20,10 @@
 
 int main(int argc, char **argv)
 {
-	if (argc < 2)
+	if (argc < 2) {
+		DEBUG("No arguments passed on the command line");
 		return 0;
+	}
 
 	error_t err = 0;
 	arguments arg;

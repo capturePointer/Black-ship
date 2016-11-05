@@ -37,22 +37,19 @@ check_libs()
 
 # add all files and push them to exec
 set (TARGET_MAIN src/blackship.c 
-				src/cmds.h
 				src/cmds.c 
 				src/opts.c 
-				src/opts.h
 				src/sockstress.c
-				src/sockstress.h
 				lib/mem.c
-				lib/mem.h
 				lib/info.c 
-				lib/info.h
 				lib/util.c
-				lib/util.h
 				lib/net.c
-				lib/pcg.h
-				lib/pcg.c
-				lib/net.h)
-
+				lib/pcg.c)
 add_executable(blackship ${TARGET_MAIN})
 
+option(DEBUG_MODE "Option for compiling in debug mode" OFF) # off by default
+
+if (DEBUG_MODE)
+	ADD_DEFINITIONS(-DDEBUG_MODE)
+	set(CMAKE_C_FLAGS_DEBUG "-g")
+endif(DEBUG_MODE)

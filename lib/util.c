@@ -32,9 +32,8 @@ static bool is_zero(const char *);
 
 bool filter_number(const char *arg)
 {
-	if (!arg) {
-		return false;
-	}
+	if (!arg)
+		INFOEE("Invalid argument, NULL ptr was passed");
 
 	const char *p = arg;
 	for (; *p != '\0'; p++)
@@ -48,28 +47,33 @@ bool filter_number(const char *arg)
 
 int16_t port_conv(const char *arg)
 {
-	if (!filter_number(arg))
+	if (!filter_number(arg)) {
+		DEBUG("Cannot convert port, the port string does not contain only numbers");
 		return -1;
+	}
 
 	long u = strtol(arg, NULL, 10);
 	// check if u is larger than 16 bytes or the parsing was invalid
-	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) // ports are 16 byte wide
+	if ((errno == ERANGE) || (u > UINT16_MAX) || (u < 0)) { // ports are 16 byte wide
+		DEBUG("Cannot parse char number into a UIN16 one");
 		return -1;
+	}
 
 	return (int16_t)u;
 }
 
 int8_t port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 {
-	if (!arg) {
-		return -1;
-	}
+	if (!arg)
+		INFOEE("Cannot not parse rage port, NULL ptr bas passed");
 
 	char delim[2] = "-";
 	char *t1, *t2;
 	t1 = strtok(arg, delim);
-	if (t1 == NULL)
+	if (t1 == NULL) {
+		DEBUG("Error on the first port token")
 		return -1;
+	}
 
 	int16_t p = 0;
 
@@ -84,6 +88,7 @@ int8_t port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 	// NULL is passed as first arg
 	t2 = strtok(NULL, delim);
 	if (t2 == NULL) {
+		DEBUG("Error on the second port token");
 		return -1;
 	}
 	
@@ -106,7 +111,7 @@ int8_t port_conv_range(char *arg, uint16_t *low, uint16_t *high)
 bool valid_ip(const char *ip)
 {
 	if (!ip)
-		return false;
+		INFOEE("Not a valid ip, NULL ptr passed");
 
 	struct sockaddr_in in4;
 	struct sockaddr_in6 in6;
@@ -123,16 +128,18 @@ static uint64_t seeds[2];
 bool urandom_bytes(void *dest, size_t size)
 {
 	if ((!dest) || (!size))
-		return false;
+		INFOEE("Cannot use NULL ptr or size 0");
 
 	int fd = open("/dev/urandom", O_RDONLY);
-	if (!fd)
+	if (!fd) {
 		return false;
+	}
 
 	ssize_t sz = read(fd, dest, size);
 	if (sz < (ssize_t)size)
 		return false;
-	return close(fd) == 0;
+
+	return (close(fd) == 0);
 }
 
 
@@ -159,8 +166,11 @@ int64_t strconv(const char *n, uint8_t base)
 
 	int64_t result = strtoll(n, NULL, base);
 	if (((errno == ERANGE) && (result == LLONG_MAX)) || 
-			(errno == EINVAL) || (result == 0))
+		(errno == EINVAL) || (result == 0)) {
+		DEBUG("Cannot convert this string into UINT64 value");
 		return -1;
+
+	}
 	
 	return result;
 

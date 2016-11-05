@@ -67,9 +67,7 @@ extern void inf(const char *msg,const char *file, int line, INFO_OPT opt);
 #define STATUS(message) \
 	inf((message), "", 0, STAT)
 
-#ifdef DEBUG_MODE
 #define DEBUG(message)	\
-		inf((message, __FILE_, __LINE__, DBG);
-#endif
+		inf(message, __FILE__, __LINE__, DBG);
 
 #endif /*INFO_H*/

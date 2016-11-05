@@ -98,11 +98,15 @@ void run_cmd(arguments args)
 	conn = conn_new();
 
 	switch (args.attack) {
+
 	case SOCKSTRESS:
+		STATUS("Chosen to launch Sockstress attack");
 		sockstress_init(conn, args);
 		sockstress_attack();
 		break;
+
 	case START_ATTACK:
+
 	case END_ATTACK:
 		WSTATUS("Please set a valid attack that the app supports");
 	}
