@@ -12,35 +12,33 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#ifndef CMDS_H
-#define CMDS_H
+#include <argz.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-#include "opts.h"
+#include <lib/info.h>
 
-/*
- * list_attacks
- *
- * write all supported attacks in stdout
- */
-extern void list_attacks(void);
+#include "commands.h"
+#include "options.h"
 
-/*
- * run_cmd
- * 
- * @arg - structure populated by argp_parse func
- *
- * will run the attack based on the @arg
- *
- */
-extern void run_cmd(arguments arg);
+int main(int argc, char **argv)
+{
+	if ((getuid() | getgid()) != 0) {
+		STATUS("The program must be run with root privileges");
+		return 0;
+	}
 
-/**
- * valid_attack
- *
- * @exploit - 
- *
- * checker function if the attack suplied @exploit in the cmd is valid or not.
- */
-extern ATTACK_SW valid_attack(const char *exploit);
+	if (argc < 2) {
+		DEBUG("No arguments passed on the command line");
+		return 0;
+	}
 
-#endif
+	arguments arg;
+	memset(&arg, 0, sizeof(arguments));
+
+	error_t err = argp_parse(&argp, argc, argv, 0, 0, &arg);
+	if (!err)
+		run_cmd(arg);
+	else if (err == ARGP_KEY_ERROR)
+		INFOEE("Bad argument input");
+}

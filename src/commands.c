@@ -18,12 +18,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include <lib/net.h>
 #include <lib/info.h>
-#include <lib/mem.h>
 #include <lib/util.h>
+#include <lib/mem.h>
 
-#include "cmds.h"
+#include "commands.h"
 #include "sockstress.h"
 
 static const char *attacks[] = {
@@ -37,7 +36,6 @@ static const char *doses[] = {
 
 void list_attacks(void)
 {
-	fprintf(stdout, "\n");
 	STATUS("This pirate ship suports this attacks");
 	for(uint8_t i=0; i<ARRAY_SIZE(attacks); i++)
 		fprintf(stdout, "%s\n", attacks[i]);
@@ -57,16 +55,13 @@ ATTACK_SW valid_attack(const char *exploit)
 	return END_ATTACK;
 }
 
-static conn_t *conn;
-
 static void sigint_handler (int signo)
 {
+	fprintf(stdout, "\n");
 	if (signo != SIGINT)
-		INFOEE("could not treat any signal different from SIGINT");
-	STATUS("Closing connection and freeing up the memory");	
+		INFOEE("Cannot treat any signal different from SIGINT");
 
-	conn_buff_free(conn);
-	conn_free(conn);
+	STATUS("Closing connection and freeing up the memory");	
 	exit(EXIT_SUCCESS);
 }
 
@@ -78,38 +73,53 @@ void run_cmd(arguments args)
 	}
 
 	if (treat_signal(SIGPIPE, SIG_IGN) == SIG_ERR)
-		INFOEE("could not set signal handler for SIGPIPE");
-
+		INFOEE("Cannot set signal handler for SIGPIPE");
 	if (treat_signal(SIGINT, sigint_handler) == SIG_ERR)
-		INFOEE("could not set the signal handler for SIGINT");
+		INFOEE("Cannot not set the signal handler for SIGINT");
 
 	if (!args.host) {
 		WSTATUS("Please set the host with a valid ip");
 		return;
 	}
 
-	if ((args.port.n == 0) && (args.port.low == 0) && (args.port.high == 0) && (!args.port.random)) {
+	if (args.port.n == 0) {
 		WSTATUS("Empty port number and port options, please set a valid one");
 		return;
 	}
 
 	STATUS("Blackship start sailing..");
 
-	conn = conn_new();
+	impl_t *impl = NULL;
 
+	/**
+	 * based on the args.attack enum we should
+	 * pick what kind of implementaton we are interesed on
+	 * every attack returns a ptr to impl_t *
+	 * every attack implementation has 3 esential methods
+	 * one for init, one for the attack and one for freeing up resources when
+	 * the attack is stopped.
+	 */
 	switch (args.attack) {
+		case SOCKSTRESS: {
+			STATUS("Chosen to launch Sockstress attack");
+			impl = sockstress_new();
+			break;
+		}
 
-	case SOCKSTRESS:
-		STATUS("Chosen to launch Sockstress attack");
-		sockstress_init(conn, args);
-		sockstress_attack();
-		break;
+		case START_ATTACK:{}
+		case END_ATTACK: {
+			WSTATUS("Please set a valid attack that the app supports");
+			return;
+		}
+	} /*switch*/
+	
+	if (!impl)
+		INFOEE("No attack has been initilized properly");
 
-	case START_ATTACK:
+	impl->init(args);
+	impl->attack();
+	impl->clean();
 
-	case END_ATTACK:
-		WSTATUS("Please set a valid attack that the app supports");
-	}
 
-	conn_free(conn);
+	xfree(impl);
 }

@@ -18,8 +18,8 @@
 #include <lib/info.h>
 #include <lib/util.h>
 
-#include "cmds.h"
-#include "opts.h"
+#include "commands.h"
+#include "options.h"
 
 // this array of options will be checked by the callback parse_opt
 // in order to execute some special handlers on every interations
@@ -29,21 +29,18 @@ struct argp_option options[] = {
 	  "Select the type of attack. To know what types are supported"
 	  "please check this options --list-attacks",
 	  0 },
-	{ "port", PORT, "n", 0,
+	{ "port", PORT, "[n]", 0,
 	  "Select on a specific port to send all the packets",
-	  0 },
-	{ "range", RANGE_PORTS, "x-y", OPTION_ARG_OPTIONAL,
-	  "Select a specic range of ports to send all the packets",
-	  0 },
-	{ "random", RANDOM, 0, OPTION_ARG_OPTIONAL,
-	  "Just flood on random ports",
 	  0 },
 	{ "list-attacks", LIST_ATTACKS, 0, 0,
 	  "List the dos floods supported",
 	  0 },
-	{ "host", HOST, "ip_addr", 0,
+	{ "host", HOST, "[ipaddr]", 0,
 	  "Specify the ipv4 address.",
 	  0 },
+	{ "interface", INTERFACE, "[eth0]", 0,
+		"Specify the interface you wish to youse.",
+		0},
 	{ NULL, 0, NULL, 0, NULL, 0 } /*end of the arr*/
 };
 
@@ -53,7 +50,7 @@ const char *argp_program_version = "0.1";
 // set the email dest addr for bug reports
 const char *argp_program_bug_address = "hoenirvili@gmail.com";
 
-#define USAGE_DOC "HOST PORT TYPE_OF_ATTACK EXTRA-OPTIONS"
+#define USAGE_DOC "HOST PORT TYPE_OF_ATTACK INTERFACE EXTRA-OPTIONS"
 
 #define DOC "This tool should be used just for educational \
 	purpose but I don't care(in the end) what you do \
@@ -88,52 +85,46 @@ error_t parse_opt(int key, char *arg, argp_state *state)
 	state->out_stream = stdout;
 
 	switch (key) {
-	case ATTACK: {
-		// test if the attack is valid
-		args->attack = valid_attack(arg);
-		if (args->attack == END_ATTACK) {
-			return ARGP_KEY_ERROR;
+		case ATTACK: {
+			// test if the attack is valid
+			args->attack = valid_attack(arg);
+			if (args->attack == END_ATTACK) {
+				return ARGP_KEY_ERROR;
+			}
+			break;
 		}
-		break;
-	}
 
-	case PORT: {
-		int16_t p = port_conv(arg);
-		if (p == -1)
-			return ARGP_KEY_ERROR;
-		args->port.n = (uint16_t)p;
-		break;
-	}
+		case PORT: {
+			int16_t p = port_conv(arg);
+			if (p == -1)
+				return ARGP_KEY_ERROR;
+			args->port.n = (uint16_t)p;
+			break;
+		}
 
-	case RANGE_PORTS: {
-		int16_t err = port_conv_range(arg, &args->port.low, &args->port.high);
-		if (err == -1)
-			return ARGP_KEY_ERROR;
-		break;
-	}
+		case LIST_ATTACKS: {
+			args->list_attacks = L_ATTACKS;
+			break;
+		}
 
-	case RANDOM: {
-		args->port.random = true;
-		port_seeds();					 // start seeding immediately
-		break;
-	}
+		case HOST: {
+			if (!valid_ip(arg))
+				return ARGP_KEY_ERROR;
+			args->host = arg;
+			break;
+		}
 
-	case LIST_ATTACKS: {
-		args->list_attacks = L_ATTACKS;
-		break;
-	}
+		case INTERFACE: {
+			if(!valid_interface(arg))
+				return ARGP_KEY_ERROR;
+			args->inf = arg;
+			break;
+		}
 
-	case HOST: {
-		if (!valid_ip(arg))
-			return ARGP_KEY_ERROR;
-		args->host = arg;
-		break;
-	}
-
-	default: {
-		// not a valid option
-		return ARGP_ERR_UNKNOWN;
-	}
+		default: {
+			// not a valid option
+			return ARGP_ERR_UNKNOWN;
+		}
 	} /*switch*/
 
 	return 0;

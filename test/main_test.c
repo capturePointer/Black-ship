@@ -9,8 +9,9 @@
 #include <cmocka.h>
 
 #include <lib/mem.h>
-#include <src/cmds.h>
-#include <src/opts.h>
+
+#include <src/commands.h>
+#include <src/options.h>
 
 static void argp_parse_test1(void **state)
 {
@@ -43,10 +44,7 @@ static void argp_parse_test1(void **state)
 	assert_string_equal(arg.host, "192.168.122.122");
 	assert_int_equal(arg.list_attacks, NO_LIST);
 	assert_int_equal(arg.attack, END_ATTACK);
-	assert_int_equal(arg.port.low, 0);
-	assert_int_equal(arg.port.high, 0);
 	assert_int_equal(arg.port.n, 4423);
-	assert_int_equal(arg.port.random, 0);
 
 	for (uint8_t i = 0; i < N_ARGS; i++) {
 		xfree(argv[i]);
@@ -86,10 +84,7 @@ static void argp_parse_test2(void **state)
 	assert_string_equal(arg.host, "192.168.122.122");
 	assert_int_equal(arg.attack, SOCKSTRESS);
 	assert_int_equal(arg.list_attacks, NO_LIST);
-	assert_int_equal(arg.port.low, 0);
-	assert_int_equal(arg.port.high, 0);
 	assert_int_equal(arg.port.n, 4423);
-	assert_int_equal(arg.port.random, 0);
 
 	for (uint8_t i = 0; i < N_ARGS; i++) {
 		xfree(argv[i]);

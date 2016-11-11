@@ -36,47 +36,6 @@ static void port_conv_test(void **state)
 	assert_int_equal(p, -1);
 }
 
-static void port_conv_range_test(void **state)
-{
-	(void)state;
-	uint16_t r1 = 0, r2 = 0;
-	int8_t err;
-	char *p1 = strdup("100-200");
-	char *p2 = strdup("5000-10000");
-	char *p3 = strdup("231-100");
-	char *p4 = strdup("1jhas-diajsudja");
-	char *p5 = strdup("0000-0000");
-
-	err = port_conv_range(p1, &r1, &r2);
-	assert_int_equal(err, 0);
-	assert_int_equal(r1, 100);
-	assert_int_equal(r2, 200);
-
-	err = port_conv_range(p2, &r1, &r2);
-	assert_int_equal(err, 0);
-	assert_int_equal(r1, 5000);
-	assert_int_equal(r2, 10000);
-
-	err = port_conv_range(p3, &r1, &r2);
-	assert_int_equal(err, 0);
-	assert_int_equal(r1, 100);
-	assert_int_equal(r2, 231);
-
-	err = port_conv_range(p4, &r1, &r2);
-	assert_int_equal(err, -1);
-
-	err = port_conv_range(p5, &r1, &r2);
-	assert_int_equal(err, 0);
-	assert_int_equal(r1, 0);
-	assert_int_equal(r2, 0);
-	assert_int_equal(r1, r2);
-
-	xfree(p1);
-	xfree(p2);
-	xfree(p3);
-	xfree(p4);
-	xfree(p5);
-}
 
 static void filter_number_test(void **state)
 {
@@ -123,20 +82,6 @@ static void valid_ip_test(void **state)
 	xfree(p2);
 	xfree(p3);
 	xfree(p4);
-}
-
-static void port_random_test(void **state)
-{
-	(void)state;
-	bool f	 = false;
-	uint16_t n = 0;
-	port_seeds();
-
-	for (int i = 0; i < 10000000; i++) {
-		n = port_random();
-		f = ((n >= 0) && (n < UINT16_MAX)) ? true : false;
-		assert_true(f);
-	}
 }
 
 static void strconv_test(void **state)
@@ -203,6 +148,26 @@ static void signal_test(void **state)
 	sig_test_flag = false;					  // restart
 }
 
+static void random_test(void **state)
+{
+	(void)state;
+	bool f	 = false;
+	uint16_t n = 0;
+	uint32_t m = 0;
+	random_seed();
+
+	for (int i = 0; i < 10000000; i++) {
+		n = U16_RAND();
+		f = ((n >= 0) && (n < UINT16_MAX)) ? true : false;
+		assert_true(f);
+
+		m = U32_RAND();	
+		f = ((m > 0) && (m < UINT32_MAX)) ? true: false;
+		assert_true(f);
+	}
+
+}
+
 static void array_size_macro_test(void **state)
 {
 	(void)state;
@@ -229,9 +194,8 @@ int main(void)
 	const struct CMUnitTest tests[] = {
 		cmocka_unit_test(filter_number_test),
 		cmocka_unit_test(port_conv_test),
-		cmocka_unit_test(port_conv_range_test),
+		cmocka_unit_test(random_test),
 		cmocka_unit_test(valid_ip_test),
-		cmocka_unit_test(port_random_test),
 		cmocka_unit_test(strconv_test),
 		cmocka_unit_test(signal_test),
 		cmocka_unit_test(array_size_macro_test),

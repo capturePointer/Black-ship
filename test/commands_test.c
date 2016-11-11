@@ -10,8 +10,9 @@
 
 #include <lib/util.h>
 #include <lib/mem.h>
-#include <src/cmds.h>
-#include <src/opts.h>
+
+#include <src/commands.h>
+#include <src/options.h>
 
 static void valid_attack_test(void **state)
 {

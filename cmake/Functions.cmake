@@ -21,6 +21,12 @@ function(check_libs)
 	CHECK_INCLUDE_FILE("sys/types.h" SYSTYPES_H)
 	CHECK_INCLUDE_FILE("inttypes.h" INTTYPES_H)
 	CHECK_INCLUDE_FILE("stdio.h" STDIO_H)
+	CHECK_INCLUDE_FILE("sys/socket.h" SOCKET_H)
+	CHECK_INCLUDE_FILE("netinet/tcp.h" TCP_H)
+	CHECK_INCLUDE_FILE("netinet/ip.h" IP_H)
+	CHECK_INCLUDE_FILE("netinet/in.h" NETINET_IN_H)
+	CHECK_INCLUDE_FILE("ifaddrs.h" IFADDRS_H)
+	CHECK_INCLUDE_FILE("sys/wait.h" SYSWAIT_H)
 	set (ALL_H ${ARGP_H}
 		${STDBOOL_H}
 		${STRING_H}
@@ -39,6 +45,12 @@ function(check_libs)
 		${SYSTYPES_H}
 		${INTTYPES_H}
 		${STDIO_H}
+		${SOCKET_H}
+		${TCP_H}
+		${IP_H}
+		${IFADDRS_H}
+		${SYSWAIT_H}
+		${NETINET_IN_H}
 	)
 	foreach(HEADER ${ALL_H})
 		if(NOT ${HEADER})

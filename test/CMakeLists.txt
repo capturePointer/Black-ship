@@ -5,7 +5,7 @@ project(test C )
 cmake_minimum_required(VERSION 2.8)
 
 # set the compile flags for every .c 
-set(COMPILE_FLAGS "-std=gnu11 -I ../../ -g")
+set(COMPILE_FLAGS "-std=gnu11 -I ../../ -g -fno-strict-aliasing")
 set(CMAKE_C_FLAGS  "${COMPILE_FLAGS}")
 
 
@@ -26,29 +26,29 @@ SET(ALL_FILES ../lib/info.c
 			  ../lib/net.h
 			  ../lib/mem.h
 			  ../lib/mem.c
-			  ../src/cmds.h
-			  ../src/cmds.c
+			  ../src/commands.h
+			  ../src/commands.c
 			  ../src/sockstress.c
 			  ../src/sockstress.h
-			  ../src/opts.c
-			  ../src/opts.h)
+			  ../src/options.c
+			  ../src/options.h)
 
 # add all files and push them to exec
 set (UTIL_TEST_LIB util_test.c ${ALL_FILES})
-set (BLACKSHIP_TEST_SRC blackship_test.c ${ALL_FILES})
-set (CMDS_TEST_SRC cmds_test.c ${ALL_FILES})
+set (MAIN_TEST_SRC main_test.c ${ALL_FILES})
+set (CMDS_TEST_SRC commands_test.c ${ALL_FILES})
 set (MEM_TEST_LIB mem_test.c ${ALL_FILES})
 set (NET_TEST_LIB net_test.c ${ALL_FILES})
 
 add_executable(util_test ${UTIL_TEST_LIB})
-add_executable(blackship_test ${BLACKSHIP_TEST_SRC})
-add_executable(cmds_test ${CMDS_TEST_SRC})
+add_executable(main_test ${MAIN_TEST_SRC})
+add_executable(commands_test ${CMDS_TEST_SRC})
 add_executable(mem_test ${MEM_TEST_LIB})
 add_executable(net_test ${NET_TEST_LIB})
 
 target_link_libraries(util_test cmocka)
-target_link_libraries(blackship_test cmocka)
-target_link_libraries(cmds_test cmocka)
+target_link_libraries(main_test cmocka)
+target_link_libraries(commands_test cmocka)
 target_link_libraries(mem_test  cmocka)
 target_link_libraries(net_test  cmocka)
 

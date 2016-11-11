@@ -14,8 +14,8 @@
 
 // thic cmd tool uses argp as it's parser mechanism for the
 // command line arguments
-#ifndef OPTS_H
-#define OPTS_H
+#ifndef OPTIONS_H
+#define OPTIONS_H
 
 #include <argp.h>
 #include <stdbool.h>
@@ -39,6 +39,7 @@ enum {
 	ATTACK		 = 'a',
 	RANGE_PORTS  = 'P',
 	HOST		 = 'h',
+	INTERFACE    = 'i',
 	RANDOM		 = 'r',
 };
 
@@ -56,12 +57,6 @@ typedef enum ATTACK_SW ATTACK_SW;
 // port_t type that will hold all flags and port numbers
 typedef struct port_t {
 	uint16_t n;	// default standard port
-	// range values ports
-	uint16_t low;
-	uint16_t high;
-	// flag for knowing that the port option
-	// is set to random/dynamic ports
-	bool random;
 } port_t;
 
 // other_t type that stores extra
@@ -74,10 +69,11 @@ typedef enum other_t {
 // arguments retains all info from the parse_opt command
 // when it finishes
 typedef struct arguments {
-	const char *host;
+	const char *host; /* host ip */
+	const char *inf; /* interface name */
 	ATTACK_SW attack;	
 	port_t port;
 	other_t list_attacks;
 } arguments;
 
-#endif
+#endif /*OPTIONS_H*/
