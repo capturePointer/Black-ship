@@ -193,8 +193,10 @@ bool valid_interface(const char *name)
 	if(getifaddrs(&ifap) < 0)
 		INFOEE("Cannot get list of interfaces");
 	for(struct ifaddrs *p = ifap; p!=NULL; p=p->ifa_next) {
-		if (strcmp(p->ifa_name,name) == 0)
+		if (strcmp(p->ifa_name,name) == 0) {
+				freeifaddrs(ifap);
 				return true;
+		}
 	}
 
 	freeifaddrs(ifap);

