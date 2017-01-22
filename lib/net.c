@@ -12,46 +12,102 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 //
+
+#include <arpa/inet.h>
+#include <ifaddrs.h>
+#include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
 
 #include "info.h"
 #include "mem.h"
-#include "util.h"
-
 #include "net.h"
 
-conn_t *conn_new(void)
+in_addr_t addr_if(const char *name, unsigned short family)
 {
-	conn_t *conn = xzmalloc(sizeof(conn_t));
-	conn->addr   = xzmalloc(sizeof(conn->addr));
+	if (!name)
+		INFOEE("Invalid interface name, pointer is NULL");
 
-	return conn;
+	struct ifaddrs *ifap;
+	in_addr_t addr = 0;
+	if (getifaddrs(&ifap) < 0)
+		INFOEE("Cannot get interface list");
+
+	for (struct ifaddrs *p = ifap; p != NULL; p = p->ifa_next) {
+		if (strcmp(p->ifa_name, name) == 0)
+			if (p->ifa_addr->sa_family == family) {
+				addr = ((struct sockaddr_in *)(p->ifa_addr))->sin_addr.s_addr;
+				break;
+			}
+	}
+
+	freeifaddrs(ifap);
+	return addr;
 }
 
-void conn_free(conn_t *conn)
+static uint16_t checksum(void *blk, size_t sz)
 {
-	if (!conn)
-		INFOEE("Can't free a connection pointer that is NULL");
-	if ((!conn->addr))
-		INFOEE("Can't free a connection members that are NULL");
+	if (!blk)
+		INFOEE("Passing NULL ptr to checksum");
 
-	xfree(conn->addr);
-	xfree(conn);
+	uint16_t *raw  = blk;
+	uint32_t sum   = 0;
+	uint16_t carry = 0;
+
+	while (sz > 1) {
+		sum += *raw++;
+		sz -= 2;
+	}
+
+	if (sz)
+		sum += *(uint8_t *)raw;
+
+	while ((carry = sum >> 16)) {
+		sum += carry;
+		sum = sum & 0xFFFF;
+	}
+
+	return (uint16_t)~sum;
 }
 
-void conn_buff_new(conn_t *conn, uint16_t sz)
+uint16_t ip4_checksum(struct iphdr *header)
 {
-	if (!(conn))
-		INFOEE("Could alloc underlying buff of conn NULL");
-	
-	conn->bufflen = sz;
-	conn->buff = xmalloc(sizeof(conn->buff) * conn->bufflen);
+	if (!header) {
+		DEBUG("Passing NULL ip header ptr to ip checksum");
+		return 0;
+	}
+
+	return checksum(header, sizeof(*header));
 }
 
-void conn_buff_free(conn_t *conn)
+typedef struct pseudohdr {
+	uint32_t source;
+	uint32_t dest;
+	uint8_t zero;
+	uint8_t protocol;
+	uint16_t len;
+} __attribute__((packed)) pseudohdr;
+
+uint16_t tcp4_checksum(struct iphdr *ip, struct tcphdr *tcp)
 {
-	if (!(conn))
-		INFOEE("Could not free underlying buff of conn NULL");
-	xfree(conn->buff);
+	if (!ip)
+		INFOEE("Cannot compute checksum, ip ptr is NULL");
+	if(!tcp)
+		INFOEE("Cannot compute checksum, tcp ptr is NULL");
+
+	pseudohdr psu;
+	memset(&psu, 0, sizeof(psu));
+	psu.source   = ip->saddr;
+	psu.dest	 = ip->daddr;
+	psu.zero	 = 0;
+	psu.protocol = ip->protocol;
+	psu.len		 = htons(sizeof(*tcp));
+
+	size_t len = sizeof(psu) + sizeof(*tcp);
+	uint8_t buff[len];
+	memset(&buff, 0, sizeof(buff));
+	uint8_t *p = buff;
+	memcpy(p, &psu, sizeof(psu));
+	p += sizeof(psu);
+	memcpy(p, tcp, sizeof(*tcp));
+	return checksum(buff, len);
 }

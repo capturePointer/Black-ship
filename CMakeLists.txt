@@ -36,15 +36,15 @@ include(Functions)
 check_libs()
 
 # add all files and push them to exec
-set (TARGET_MAIN src/blackship.c 
-				src/cmds.c 
-				src/opts.c 
+set (TARGET_MAIN src/main.c 
+				src/commands.c 
+				src/options.c 
 				src/sockstress.c
 				lib/mem.c
 				lib/info.c 
 				lib/util.c
-				lib/net.c
-				lib/pcg.c)
+				lib/pcg.c
+				lib/net.c)
 add_executable(blackship ${TARGET_MAIN})
 
 option(DEBUG_MODE "Option for compiling in debug mode" OFF) # off by default

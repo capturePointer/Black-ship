@@ -1,11 +1,14 @@
 #ifndef SOCKSTRESS_H
 #define SOCKSTRESS_H
 
-#include <lib/net.h>
+#include "commands.h"
 
-#include "opts.h"
+/**
+ * sockstress_new
+ *
+ * function returns a concreate default implementation of the
+ * sockstress attack
+ */
+impl_t *sockstress_new(void);
 
-extern void sockstress_init(conn_t *conn, arguments args);
-
-extern void sockstress_attack(void);
 #endif /*SOCKSTRESS_H*/
